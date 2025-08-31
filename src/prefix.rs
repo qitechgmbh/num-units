@@ -1,0 +1,25 @@
+pub const DECI: f64 = 1e-1;
+pub const CENTI: f64 = 1e-2;
+pub const MILLI: f64 = 1e-3;
+pub const MICRO: f64 = 1e-6;
+pub const NANO: f64 = 1e-9;
+pub const PICO: f64 = 1e-12;
+pub const FEMTO: f64 = 1e-15;
+pub const ATTO: f64 = 1e-18;
+pub const ZEPTO: f64 = 1e-21;
+pub const YOCTO: f64 = 1e-24;
+pub const RONTO: f64 = 1e-27;
+pub const QUECTO: f64 = 1e-30;
+
+pub const DECA: f64 = 1e1;
+pub const HECTO: f64 = 1e2;
+pub const KILO: f64 = 1e3;
+pub const MEGA: f64 = 1e6;
+pub const GIGA: f64 = 1e9;
+pub const TERA: f64 = 1e12;
+pub const PETA: f64 = 1e15;
+pub const EXA: f64 = 1e18;
+pub const ZETTA: f64 = 1e21;
+pub const YOTTA: f64 = 1e24;
+pub const RONNA: f64 = 1e27;
+pub const QUECCA: f64 = 1e30;
