@@ -27,7 +27,7 @@ macro_rules! dimension_scale {
             fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
                 write!(f, "Scale[{}]",
                     [$(
-                        <$unit as $crate::unit::Unit>::abbreviation()
+                        <$unit as $crate::unit::Unit>::ABBREVIATION
                     ),+].join(",")
                 )
             }

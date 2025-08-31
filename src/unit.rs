@@ -3,20 +3,14 @@
 /// This trait is used for unit identification and dimension tracking.
 /// Actual conversions are handled by the closure-based FromBaseUnit trait.
 pub trait Unit {
-    /// Get the abbreviation for this unit (e.g., "m", "kg", "s")
-    fn abbreviation() -> &'static str {
-        "unit"
-    }
+    /// The abbreviation for this unit (e.g., "m", "kg", "s")
+    const ABBREVIATION: &'static str = "unit";
     
-    /// Get the singular name for this unit (e.g., "meter", "kilogram", "second")
-    fn singular() -> &'static str {
-        "unit"
-    }
+    /// The singular name for this unit (e.g., "meter", "kilogram", "second")
+    const SINGULAR: &'static str = "unit";
     
-    /// Get the plural name for this unit (e.g., "meters", "kilograms", "seconds")
-    fn plural() -> &'static str {
-        "units"
-    }
+    /// The plural name for this unit (e.g., "meters", "kilograms", "seconds")
+    const PLURAL: &'static str = "units";
 }
 
 /// Helper macro to define unit structs

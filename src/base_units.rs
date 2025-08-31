@@ -5,52 +5,6 @@
 // Re-export the Unit trait for public use
 pub use crate::unit::Unit;
 
-// ===== DIMENSION TYPES =====
-
-/// Temperature dimension
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
-pub struct TemperatureDimension;
-
-/// Length dimension
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
-pub struct LengthDimension;
-
-/// Area dimension
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
-pub struct AreaDimension;
-
-/// Volume dimension
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
-pub struct VolumeDimension;
-
-/// Mass dimension
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
-pub struct MassDimension;
-
-/// Time dimension
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
-pub struct TimeDimension;
-
-/// Current dimension
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
-pub struct CurrentDimension;
-
-/// Amount dimension
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
-pub struct AmountDimension;
-
-/// Luminosity dimension
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
-pub struct LuminosityDimension;
-
-/// Scalar dimension (for dimensionless quantities)
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
-pub struct ScalarDimension;
-
-/// Angle dimension (for angular quantities)
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
-pub struct AngleDimension;
-
 /// Macro for creating new base units
 ///
 /// # Syntax
@@ -84,17 +38,9 @@ macro_rules! base_units {
             pub struct $unit;
 
             impl $crate::unit::Unit for $unit {
-                fn abbreviation() -> &'static str {
-                    $abbrev
-                }
-
-                fn singular() -> &'static str {
-                    $name
-                }
-
-                fn plural() -> &'static str {
-                    concat!($name, "s")
-                }
+                const ABBREVIATION: &'static str = $abbrev;
+                const SINGULAR: &'static str = $name;
+                const PLURAL: &'static str = concat!($name, "s");
             }
         )+
     };
