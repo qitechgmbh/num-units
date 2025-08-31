@@ -1,14 +1,41 @@
-/// Unit trait for defining units with their dimension and basic properties
+/// # Unit System - Core Unit Definitions and Conversions
 ///
-/// This trait is used for unit identification and dimension tracking.
-/// Actual conversions are handled by the closure-based FromBaseUnit trait.
+/// This module defines the fundamental traits and macros for working with units
+/// in the dimensional analysis system. It provides the building blocks for
+/// type-safe unit conversions and dimensional tracking.
+///
+/// ## Core Concepts
+///
+/// - **Unit Trait**: Defines basic unit properties (abbreviation, names)
+/// - **Unit Macro**: Generates unit structs with conversion methods
+/// - **Base Units**: Fundamental units that form the basis of a unit system
+/// - **Derived Units**: Units created from combinations of base units
+///
+/// ## Architecture
+///
+/// The unit system is built around three key components:
+///
+/// 1. **Unit Trait**: Provides compile-time unit metadata
+/// 2. **Unit Macro**: Generates conversion methods for all numeric types
+/// 3. **Base Units**: Define fundamental units like meter, kilogram, second
+///
+/// ## Example Usage
+///
+/// ```rust
+/// use num_units::unit;
+/// use num_units::si::length;
+///
+/// // The unit! macro generates conversion methods automatically
+/// let distance = length::f64::Length::from_meter(100.0);
+/// let distance_km = distance.as_kilometer(); // Convert to kilometers
+/// ```
 pub trait Unit {
     /// The abbreviation for this unit (e.g., "m", "kg", "s")
     const ABBREVIATION: &'static str = "unit";
-    
+
     /// The singular name for this unit (e.g., "meter", "kilogram", "second")
     const SINGULAR: &'static str = "unit";
-    
+
     /// The plural name for this unit (e.g., "meters", "kilograms", "seconds")
     const PLURAL: &'static str = "units";
 }
@@ -46,42 +73,32 @@ macro_rules! unit_constant {
 
 /// Macro for defining individual units with detailed parameters
 ///
-/// # Syntax
-/// ```ignore
-/// unit! {
-///     system: system_path;
-///     quantity: quantity_path;
-///     @unit_name: coefficient; "abbreviation", "singular", "plural";
-///     @unit_with_offset: coefficient, offset; "abbreviation", "singular", "plural";
-/// }
-/// ```
+/// This macro generates unit structs with automatic conversion methods for all
+/// supported numeric types (i8, u8, i16, u16, i32, u32, i64, u64, f32, f64).
 ///
-/// # Parameters
-/// * `system`: Path to the module where the `system!` macro was run (e.g. `crate::si`)
-/// * `quantity`: Path to the module where the `quantity!` macro was run (e.g. `crate::si::length`)
-/// * `@unit_name`: Unit identifier (e.g. `@kilometer`, `@foot`)
-/// * `coefficient`: Conversion coefficient from the unit to the base unit (e.g. `1.0E-3` for km to m)
-/// * `offset`: Optional additive offset (e.g. `273.15` for °C to K)
-/// * `"abbreviation"`: Unit abbreviation (e.g. `"km"`)
-/// * `"singular"`: Singular unit description (e.g. `"kilometer"`)
-/// * `"plural"`: Plural unit description (e.g. `"kilometers"`)
+/// # Generated Methods
 ///
-/// This generates:
-/// - A unit struct implementing the Unit trait
-/// - `Quantity::from_{unit_name}(value)` - create quantity from this unit
-/// - `quantity.as_{unit_name}()` - get value in this unit
+/// For each unit defined with this macro, the following methods are generated:
+/// - `from_{unit_name}(value)` - Create quantity from this unit
+/// - `as_{unit_name}()` - Get value in this unit
 ///
 /// # Examples
-/// ```ignore
-/// # use num_units::unit;
-/// # use num_units::si::length;
-/// unit! {
-///     system: crate::si;
-///     quantity: crate::si::length;
-///     @kilometer: 1000.0; "km", "kilometer", "kilometers";
-///     @foot: 0.3048; "ft", "foot", "feet";
-///     @celsius: 1.0, 273.15; "°C", "celsius", "celsius";
-/// }
+///
+/// ```rust
+/// use num_units::unit;
+/// use num_units::si::length;
+///
+/// // Define a custom unit (this would typically be done in the si/ modules)
+/// // unit! {
+/// //     system: crate::si;
+/// //     quantity: crate::si::length;
+/// //     @kilometer: 1000.0; "km", "kilometer", "kilometers";
+/// //     @foot: 0.3048; "ft", "foot", "feet";
+/// // }
+///
+/// // Usage (using existing SI units):
+/// let dist = length::f64::Length::from_meter(1000.0);
+/// let km = dist.as_kilometer(); // Returns 1.0
 /// ```
 #[macro_export]
 macro_rules! unit {

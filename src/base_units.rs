@@ -1,26 +1,70 @@
-/// Base unit system for dimensional analysis
+/// # Base Units - Fundamental Unit Definitions
 ///
-/// This module defines the core infrastructure for units and conversions.
-/// All specific unit definitions are now centralized in the si/ modules.
-// Re-export the Unit trait for public use
-pub use crate::unit::Unit;
+/// This module provides the core infrastructure for defining base units and their
+/// conversion relationships. It includes macros for creating unit structs and
+/// establishing bidirectional conversion relationships between units.
+///
+/// ## Key Components
+///
+/// - **Base Units**: Fundamental units that cannot be expressed in terms of other units
+/// - **Derived Units**: Units created from combinations of base units
+/// - **Conversion Traits**: Bidirectional conversion between related units
+/// - **Unit Macros**: Generate unit structs with proper trait implementations
+///
+/// ## Architecture
+///
+/// The base units system uses a layered approach:
+///
+/// 1. **Unit Definition**: `base_units!` macro creates unit structs
+/// 2. **Trait Implementation**: Automatic implementation of `Unit` trait
+/// 3. **Conversion Relationships**: `convert_base_unit!` establishes conversions
+/// 4. **Type Safety**: Compile-time dimensional analysis prevents errors
+///
+/// ## Example Usage
+///
+/// ```rust
+/// use num_units::base_units;
+/// use num_units::convert_base_unit;
+/// use num_units::prefix::KILO;
+///
+/// // Define base units
+/// base_units! {
+///     Meter: "meter", "m";
+///     Kilogram: "kilogram", "kg";
+/// }
+///
+/// // Establish conversion relationships
+/// convert_base_unit! {
+///     Kilometer: |meter| meter / KILO;
+///     Meter: |kilometer| kilometer * KILO;
+/// }
+/// ```
 
 /// Macro for creating new base units
 ///
+/// This macro generates unit structs with automatic implementation of the `Unit` trait.
+/// Each unit gets compile-time constants for abbreviation, singular name, and plural name.
+///
 /// # Syntax
-/// ```ignore
+/// ```rust
 /// base_units! {
-///     dimension: DimensionType;
-///     UnitName: "unit name", "abbreviation";
+///     UnitName: "singular name", "abbreviation";
 /// }
 /// ```
 ///
+/// # Generated Code
+/// For each unit, this macro generates:
+/// - A unit struct with `Clone`, `Copy`, `Debug`, and `PartialEq` traits
+/// - Implementation of the `Unit` trait with proper constants
+/// - Documentation comments for the unit
+///
 /// # Examples
-/// ```ignore
+/// ```rust
+/// use num_units::base_units;
+///
 /// base_units! {
-///     dimension: LengthDimension;
 ///     Meter: "meter", "m";
-///     Foot: "foot", "ft";
+///     Kilogram: "kilogram", "kg";
 /// }
 /// ```
 #[macro_export]
@@ -49,28 +93,46 @@ macro_rules! base_units {
 // ===== BASE UNIT CONVERSION TRAITS =====
 
 /// Trait for converting from a base unit to this unit
-pub trait FromBaseUnit<From: Unit> {
+pub trait FromBaseUnit<From: crate::unit::Unit> {
     fn to_base(value: f64) -> f64;
     fn from_base(base_value: f64) -> f64;
 }
 
 /// Trait for converting to a base unit from this unit
-pub trait IntoBaseUnit<To: Unit> {
+pub trait IntoBaseUnit<To: crate::unit::Unit> {
     fn to_base(value: f64) -> f64;
     fn from_base(base_value: f64) -> f64;
 }
 
 /// Macro for establishing bidirectional conversion relationships between units
 ///
-/// The first unit is the **target** unit (what you're converting TO).
-/// The closure defines how to convert FROM the source unit TO the target unit.
+/// This macro creates conversion relationships between two units, allowing automatic
+/// conversion in both directions. The conversion functions use closures to define
+/// the mathematical relationship between units.
+///
+/// # Syntax
+/// ```rust
+/// convert_base_unit! {
+///     TargetUnit: |source_param| conversion_expression;
+///     SourceUnit: |target_param| reverse_conversion_expression;
+/// }
+/// ```
+///
+/// # Parameters
+/// - `TargetUnit`: The unit you're converting TO
+/// - `SourceUnit`: The unit you're converting FROM
+/// - `conversion_expression`: Expression defining how to convert from source to target
+/// - `reverse_conversion_expression`: Expression defining how to convert from target to source
 ///
 /// # Examples
-/// ```ignore
+/// ```rust
+/// use num_units::convert_base_unit;
+/// use num_units::prefix::KILO;
 ///
+/// // Define conversion between meters and kilometers
 /// convert_base_unit! {
-///     Kilometer: |meter| meter * KILO;      // To get Kilometer, divide Meter by 1000
-///     Meter: |kilometer| kilometer / KILO;  // To get Meter, multiply Kilometer by 1000
+///     Kilometer: |meter| meter / KILO;      // km = m / 1000
+///     Meter: |kilometer| kilometer * KILO;  // m = km * 1000
 /// }
 /// ```
 #[macro_export]

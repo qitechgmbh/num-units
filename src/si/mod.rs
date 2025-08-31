@@ -1,3 +1,77 @@
+/// # SI Units - International System of Units
+///
+/// This module provides a complete implementation of the International System of Units (SI),
+/// the modern form of the metric system. It includes all base units, derived units, and
+/// their conversions.
+///
+/// ## Overview
+///
+/// The SI system is the world's most widely used system of measurement. It is based on
+/// seven base units and uses decimal prefixes for powers of ten. This implementation
+/// provides type-safe dimensional analysis with automatic unit conversions.
+///
+/// ## Base Units
+///
+/// The seven SI base units are:
+///
+/// - **Length**: Meter (m)
+/// - **Mass**: Kilogram (kg)
+/// - **Time**: Second (s)
+/// - **Electric Current**: Ampere (A)
+/// - **Temperature**: Kelvin (K)
+/// - **Amount of Substance**: Mole (mol)
+/// - **Luminous Intensity**: Candela (cd)
+///
+/// ## Derived Units
+///
+/// Common derived units include:
+///
+/// - **Area**: Square meter (m²)
+/// - **Volume**: Cubic meter (m³)
+/// - **Velocity**: Meter per second (m/s)
+/// - **Acceleration**: Meter per second squared (m/s²)
+/// - **Force**: Newton (N)
+/// - **Energy**: Joule (J)
+/// - **Power**: Watt (W)
+///
+/// ## Usage
+///
+/// ```rust
+/// use num_units::si::{length, time, mass};
+///
+/// // Create quantities with automatic unit tracking
+/// let distance = length::f64::Length::from_meter(100.0);
+/// let time_val = time::f64::Time::from_second(10.0);
+/// let mass_val = mass::f64::Mass::from_kilogram(5.0);
+///
+/// // Automatic dimensional analysis
+/// let velocity = distance / time_val;        // m/s
+/// let momentum = mass_val * velocity;        // kg⋅m/s
+/// let force = mass_val * distance / (time_val * time_val); // N
+///
+/// // Easy unit conversions
+/// let distance_km = distance.as_kilometer(); // Convert to km
+/// let time_ms = time_val.as_millisecond();   // Convert to ms
+/// ```
+///
+/// ## Architecture
+///
+/// The SI module is organized as follows:
+///
+/// - **Base Units**: Fundamental units in each dimension
+/// - **Derived Units**: Units created from base unit combinations
+/// - **Conversions**: Automatic conversion between related units
+/// - **Type Safety**: Compile-time dimensional analysis
+///
+/// ## Features
+///
+/// - ✅ Complete SI unit system
+/// - ✅ Automatic unit conversions
+/// - ✅ Type-safe dimensional analysis
+/// - ✅ Support for all numeric types
+/// - ✅ No runtime overhead
+/// - ✅ Extensive documentation
+
 // Unit modules - define unit types like Meter, Kilogram, etc.
 pub mod acceleration;
 pub mod amount;
