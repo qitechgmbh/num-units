@@ -1,89 +1,26 @@
-use typenum::*;
-
 use crate::{
     prefix::{KILO, MICRO, MILLI, NANO, PICO},
-    si::ISQ,
     unit,
 };
 
-pub type AmountOfSubstanceDimension = ISQ<Z0, Z0, Z0, Z0, Z0, P1, Z0>;
+// All amount of substance units
+unit! {
+    system: crate::si;
+    quantity: crate::amount_of_substance;
 
-// SI base unit
-unit!(
-    Mole,
-    moles,
-    1.0,
-    0.0,
-    "mole",
-    "mol",
-    AmountOfSubstanceDimension
-);
+    // SI base unit
+    @mole: 1.0; "mol", "mole", "moles";
 
-// Metric prefixes
-unit!(
-    Millimole,
-    millimoles,
-    MILLI,
-    0.0,
-    "millimole",
-    "mmol",
-    AmountOfSubstanceDimension
-);
-unit!(
-    Micromole,
-    micromoles,
-    MICRO,
-    0.0,
-    "micromole",
-    "μmol",
-    AmountOfSubstanceDimension
-);
-unit!(
-    Nanomole,
-    nanomoles,
-    NANO,
-    0.0,
-    "nanomole",
-    "nmol",
-    AmountOfSubstanceDimension
-);
-unit!(
-    Picomole,
-    picomoles,
-    PICO,
-    0.0,
-    "picomole",
-    "pmol",
-    AmountOfSubstanceDimension
-);
-unit!(
-    Kilomole,
-    kilomoles,
-    KILO,
-    0.0,
-    "kilomole",
-    "kmol",
-    AmountOfSubstanceDimension
-);
+    // Metric prefixes
+    @millimole: MILLI; "mmol", "millimole", "millimoles";
+    @micromole: MICRO; "μmol", "micromole", "micromoles";
+    @nanomole: NANO; "nmol", "nanomole", "nanomoles";
+    @picomole: PICO; "pmol", "picomole", "picomoles";
+    @kilomole: KILO; "kmol", "kilomole", "kilomoles";
 
-// Legacy chemistry units
-unit!(
-    PoundMole,
-    pound_moles,
-    453.59237,
-    0.0,
-    "pound-mole",
-    "lb-mol",
-    AmountOfSubstanceDimension
-);
+    // Legacy chemistry units
+    @pound_mole: 453.59237; "lb-mol", "pound-mole", "pound-moles";
 
-// Particle counting
-unit!(
-    Particle,
-    particles,
-    1.66053906660e-24,
-    0.0,
-    "particle",
-    "particle",
-    AmountOfSubstanceDimension
-);
+    // Particle counting
+    @particle: 1.66053906660e-24; "particle", "particle", "particles";
+}

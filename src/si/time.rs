@@ -1,79 +1,33 @@
 use crate::{
     prefix::{MICRO, MILLI, NANO, PICO},
-    si::ISQ,
     unit,
 };
-use typenum::*;
 
-pub type TimeDimension = ISQ<Z0, Z0, P1, Z0, Z0, Z0, Z0>;
+// All time units
+unit! {
+    system: crate::si;
+    quantity: crate::time;
 
-// SI base unit
-unit!(Second, seconds, 1.0, 0.0, "second", "s", TimeDimension);
+    // SI base unit
+    @second: 1.0; "s", "second", "seconds";
 
-// Metric prefixes
-unit!(
-    Millisecond,
-    milliseconds,
-    MILLI,
-    0.0,
-    "millisecond",
-    "ms",
-    TimeDimension
-);
-unit!(
-    Microsecond,
-    microseconds,
-    MICRO,
-    0.0,
-    "microsecond",
-    "μs",
-    TimeDimension
-);
-unit!(
-    Nanosecond,
-    nanoseconds,
-    NANO,
-    0.0,
-    "nanosecond",
-    "ns",
-    TimeDimension
-);
-unit!(
-    Picosecond,
-    picoseconds,
-    PICO,
-    0.0,
-    "picosecond",
-    "ps",
-    TimeDimension
-);
-unit!(
-    Kilosecond,
-    kiloseconds,
-    1000.0,
-    0.0,
-    "kilosecond",
-    "ks",
-    TimeDimension
-);
+    // Metric prefixes
+    @millisecond: MILLI; "ms", "millisecond", "milliseconds";
+    @microsecond: MICRO; "μs", "microsecond", "microseconds";
+    @nanosecond: NANO; "ns", "nanosecond", "nanoseconds";
+    @picosecond: PICO; "ps", "picosecond", "picoseconds";
+    @kilosecond: 1000.0; "ks", "kilosecond", "kiloseconds";
 
-// Common time units
-unit!(Minute, minutes, 60.0, 0.0, "minute", "min", TimeDimension);
-unit!(Hour, hours, 3600.0, 0.0, "hour", "h", TimeDimension);
-unit!(Day, days, 86400.0, 0.0, "day", "d", TimeDimension);
-unit!(Week, weeks, 604800.0, 0.0, "week", "wk", TimeDimension);
+    // Common time units
+    @minute: 60.0; "min", "minute", "minutes";
+    @hour: 3600.0; "h", "hour", "hours";
+    @day: 86400.0; "d", "day", "days";
+    @week: 604800.0; "wk", "week", "weeks";
 
-// Longer periods
-unit!(Year, years, 31557600.0, 0.0, "year", "yr", TimeDimension);
-unit!(Month, months, 2629800.0, 0.0, "month", "mo", TimeDimension);
+    // Longer periods
+    @year: 31557600.0; "yr", "year", "years";
+    @month: 2629800.0; "mo", "month", "months";
 
-// Planck time (fundamental physics)
-unit!(
-    PlanckTime,
-    planck_times,
-    5.391247e-44,
-    0.0,
-    "planck time",
-    "tₚ",
-    TimeDimension
-);
+    // Planck time (fundamental physics)
+    @planck_time: 5.391247e-44; "tₚ", "planck time", "planck times";
+}

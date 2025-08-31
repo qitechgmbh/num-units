@@ -1,70 +1,24 @@
-use typenum::*;
 use crate::{
     prefix::{KILO, MILLI},
-    si::ISQ,
     unit,
 };
 
-pub type LuminousIntensityDimension = ISQ<Z0, Z0, Z0, Z0, Z0, Z0, P1>;
+// All luminous intensity units
+unit! {
+    system: crate::si;
+    quantity: crate::luminous_intensity;
 
-// SI base unit
-unit!(
-    Candela,
-    candelas,
-    1.0,
-    0.0,
-    "candela",
-    "cd",
-    LuminousIntensityDimension
-);
+    // SI base unit
+    @candela: 1.0; "cd", "candela", "candelas";
 
-// Metric prefixes
-unit!(
-    Millicandela,
-    millicandelas,
-    MILLI,
-    0.0,
-    "millicandela",
-    "mcd",
-    LuminousIntensityDimension
-);
-unit!(
-    Kilocandela,
-    kilocandelas,
-    KILO,
-    0.0,
-    "kilocandela",
-    "kcd",
-    LuminousIntensityDimension
-);
+    // Metric prefixes
+    @millicandela: MILLI; "mcd", "millicandela", "millicandelas";
+    @kilocandela: KILO; "kcd", "kilocandela", "kilocandelas";
 
-// Legacy photometric units
-unit!(
-    Hefnerkerze,
-    hefnerkerzes,
-    0.903,
-    0.0,
-    "hefnerkerze",
-    "HK",
-    LuminousIntensityDimension
-);
-unit!(
-    InternationalCandle,
-    international_candles,
-    1.02,
-    0.0,
-    "international candle",
-    "IC",
-    LuminousIntensityDimension
-);
+    // Legacy photometric units
+    @hefnerkerze: 0.903; "HK", "hefnerkerze", "hefnerkerzes";
+    @international_candle: 1.02; "IC", "international candle", "international candles";
 
-// Practical lighting units
-unit!(
-    Footcandle,
-    footcandles,
-    10.764,
-    0.0,
-    "footcandle",
-    "fc",
-    LuminousIntensityDimension
-);
+    // Practical lighting units
+    @footcandle: 10.764; "fc", "footcandle", "footcandles";
+}

@@ -29,6 +29,7 @@ macro_rules! quantity {
             pub mod [<$name:snake>] {
                 use super::*;
 
+                pub type Dimension = $dimension;
                 pub type [<$name Dimension>] = $dimension;
 
                 pub mod r#i8 {

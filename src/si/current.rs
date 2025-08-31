@@ -1,107 +1,28 @@
-use typenum::*;
-
 use crate::{
     prefix::{KILO, MEGA, MICRO, MILLI, NANO, PICO},
-    si::ISQ,
     unit,
 };
 
-pub type ElectricCurrentDimension = ISQ<Z0, Z0, Z0, P1, Z0, Z0, Z0>;
+// All electric current units
+unit! {
+    system: crate::si;
+    quantity: crate::electric_current;
 
-// SI base unit
-unit!(
-    Ampere,
-    amperes,
-    1.0,
-    0.0,
-    "ampere",
-    "A",
-    ElectricCurrentDimension
-);
+    // SI base unit
+    @ampere: 1.0; "A", "ampere", "amperes";
 
-// Metric prefixes
-unit!(
-    Milliampere,
-    milliamperes,
-    MILLI,
-    0.0,
-    "milliampere",
-    "mA",
-    ElectricCurrentDimension
-);
-unit!(
-    Microampere,
-    microamperes,
-    MICRO,
-    0.0,
-    "microampere",
-    "μA",
-    ElectricCurrentDimension
-);
-unit!(
-    Nanoampere,
-    nanoamperes,
-    NANO,
-    0.0,
-    "nanoampere",
-    "nA",
-    ElectricCurrentDimension
-);
-unit!(
-    Picoampere,
-    picoamperes,
-    PICO,
-    0.0,
-    "picoampere",
-    "pA",
-    ElectricCurrentDimension
-);
-unit!(
-    Kiloampere,
-    kiloamperes,
-    KILO,
-    0.0,
-    "kiloampere",
-    "kA",
-    ElectricCurrentDimension
-);
-unit!(
-    Megaampere,
-    megaamperes,
-    MEGA,
-    0.0,
-    "megaampere",
-    "MA",
-    ElectricCurrentDimension
-);
+    // Metric prefixes
+    @milliampere: MILLI; "mA", "milliampere", "milliamperes";
+    @microampere: MICRO; "μA", "microampere", "microamperes";
+    @nanoampere: NANO; "nA", "nanoampere", "nanoamperes";
+    @picoampere: PICO; "pA", "picoampere", "picoamperes";
+    @kiloampere: KILO; "kA", "kiloampere", "kiloamperes";
+    @megaampere: MEGA; "MA", "megaampere", "megaamperes";
 
-// Legacy/practical units
-unit!(
-    Abampere,
-    abamperes,
-    10.0,
-    0.0,
-    "abampere",
-    "abA",
-    ElectricCurrentDimension
-);
-unit!(
-    Statampere,
-    statamperes,
-    3.335641e-10,
-    0.0,
-    "statampere",
-    "statA",
-    ElectricCurrentDimension
-);
+    // Legacy/practical units
+    @Abampere: 10.0; "abA", "abampere", "abamperes";
+    @Statampere: 3.335641e-10; "statA", "statampere", "statamperes";
 
-// Biot (alternative name for abampere)
-unit!(
-    Biot,
-    biots,
-    10.0,
-    0.0,
-    "biot",
-    "Bi",
-    ElectricCurrentDimension
-);
+    // Biot (alternative name for abampere)
+    @biot: 10.0; "Bi", "biot", "biots";
+}

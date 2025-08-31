@@ -1,103 +1,42 @@
-use typenum::*;
 use crate::{
     prefix::{KILO, MEGA, MICRO, MILLI},
-    si::ISQ,
     unit,
 };
 
-pub type MassDimension = ISQ<Z0, P1, Z0, Z0, Z0, Z0, Z0>;
+// All mass units
+unit! {
+    system: crate::si;
+    quantity: crate::mass;
 
-// SI base unit (grams)
-unit!(Gram, grams, 1.0, 0.0, "gram", "g", MassDimension);
+    // ===== SI/METRIC UNITS =====
+    // SI base unit
+    @gram: 1.0; "g", "gram", "grams";
+    @kilogram: KILO; "kg", "kilogram", "kilograms";
 
-// Metric prefixes
-unit!(
-    Kilogram,
-    kilograms,
-    KILO,
-    0.0,
-    "kilogram",
-    "kg",
-    MassDimension
-);
-unit!(
-    Milligram,
-    milligrams,
-    MILLI,
-    0.0,
-    "milligram",
-    "mg",
-    MassDimension
-);
-unit!(
-    Microgram,
-    micrograms,
-    MICRO,
-    0.0,
-    "microgram",
-    "μg",
-    MassDimension
-);
-unit!(Tonne, tonnes, MEGA, 0.0, "tonne", "t", MassDimension);
+    // Metric prefixes for gram
+    @milligram: MILLI; "mg", "milligram", "milligrams";
+    @microgram: MICRO; "μg", "microgram", "micrograms";
 
-// Imperial/US units (converted to grams)
-unit!(Pound, pounds, 453.59237, 0.0, "pound", "lb", MassDimension);
-unit!(
-    Ounce,
-    ounces,
-    28.349523125,
-    0.0,
-    "ounce",
-    "oz",
-    MassDimension
-);
-unit!(Stone, stones, 6350.29318, 0.0, "stone", "st", MassDimension);
-unit!(
-    ShortTon,
-    short_tons,
-    907184.74,
-    0.0,
-    "short ton",
-    "ton",
-    MassDimension
-);
-unit!(
-    LongTon,
-    long_tons,
-    1016046.9088,
-    0.0,
-    "long ton",
-    "long_ton",
-    MassDimension
-);
+    // Large metric mass units
+    @tonne: MEGA; "t", "tonne", "tonnes";
 
-// Troy system (precious metals) - converted to grams
-unit!(
-    TroyOunce,
-    troy_ounces,
-    31.1034768,
-    0.0,
-    "troy ounce",
-    "oz_t",
-    MassDimension
-);
-unit!(
-    TroyPound,
-    troy_pounds,
-    373.2417216,
-    0.0,
-    "troy pound",
-    "lb_t",
-    MassDimension
-);
+    // ===== US/IMPERIAL UNITS =====
+    // Traditional US customary mass units
+    @pound: 453.59237; "lb", "pound", "pounds";
+    @ounce: 28.349523125; "oz", "ounce", "ounces";
+    @stone: 6350.29318; "st", "stone", "stones";
 
-// Atomic scale
-unit!(
-    AtomicMassUnit,
-    atomic_mass_units,
-    1.66053906660e-27,
-    0.0,
-    "atomic mass unit",
-    "u",
-    MassDimension
-);
+    // ===== HISTORICAL WEIGHT UNITS =====
+    // Traditional weight measurement systems
+    @short_ton: 907184.74; "ton", "short ton", "short tons";
+    @long_ton: 1016046.9088; "long_ton", "long ton", "long tons";
+
+    // ===== PRECIOUS METAL UNITS =====
+    // Troy weight system for precious metals
+    @troy_ounce: 31.1034768; "oz_t", "troy ounce", "troy ounces";
+    @troy_pound: 373.2417216; "lb_t", "troy pound", "troy pounds";
+
+    // ===== SCIENTIFIC UNITS =====
+    // Fundamental physics units
+    @atomic_mass_unit: 1.66053906660e-27; "u", "atomic mass unit", "atomic mass units";
+}

@@ -1,104 +1,33 @@
-use crate::{
-    prefix::{CENTI, KILO, MICRO, MILLI, NANO},
-    si::ISQ,
-    unit,
-};
-use typenum::*;
+use crate::unit;
 
-pub type LengthDimension = ISQ<P1, Z0, Z0, Z0, Z0, Z0, Z0>;
+// SI base unit and all other units
+unit! {
+    system: crate::si;
+    quantity: crate::length;
 
-// SI base unit
-unit!(Meter, meters, 1.0, 0.0, "meter", "m", LengthDimension);
+    // ===== SI/METRIC UNITS =====
+    // SI base unit
+    @Meter: 1.0; "m", "meter", "meters";
 
-// Metric prefixes
-unit!(
-    Kilometer,
-    kilometers,
-    KILO,
-    0.0,
-    "kilometer",
-    "km",
-    LengthDimension
-);
-unit!(
-    Centimeter,
-    centimeters,
-    CENTI,
-    0.0,
-    "centimeter",
-    "cm",
-    LengthDimension
-);
-unit!(
-    Millimeter,
-    millimeters,
-    MILLI,
-    0.0,
-    "millimeter",
-    "mm",
-    LengthDimension
-);
-unit!(
-    Micrometer,
-    micrometers,
-    MICRO,
-    0.0,
-    "micrometer",
-    "μm",
-    LengthDimension
-);
-unit!(
-    Nanometer,
-    nanometers,
-    NANO,
-    0.0,
-    "nanometer",
-    "nm",
-    LengthDimension
-);
+    // Metric prefixes for meter
+    @Kilometer: 1000.0; "km", "kilometer", "kilometers";
+    @Centimeter: 0.01; "cm", "centimeter", "centimeters";
+    @Millimeter: 0.001; "mm", "millimeter", "millimeters";
+    @Micrometer: 0.000001; "μm", "micrometer", "micrometers";
+    @Nanometer: 0.000000001; "nm", "nanometer", "nanometers";
 
-// Imperial/US units
-unit!(Foot, feet, 0.3048, 0.0, "foot", "ft", LengthDimension);
-unit!(Inch, inches, 0.0254, 0.0, "inch", "in", LengthDimension);
-unit!(Yard, yards, 0.9144, 0.0, "yard", "yd", LengthDimension);
-unit!(Mile, miles, 1609.344, 0.0, "mile", "mi", LengthDimension);
+    // Us/Imperial
+    @Foot: 0.3048; "ft", "foot", "feet";
+    @Inch: 0.0254; "in", "inch", "inches";
+    @Yard: 0.9144; "yd", "yard", "yards";
+    @Mile: 1609.344; "mi", "mile", "miles";
 
-// Nautical
-unit!(
-    NauticalMile,
-    nautical_miles,
-    1852.0,
-    0.0,
-    "nautical mile",
-    "nmi",
-    LengthDimension
-);
+    // ===== NAUTICAL UNITS =====
+    // Maritime navigation units
+    @NauticalMile: 1852.0; "nmi", "nautical mile", "nautical miles";
 
-// Astronomical
-unit!(
-    AstronomicalUnit,
-    astronomical_units,
-    149597870700.0,
-    0.0,
-    "astronomical unit",
-    "AU",
-    LengthDimension
-);
-unit!(
-    LightYear,
-    light_years,
-    9460730472580800.0,
-    0.0,
-    "light year",
-    "ly",
-    LengthDimension
-);
-unit!(
-    Parsec,
-    parsecs,
-    3.0857e16,
-    0.0,
-    "parsec",
-    "pc",
-    LengthDimension
-);
+    // Astronomical
+    @AstronomicalUnit: 149597870700.0; "AU", "astronomical unit", "astronomical units";
+    @LightYear: 9460730472580800.0; "ly", "light year", "light years";
+    @Parsec: 30857000000000000.0; "pc", "parsec", "parsecs";
+}

@@ -1,82 +1,21 @@
-use typenum::*;
-use crate::{si::ISQ, unit};
+use crate::unit;
 
-pub type ThermodynamicTemperatureDimension = ISQ<Z0, Z0, Z0, Z0, P1, Z0, Z0>;
+// All temperature units
+unit! {
+    system: crate::si;
+    quantity: crate::thermodynamic_temperature;
 
-// SI base unit
-unit!(
-    Kelvin,
-    kelvins,
-    1.0,
-    0.0,
-    "kelvin",
-    "K",
-    ThermodynamicTemperatureDimension
-);
+    // SI base unit
+    @kelvin: 1.0; "K", "kelvin", "kelvins";
 
-// Common temperature scales with offset
-unit!(
-    Celsius,
-    celsius,
-    1.0,
-    273.15,
-    "celsius",
-    "°C",
-    ThermodynamicTemperatureDimension
-);
-unit!(
-    Fahrenheit,
-    fahrenheit,
-    5.0 / 9.0,
-    459.67 * 5.0 / 9.0,
-    "fahrenheit",
-    "°F",
-    ThermodynamicTemperatureDimension
-);
+    // Common temperature scales with offset
+    @celsius: 1.0, 273.15; "°C", "celsius", "celsius";
+    @fahrenheit: 5.0 / 9.0, 255.37222222222223; "°F", "fahrenheit", "fahrenheit";
 
-// Other temperature scales
-unit!(
-    Rankine,
-    rankine,
-    5.0 / 9.0,
-    0.0,
-    "rankine",
-    "°R",
-    ThermodynamicTemperatureDimension
-);
-unit!(
-    Delisle,
-    delisle,
-    -2.0 / 3.0,
-    559.725,
-    "delisle",
-    "°De",
-    ThermodynamicTemperatureDimension
-);
-unit!(
-    Newton,
-    newton,
-    100.0 / 33.0,
-    273.15,
-    "newton",
-    "°N",
-    ThermodynamicTemperatureDimension
-);
-unit!(
-    Reaumur,
-    reaumur,
-    1.25,
-    273.15,
-    "réaumur",
-    "°Ré",
-    ThermodynamicTemperatureDimension
-);
-unit!(
-    Romer,
-    romer,
-    40.0 / 21.0,
-    273.15 - 7.5 * 40.0 / 21.0,
-    "rømer",
-    "°Rø",
-    ThermodynamicTemperatureDimension
-);
+    // Other temperature scales
+    @rankine: 5.0 / 9.0; "°R", "rankine", "rankine";
+    @delisle: -2.0 / 3.0, 559.725; "°De", "delisle", "delisle";
+    @newton: 100.0 / 33.0, 273.15; "°N", "newton", "newton";
+    @reaumur: 1.25, 273.15; "°Ré", "réaumur", "réaumur";
+    @romer: 40.0 / 21.0, 258.8642857142857; "°Rø", "rømer", "rømer";
+}

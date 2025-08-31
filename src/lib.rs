@@ -10,6 +10,9 @@ pub mod unit;
 // Re-export num_traits for convenience
 pub use num_traits;
 
+// Import typenum types
+use typenum::*;
+
 system!(
     ISQ,
     LENGTH,
@@ -17,9 +20,18 @@ system!(
     TIME,
     CURRENT,
     TEMPERATURE,
-    AMOUNT_OF_SUBSTANCE,
+    AmountOfSubstance,
     LUMINOSITY
 );
+
+// Define quantities at crate root level
+quantity!(Length, ISQ<P1, Z0, Z0, Z0, Z0, Z0, Z0>); // Length
+quantity!(Mass, ISQ<Z0, P1, Z0, Z0, Z0, Z0, Z0>); // Mass
+quantity!(Time, ISQ<Z0, Z0, P1, Z0, Z0, Z0, Z0>); // Time
+quantity!(ElectricCurrent, ISQ<Z0, Z0, Z0, P1, Z0, Z0, Z0>); // Current
+quantity!(ThermodynamicTemperature, ISQ<Z0, Z0, Z0, Z0, P1, Z0, Z0>); // Temperature
+quantity!(AmountOfSubstance, ISQ<Z0, Z0, Z0, Z0, Z0, P1, Z0>); // Amount
+quantity!(LuminousIntensity, ISQ<Z0, Z0, Z0, Z0, Z0, Z0, P1>); // Luminous Intensity
 
 pub mod motion {
     use typenum::*;
