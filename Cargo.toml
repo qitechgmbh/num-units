@@ -3,6 +3,13 @@ name = "num-units"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = ["std", "libm"]
+# Enable std library support (enables floating-point power operations)
+std = ["num-traits/std"]
+# Enable libm support for no_std environments (enables floating-point power operations without std)
+libm = ["num-traits/libm"]
+
 [dependencies]
 num-units-macros = { path = "num-units-macros" }
 num-traits = { version = "0.2", default-features = false }

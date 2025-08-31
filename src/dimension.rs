@@ -4,5 +4,5 @@ macro_rules! dimension {
     ($name:ident, $($dim:ident),+) => {
         #[::num_units_macros::dimension($($dim),+)]
         pub struct $name;
-    };
+    }
 }

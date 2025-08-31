@@ -1,0 +1,21 @@
+# *.rs
+as_primitive.rs
+checked_add.rs
+checked_div.rs
+checked_mul.rs
+checked_neg.rs
+checked_rem.rs
+checked_sub.rs
+from_primitive.rs
+neg.rs
+num_cast.rs
+saturating_add.rs
+saturating_div.rs
+saturating_mul.rs
+saturating_sub.rs
+to_primitive.rs
+wrapping_add.rs
+wrapping_div.rs
+wrapping_mul.rs
+wrapping_neg.rs
+wrapping_sub.rs

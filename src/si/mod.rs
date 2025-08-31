@@ -1,8 +1,5 @@
 dimension!(SI, L, M, T, I, TH, N, J);
 
-// Dimensionless
-pub type Dimensionless = SI<0, 0, 0, 0, 0, 0, 0>;
-
 // Unit modules
 pub mod amount;
 pub mod current;
