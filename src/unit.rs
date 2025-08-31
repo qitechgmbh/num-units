@@ -88,9 +88,9 @@ macro_rules! unit {
                 #[doc = concat!(" Create a quantity from a value in ", $description, " (", $abbreviation, ")")]
                 pub fn [<from_ $method_name>](value: V) -> Self {
                     if $offset == 0.0 {
-                        Self::new(V::from($factor) * value)
+                        Self::from_raw(V::from($factor) * value)
                     } else {
-                        Self::new(V::from($factor) * value + V::from($offset))
+                        Self::from_raw(V::from($factor) * value + V::from($offset))
                     }
                 }
 

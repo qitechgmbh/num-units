@@ -26,9 +26,9 @@ fn main() {
 
     // Show they're all equivalent when converted to base units
     println!("\nAll these should be approximately equal in base units:");
-    println!("1 meter: {} (base units)", meter_length.into_base());
-    println!("3.28084 feet: {} (base units)", foot_length.into_base());
-    println!("100 cm: {} (base units)", cm_length.into_base());
+    println!("1 meter: {} (base units)", meter_length.into_raw());
+    println!("3.28084 feet: {} (base units)", foot_length.into_raw());
+    println!("100 cm: {} (base units)", cm_length.into_raw());
 
     // ============================================================================
     // Mass conversions with proper method names
@@ -60,9 +60,9 @@ fn main() {
     println!("  {} °F", celsius_freezing.as_fahrenheit());
 
     println!("\nAll should be equal in base units (Kelvin):");
-    println!("0°C: {} K (base)", celsius_freezing.into_base());
-    println!("273.15 K: {} K (base)", kelvin_freezing.into_base());
-    println!("32°F: {} K (base)", fahrenheit_freezing.into_base());
+    println!("0°C: {} K (base)", celsius_freezing.into_raw());
+    println!("273.15 K: {} K (base)", kelvin_freezing.into_raw());
+    println!("32°F: {} K (base)", fahrenheit_freezing.into_raw());
 
     println!("\nBoiling point of water:");
     let celsius_boiling = Quantity::<f64, ThermodynamicTemperatureDimension>::from_celsius(100.0);
@@ -90,7 +90,7 @@ fn main() {
 
     println!(
         "3m × 4m = {} square meters (in base units)",
-        area.into_base()
+        area.into_raw()
     );
 
     println!("\n✅ Demo complete!");

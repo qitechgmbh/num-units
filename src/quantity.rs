@@ -1,5 +1,5 @@
 use core::ops::{Add, Div, Mul, Neg, Sub};
-use num_traits::{Num, Zero};
+use num_traits::{Num, Signed, Zero};
 
 /// A physical quantity with a numerical value and dimensional analysis
 ///
@@ -18,8 +18,8 @@ use num_traits::{Num, Zero};
 /// # #[dimension(L, M, T)] pub struct Physics;
 /// # type LengthDimension = Physics<1, 0, 0>;
 ///
-/// let length = Quantity::<f64, LengthDimension>::new(5.0);
-/// let width = Quantity::<f64, LengthDimension>::new(3.0);
+/// let length = Quantity::<f64, LengthDimension>::from_base(5.0);
+/// let width = Quantity::<f64, LengthDimension>::from_base(3.0);
 /// let total_length = length + width; // Same dimensions - addition works
 /// ```
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -32,35 +32,22 @@ impl<V, D> Quantity<V, D>
 where
     V: Num,
 {
-    /// Create a new quantity with the given value
-    pub const fn new(value: V) -> Self {
-        Self {
-            value,
-            _dimension: core::marker::PhantomData,
-        }
-    }
-
     /// Get the numerical value of this quantity
-    pub fn base(&self) -> &V {
+    pub fn raw(&self) -> &V {
         &self.value
     }
 
     /// Get the numerical value of this quantity (consuming)
-    pub fn into_base(self) -> V {
+    pub fn into_raw(self) -> V {
         self.value
     }
 
-    /// Create a quantity from a raw value (same as `new` but more explicit)
-    pub const fn from_base(value: V) -> Self {
-        Self::new(value)
-    }
-
-    /// Get the absolute value of this quantity
-    pub fn abs(self) -> Self
-    where
-        V: num_traits::Signed,
-    {
-        Quantity::new(self.value.abs())
+    /// Create a quantity from a raw value
+    pub const fn from_raw(value: V) -> Self {
+        Self {
+            value,
+            _dimension: core::marker::PhantomData,
+        }
     }
 }
 
@@ -77,7 +64,7 @@ where
     type Output = Quantity<V, D>;
 
     fn add(self, rhs: Self) -> Self::Output {
-        Quantity::new(self.value + rhs.value)
+        Quantity::from_raw(self.value + rhs.value)
     }
 }
 
@@ -89,7 +76,7 @@ where
     type Output = Quantity<V, D>;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        Quantity::new(self.value - rhs.value)
+        Quantity::from_raw(self.value - rhs.value)
     }
 }
 
@@ -101,7 +88,7 @@ where
     type Output = Quantity<V, D>;
 
     fn neg(self) -> Self::Output {
-        Quantity::new(-self.value)
+        Quantity::from_raw(-self.value)
     }
 }
 
@@ -114,7 +101,7 @@ where
     type Output = Quantity<V, <D1 as Add<D2>>::Output>;
 
     fn mul(self, rhs: Quantity<V, D2>) -> Self::Output {
-        Quantity::new(self.value * rhs.value)
+        Quantity::from_raw(self.value * rhs.value)
     }
 }
 
@@ -127,7 +114,7 @@ where
     type Output = Quantity<V, <D1 as Sub<D2>>::Output>;
 
     fn div(self, rhs: Quantity<V, D2>) -> Self::Output {
-        Quantity::new(self.value / rhs.value)
+        Quantity::from_raw(self.value / rhs.value)
     }
 }
 
@@ -139,7 +126,7 @@ where
     type Output = Quantity<V, D>;
 
     fn mul(self, scalar: V) -> Self::Output {
-        Quantity::new(self.value * scalar)
+        Quantity::from_raw(self.value * scalar)
     }
 }
 
@@ -151,7 +138,7 @@ where
     type Output = Quantity<V, D>;
 
     fn div(self, scalar: V) -> Self::Output {
-        Quantity::new(self.value / scalar)
+        Quantity::from_raw(self.value / scalar)
     }
 }
 
@@ -161,7 +148,7 @@ where
     V: Num + Zero,
 {
     fn zero() -> Self {
-        Quantity::new(V::zero())
+        Quantity::from_raw(V::zero())
     }
 
     fn is_zero(&self) -> bool {
@@ -180,6 +167,32 @@ where
     }
 }
 
+// Signed implementations
+impl<V, D> Quantity<V, D>
+where
+    V: Signed,
+{
+    pub fn abs(&self) -> Self {
+        Quantity::from_raw(self.value.abs())
+    }
+
+    pub fn abs_sub(self, other: &Self) -> Self {
+        Quantity::from_raw(self.value.abs_sub(&other.value))
+    }
+
+    pub fn signum(&self) -> Self {
+        Quantity::from_raw(self.value.signum())
+    }
+
+    pub fn is_positive(&self) -> bool {
+        self.value.is_positive()
+    }
+
+    pub fn is_negative(&self) -> bool {
+        self.value.is_negative()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -194,57 +207,57 @@ mod tests {
 
     #[test]
     fn test_quantity_creation() {
-        let length = Quantity::<f64, TestLength>::new(5.0);
-        assert_eq!(*length.base(), 5.0);
+        let length = Quantity::<f64, TestLength>::from_raw(5.0);
+        assert_eq!(*length.raw(), 5.0);
 
-        let mass = Quantity::<i32, TestMass>::new(10);
-        assert_eq!(*mass.base(), 10);
+        let mass = Quantity::<i32, TestMass>::from_raw(10);
+        assert_eq!(*mass.raw(), 10);
     }
 
     #[test]
     fn test_same_dimension_operations() {
-        let length1 = Quantity::<f64, TestLength>::new(5.0);
-        let length2 = Quantity::<f64, TestLength>::new(3.0);
+        let length1 = Quantity::<f64, TestLength>::from_raw(5.0);
+        let length2 = Quantity::<f64, TestLength>::from_raw(3.0);
 
         let sum = length1 + length2;
-        assert_eq!(*sum.base(), 8.0);
+        assert_eq!(*sum.raw(), 8.0);
 
         let diff = length1 - length2;
-        assert_eq!(*diff.base(), 2.0);
+        assert_eq!(*diff.raw(), 2.0);
     }
 
     #[test]
     fn test_scalar_operations() {
-        let length = Quantity::<f64, TestLength>::new(5.0);
+        let length = Quantity::<f64, TestLength>::from_raw(5.0);
 
         let doubled = length * 2.0;
-        assert_eq!(*doubled.base(), 10.0);
+        assert_eq!(*doubled.raw(), 10.0);
 
         let halved = length / 2.0;
-        assert_eq!(*halved.base(), 2.5);
+        assert_eq!(*halved.raw(), 2.5);
     }
 
     #[test]
     fn test_zero_and_negation() {
         let zero_length = Quantity::<f64, TestLength>::zero();
         assert!(zero_length.is_zero());
-        assert_eq!(*zero_length.base(), 0.0);
+        assert_eq!(*zero_length.raw(), 0.0);
 
-        let length = Quantity::<f64, TestLength>::new(5.0);
+        let length = Quantity::<f64, TestLength>::from_raw(5.0);
         let neg_length = -length;
-        assert_eq!(*neg_length.base(), -5.0);
+        assert_eq!(*neg_length.raw(), -5.0);
     }
 
     #[test]
     fn test_absolute_value() {
-        let negative_length = Quantity::<f64, TestLength>::new(-5.0);
+        let negative_length = Quantity::<f64, TestLength>::from_raw(-5.0);
         let abs_length = negative_length.abs();
-        assert_eq!(*abs_length.base(), 5.0);
+        assert_eq!(*abs_length.raw(), 5.0);
     }
 
     #[test]
     fn test_display() {
-        let length = Quantity::<f64, TestLength>::new(3.14159);
+        let length = Quantity::<f64, TestLength>::from_raw(3.14159);
         // Test that the display trait is implemented
         // In no_std, we can't easily test format! but we can verify the trait exists
         let _: &dyn core::fmt::Display = &length;
@@ -253,12 +266,12 @@ mod tests {
     #[test]
     fn test_dimensional_multiplication() {
         // Test that multiplication properly adds dimensions
-        let length1 = Quantity::<f64, TestLength>::new(5.0);
-        let length2 = Quantity::<f64, TestLength>::new(3.0);
+        let length1 = Quantity::<f64, TestLength>::from_raw(5.0);
+        let length2 = Quantity::<f64, TestLength>::from_raw(3.0);
 
         // Length × Length should give us a quantity with dimension L²M⁰T⁰
         let area = length1 * length2;
-        assert_eq!(*area.base(), 15.0);
+        assert_eq!(*area.raw(), 15.0);
 
         // The type should be Quantity<f64, TestPhysics<2, 0, 0>>
         // We can't directly test the type, but if it compiles, the dimensions worked
@@ -267,12 +280,12 @@ mod tests {
     #[test]
     fn test_dimensional_division() {
         // Test that division properly subtracts dimensions
-        let length = Quantity::<f64, TestLength>::new(10.0);
-        let time = Quantity::<f64, TestPhysics<0, 0, 1>>::new(2.0);
+        let length = Quantity::<f64, TestLength>::from_raw(10.0);
+        let time = Quantity::<f64, TestPhysics<0, 0, 1>>::from_raw(2.0);
 
         // Length ÷ Time should give us velocity with dimension L¹M⁰T⁻¹
         let velocity = length / time;
-        assert_eq!(*velocity.base(), 5.0);
+        assert_eq!(*velocity.raw(), 5.0);
 
         // Again, if this compiles, the dimensional math worked correctly
     }
@@ -286,7 +299,7 @@ mod tests {
         let hundred_cm = Quantity::<f64, LengthDimension>::from_centimeters(100.0);
 
         // Both should be equal in base units
-        assert!((one_meter.into_base() - hundred_cm.into_base()).abs() < 1e-10);
+        assert!((one_meter.into_raw() - hundred_cm.into_raw()).abs() < 1e-10);
 
         // Test unit extraction using new unit-specific methods
         let meters_value = one_meter.as_meters();
@@ -323,7 +336,7 @@ mod tests {
         let area: Quantity<f64, AreaDimension> = width * height;
 
         // The result should be 12 square meters (in base units, which are square meters)
-        assert!((area.into_base() - 12.0).abs() < 1e-10);
+        assert!((area.into_raw() - 12.0).abs() < 1e-10);
 
         // Test with different units
         let width_ft = Quantity::<f64, LengthDimension>::from_feet(10.0); // 10 ft = 3.048 m
@@ -331,6 +344,6 @@ mod tests {
         let mixed_area: Quantity<f64, AreaDimension> = width_ft * height_m;
 
         // Expected: 3.048 * 2.0 = 6.096 square meters
-        assert!((mixed_area.into_base() - 6.096).abs() < 0.001);
+        assert!((mixed_area.into_raw() - 6.096).abs() < 0.001);
     }
 }
