@@ -3,8 +3,9 @@ use crate::{
     si::ISQ,
     unit,
 };
+use typenum::*;
 
-pub type LengthDimension = ISQ<1, 0, 0, 0, 0, 0, 0>;
+pub type LengthDimension = ISQ<P1, Z0, Z0, Z0, Z0, Z0, Z0>;
 
 // SI base unit
 unit!(Meter, meters, 1.0, 0.0, "meter", "m", LengthDimension);

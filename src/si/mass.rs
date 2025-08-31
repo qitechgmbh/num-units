@@ -1,10 +1,11 @@
+use typenum::*;
 use crate::{
     prefix::{KILO, MEGA, MICRO, MILLI},
     si::ISQ,
     unit,
 };
 
-pub type MassDimension = ISQ<0, 1, 0, 0, 0, 0, 0>;
+pub type MassDimension = ISQ<Z0, P1, Z0, Z0, Z0, Z0, Z0>;
 
 // SI base unit (grams)
 unit!(Gram, grams, 1.0, 0.0, "gram", "g", MassDimension);

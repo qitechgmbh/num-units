@@ -3,8 +3,9 @@ use crate::{
     si::ISQ,
     unit,
 };
+use typenum::*;
 
-pub type TimeDimension = ISQ<0, 0, 1, 0, 0, 0, 0>;
+pub type TimeDimension = ISQ<Z0, Z0, P1, Z0, Z0, Z0, Z0>;
 
 // SI base unit
 unit!(Second, seconds, 1.0, 0.0, "second", "s", TimeDimension);

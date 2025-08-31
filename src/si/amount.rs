@@ -1,10 +1,12 @@
+use typenum::*;
+
 use crate::{
     prefix::{KILO, MICRO, MILLI, NANO, PICO},
     si::ISQ,
     unit,
 };
 
-pub type AmountOfSubstanceDimension = ISQ<0, 0, 0, 0, 0, 1, 0>;
+pub type AmountOfSubstanceDimension = ISQ<Z0, Z0, Z0, Z0, Z0, P1, Z0>;
 
 // SI base unit
 unit!(

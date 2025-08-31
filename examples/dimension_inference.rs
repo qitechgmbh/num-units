@@ -1,7 +1,5 @@
 //! Demonstration that the quantity! macro works with any dimension system
 
-#![feature(generic_const_exprs)]
-
 use num_units::motion::{area::Area, length::Length, scalar::Scalar, volume::Volume};
 
 fn main() {

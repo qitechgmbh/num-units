@@ -1,10 +1,11 @@
+use typenum::*;
 use crate::{
     prefix::{KILO, MILLI},
     si::ISQ,
     unit,
 };
 
-pub type LuminousIntensityDimension = ISQ<0, 0, 0, 0, 0, 0, 1>;
+pub type LuminousIntensityDimension = ISQ<Z0, Z0, Z0, Z0, Z0, Z0, P1>;
 
 // SI base unit
 unit!(
