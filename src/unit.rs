@@ -2,7 +2,22 @@
 ///
 /// This trait is used for unit identification and dimension tracking.
 /// Actual conversions are handled by the closure-based FromBaseUnit trait.
-pub trait Unit {}
+pub trait Unit {
+    /// Get the abbreviation for this unit (e.g., "m", "kg", "s")
+    fn abbreviation() -> &'static str {
+        "unit"
+    }
+    
+    /// Get the singular name for this unit (e.g., "meter", "kilogram", "second")
+    fn singular() -> &'static str {
+        "unit"
+    }
+    
+    /// Get the plural name for this unit (e.g., "meters", "kilograms", "seconds")
+    fn plural() -> &'static str {
+        "units"
+    }
+}
 
 /// Helper macro to define unit structs
 #[macro_export]
@@ -96,7 +111,7 @@ macro_rules! unit {
             // Generate conversion methods for all numeric types
             paste::paste! {
                 // f32 conversions
-                impl $crate::quantity::Quantity<f32, __quantity_module::Dimension> {
+                impl $crate::quantity::Quantity<f32, __quantity_module::Dimension, __quantity_module::Scale> {
                     #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
                     pub fn [<from_ $unit:snake>](value: f32) -> Self {
                         Self::from_raw($coefficient as f32 * value $(+ $offset as f32)?)
@@ -109,7 +124,7 @@ macro_rules! unit {
                 }
 
                 // f64 conversions
-                impl $crate::quantity::Quantity<f64, __quantity_module::Dimension> {
+                impl $crate::quantity::Quantity<f64, __quantity_module::Dimension, __quantity_module::Scale> {
                     #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
                     pub fn [<from_ $unit:snake>](value: f64) -> Self {
                         Self::from_raw($coefficient * value $(+ $offset)?)
@@ -122,7 +137,7 @@ macro_rules! unit {
                 }
 
                 // i8 conversions
-                impl $crate::quantity::Quantity<i8, __quantity_module::Dimension> {
+                impl $crate::quantity::Quantity<i8, __quantity_module::Dimension, __quantity_module::Scale> {
                     #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
                     pub fn [<from_ $unit:snake>](value: i8) -> Self {
                         Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as i8)
@@ -135,7 +150,7 @@ macro_rules! unit {
                 }
 
                 // u8 conversions
-                impl $crate::quantity::Quantity<u8, __quantity_module::Dimension> {
+                impl $crate::quantity::Quantity<u8, __quantity_module::Dimension, __quantity_module::Scale> {
                     #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
                     pub fn [<from_ $unit:snake>](value: u8) -> Self {
                         Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as u8)
@@ -148,7 +163,7 @@ macro_rules! unit {
                 }
 
                 // i16 conversions
-                impl $crate::quantity::Quantity<i16, __quantity_module::Dimension> {
+                impl $crate::quantity::Quantity<i16, __quantity_module::Dimension, __quantity_module::Scale> {
                     #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
                     pub fn [<from_ $unit:snake>](value: i16) -> Self {
                         Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as i16)
@@ -161,7 +176,7 @@ macro_rules! unit {
                 }
 
                 // u16 conversions
-                impl $crate::quantity::Quantity<u16, __quantity_module::Dimension> {
+                impl $crate::quantity::Quantity<u16, __quantity_module::Dimension, __quantity_module::Scale> {
                     #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
                     pub fn [<from_ $unit:snake>](value: u16) -> Self {
                         Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as u16)
@@ -174,7 +189,7 @@ macro_rules! unit {
                 }
 
                 // i32 conversions
-                impl $crate::quantity::Quantity<i32, __quantity_module::Dimension> {
+                impl $crate::quantity::Quantity<i32, __quantity_module::Dimension, __quantity_module::Scale> {
                     #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
                     pub fn [<from_ $unit:snake>](value: i32) -> Self {
                         Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as i32)
@@ -187,7 +202,7 @@ macro_rules! unit {
                 }
 
                 // u32 conversions
-                impl $crate::quantity::Quantity<u32, __quantity_module::Dimension> {
+                impl $crate::quantity::Quantity<u32, __quantity_module::Dimension, __quantity_module::Scale> {
                     #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
                     pub fn [<from_ $unit:snake>](value: u32) -> Self {
                         Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as u32)
@@ -200,7 +215,7 @@ macro_rules! unit {
                 }
 
                 // i64 conversions
-                impl $crate::quantity::Quantity<i64, __quantity_module::Dimension> {
+                impl $crate::quantity::Quantity<i64, __quantity_module::Dimension, __quantity_module::Scale> {
                     #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
                     pub fn [<from_ $unit:snake>](value: i64) -> Self {
                         Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as i64)
@@ -213,7 +228,7 @@ macro_rules! unit {
                 }
 
                 // u64 conversions
-                impl $crate::quantity::Quantity<u64, __quantity_module::Dimension> {
+                impl $crate::quantity::Quantity<u64, __quantity_module::Dimension, __quantity_module::Scale> {
                     #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
                     pub fn [<from_ $unit:snake>](value: u64) -> Self {
                         Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as u64)

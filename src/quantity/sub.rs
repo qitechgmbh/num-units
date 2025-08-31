@@ -2,15 +2,15 @@ use super::Quantity;
 use core::ops::Sub;
 use num_traits::Num;
 
-// Subtraction: Only allowed for quantities with the same dimension
-impl<V, D> Sub for Quantity<V, D>
+// Subtraction: same dimension and scale
+impl<V, D, S> Sub for Quantity<V, D, S>
 where
     V: Num + Sub<Output = V>,
 {
-    type Output = Quantity<V, D>;
+    type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        Quantity::from_raw(self.value - rhs.value)
+        Self::from_base(self.value - rhs.value)
     }
 }
 
@@ -19,10 +19,10 @@ mod tests {
 
     #[test]
     fn test_same_dimension_subtraction() {
-        let length1 = crate::length::f64::Length::from_raw(5.0);
-        let length2 = crate::length::f64::Length::from_raw(3.0);
+        let length1 = crate::length::f64::Length::from_base(5.0);
+        let length2 = crate::length::f64::Length::from_base(3.0);
 
         let diff = length1 - length2;
-        assert_eq!(*diff.raw(), 2.0);
+        assert_eq!(*diff.base(), 2.0);
     }
 }

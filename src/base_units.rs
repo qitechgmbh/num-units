@@ -80,9 +80,22 @@ macro_rules! base_units {
             #[doc = $name]
             #[doc = concat!("Abbreviation: `", $abbrev, "`")]
             #[allow(non_camel_case_types)]
+            #[derive(Debug, Clone, PartialEq)]
             pub struct $unit;
 
-            impl $crate::unit::Unit for $unit {}
+            impl $crate::unit::Unit for $unit {
+                fn abbreviation() -> &'static str {
+                    $abbrev
+                }
+
+                fn singular() -> &'static str {
+                    $name
+                }
+
+                fn plural() -> &'static str {
+                    concat!($name, "s")
+                }
+            }
         )+
     };
 }

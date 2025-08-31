@@ -2,12 +2,12 @@ use super::Quantity;
 use num_traits::{Num, Zero};
 
 // num-traits support for Zero
-impl<V, D> Zero for Quantity<V, D>
+impl<V, D, S> Zero for Quantity<V, D, S>
 where
     V: Num + Zero,
 {
     fn zero() -> Self {
-        Quantity::from_raw(V::zero())
+        Quantity::from_base(V::zero())
     }
 
     fn is_zero(&self) -> bool {
@@ -24,6 +24,6 @@ mod tests {
     fn test_zero() {
         let zero_length = Length::zero();
         assert!(zero_length.is_zero());
-        assert_eq!(*zero_length.raw(), 0.0);
+        assert_eq!(*zero_length.base(), 0.0);
     }
 }

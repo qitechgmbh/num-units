@@ -2,15 +2,15 @@ use super::Quantity;
 use core::ops::Add;
 use num_traits::Num;
 
-// Addition: Only allowed for quantities with the same dimension
-impl<V, D> Add for Quantity<V, D>
+// Addition: same dimension and scale
+impl<V, D, S> Add for Quantity<V, D, S>
 where
     V: Num + Add<Output = V>,
 {
-    type Output = Quantity<V, D>;
+    type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        Quantity::from_raw(self.value + rhs.value)
+        Self::from_base(self.value + rhs.value)
     }
 }
 
@@ -20,10 +20,10 @@ mod tests {
 
     #[test]
     fn test_same_dimension_addition() {
-        let length1 = Length::from_raw(5.0);
-        let length2 = Length::from_raw(3.0);
+        let length1 = Length::from_base(5.0);
+        let length2 = Length::from_base(3.0);
 
         let sum = length1 + length2;
-        assert_eq!(*sum.raw(), 8.0);
+        assert_eq!(*sum.base(), 8.0);
     }
 }

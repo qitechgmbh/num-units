@@ -1,4 +1,5 @@
 use crate::prefix::{MICRO, MILLI};
+use typenum::*;
 
 // ===== SI BASE UNIT =====
 base_units! {
@@ -23,3 +24,7 @@ convert_base_unit! {
     Microampere: |ampere| ampere / MICRO;
     Ampere: |microampere| microampere * MICRO;
 }
+
+// Current quantity definition
+use super::{SI, SIScale};
+quantity!(Current, SI<Z0, Z0, Z0, P1, Z0, Z0, Z0>, SIScale);

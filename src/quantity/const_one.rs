@@ -5,7 +5,7 @@ use num_traits::Num;
 // Note: The full ConstOne trait requires complex dimension bounds
 // that may not work in all contexts, so we provide simpler alternatives
 
-impl<V, D> Quantity<V, D>
+impl<V, D, S> Quantity<V, D, S>
 where
     V: Num,
 {
@@ -17,7 +17,7 @@ where
     {
         // We would need a const way to get 1, which is complex
         // For now, just provide the method signature
-        Self::from_raw(unsafe { core::mem::zeroed() }) // This won't work, just for compilation
+        Self::from_base(unsafe { core::mem::zeroed() }) // This won't work, just for compilation
     }
 }
 
@@ -31,29 +31,29 @@ mod tests {
     #[test]
     fn test_one_basic() {
         // Test basic functionality
-        let one = Length::from_raw(1);
-        assert_eq!(*one.raw(), 1);
+        let one = Length::from_base(1);
+        assert_eq!(*one.base(), 1);
     }
 
     #[test]
     fn test_one_with_different_types() {
         // Test with different numeric types
-        let one_i32 = Length::from_raw(1);
-        let one_u32 = LengthU32::from_raw(1);
-        let one_f32 = LengthF32::from_raw(1.0);
-        let one_f64 = LengthF64::from_raw(1.0);
+        let one_i32 = Length::from_base(1);
+        let one_u32 = LengthU32::from_base(1);
+        let one_f32 = LengthF32::from_base(1.0);
+        let one_f64 = LengthF64::from_base(1.0);
 
-        assert_eq!(*one_i32.raw(), 1i32);
-        assert_eq!(*one_u32.raw(), 1u32);
-        assert_eq!(*one_f32.raw(), 1.0f32);
-        assert_eq!(*one_f64.raw(), 1.0f64);
+        assert_eq!(*one_i32.base(), 1i32);
+        assert_eq!(*one_u32.base(), 1u32);
+        assert_eq!(*one_f32.base(), 1.0f32);
+        assert_eq!(*one_f64.base(), 1.0f64);
     }
 
     #[test]
     fn test_one_comparison() {
-        let one1 = Length::from_raw(1);
-        let one2 = Length::from_raw(1);
-        let not_one = Length::from_raw(2);
+        let one1 = Length::from_base(1);
+        let one2 = Length::from_base(1);
+        let not_one = Length::from_base(2);
 
         assert_eq!(one1, one2);
         assert_ne!(one1, not_one);

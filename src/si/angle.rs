@@ -1,3 +1,5 @@
+use typenum::*;
+
 // Base angle unit: radian (dimensionless but in its own dimension)
 base_units! {
     Radian: "radian", "rad";
@@ -25,3 +27,7 @@ convert_base_unit! {
     Turn: |radian| radian / (2.0 * std::f64::consts::PI);
     Radian: |turn| turn * 2.0 * std::f64::consts::PI;
 }
+
+// Angle quantity definition (dimensionless)
+use super::{SI, SIScale};
+quantity!(Angle, SI<Z0, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale);

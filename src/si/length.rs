@@ -1,4 +1,5 @@
 use crate::prefix::{CENTI, KILO, MICRO, MILLI, NANO};
+use typenum::*;
 
 // SI base unit
 base_units! {
@@ -37,3 +38,7 @@ convert_base_unit! {
     Nanometer: |meter| meter / NANO;
     Meter: |nanometer| nanometer * NANO;
 }
+
+// Length quantity definition
+use super::{SI, SIScale};
+quantity!(Length, SI<P1, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale);

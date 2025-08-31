@@ -1,7 +1,4 @@
 use crate::prefix::{KILO, MICRO, MILLI, NANO, PICO};
-
-// ===== SI BASE UNIT =====rate::prefix::{KILO, MICRO, MILLI, NANO, PICO};
-quantity!(Time, crate::ISQ<Z0, Z0, Z0, P1, Z0, Z0, Z0>); // Time
 use typenum::*;
 
 // ===== SI BASE UNIT =====
@@ -42,3 +39,7 @@ convert_base_unit! {
     Kilosecond: |second| second * KILO;
     Second: |kilosecond| kilosecond / KILO;
 }
+
+// Time quantity definition
+use super::{SI, SIScale};
+quantity!(Time, SI<Z0, Z0, P1, Z0, Z0, Z0, Z0>, SIScale);

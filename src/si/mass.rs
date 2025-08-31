@@ -1,4 +1,5 @@
 use crate::prefix::KILO;
+use typenum::*;
 
 // ===== SI/METRIC UNITS =====
 // SI base unit
@@ -16,3 +17,7 @@ convert_base_unit! {
     Tonne: |gram| gram / 1_000_000.0;
     Gram: |tonne| tonne * 1_000_000.0;
 }
+
+// Mass quantity definition
+use super::{SI, SIScale};
+quantity!(Mass, SI<Z0, P1, Z0, Z0, Z0, Z0, Z0>, SIScale);

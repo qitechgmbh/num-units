@@ -1,4 +1,5 @@
 use crate::prefix::{CENTI, KILO, MILLI};
+use typenum::*;
 
 // SI base unit
 base_units! {
@@ -25,3 +26,7 @@ convert_base_unit! {
     CubicMillimeter: |cubicmeter| cubicmeter / (MILLI * MILLI * MILLI);
     CubicMeter: |cubicmillimeter| cubicmillimeter * (MILLI * MILLI * MILLI);
 }
+
+// Volume quantity definition
+use super::{SI, SIScale};
+quantity!(Volume, SI<P3, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale);

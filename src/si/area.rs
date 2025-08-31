@@ -1,4 +1,5 @@
 use crate::prefix::{CENTI, KILO, MILLI};
+use typenum::*;
 
 // SI base unit
 base_units! {
@@ -25,3 +26,7 @@ convert_base_unit! {
     SquareMillimeter: |squaremeter| squaremeter / (MILLI * MILLI);
     SquareMeter: |squaremillimeter| squaremillimeter * (MILLI * MILLI);
 }
+
+// Area quantity definition
+use super::{SI, SIScale};
+quantity!(Area, SI<P2, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale);

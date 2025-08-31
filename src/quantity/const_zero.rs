@@ -4,22 +4,22 @@ use num_traits::{ConstZero, Num};
 // ConstZero trait implementation for quantities
 // Provides a const zero value for quantities at compile time
 
-impl<V, D> ConstZero for Quantity<V, D>
+impl<V, D, S> ConstZero for Quantity<V, D, S>
 where
     V: Num + ConstZero,
 {
     /// The additive identity element.
-    const ZERO: Self = Self::from_raw(V::ZERO);
+    const ZERO: Self = Self::from_base(V::ZERO);
 }
 
 // Helper methods for const zero operations
-impl<V, D> Quantity<V, D>
+impl<V, D, S> Quantity<V, D, S>
 where
     V: Num + ConstZero,
 {
     /// Creates a const zero quantity at compile time.
     pub const fn const_zero() -> Self {
-        Self::from_raw(V::ZERO)
+        Self::from_base(V::ZERO)
     }
 }
 
@@ -36,29 +36,29 @@ mod tests {
     fn test_const_zero_trait() {
         // Test that the ConstZero trait is implemented
         const ZERO_LENGTH: Length = Length::ZERO;
-        assert_eq!(*ZERO_LENGTH.raw(), 0);
+        assert_eq!(*ZERO_LENGTH.base(), 0);
 
         const ZERO_TIME: crate::time::f64::Time = crate::time::f64::Time::ZERO;
-        assert_eq!(*ZERO_TIME.raw(), 0.0);
+        assert_eq!(*ZERO_TIME.base(), 0.0);
     }
 
     #[test]
     fn test_const_zero_method() {
         const ZERO_LENGTH: Length = Length::const_zero();
-        assert_eq!(*ZERO_LENGTH.raw(), 0);
+        assert_eq!(*ZERO_LENGTH.base(), 0);
 
         const ZERO_F64: LengthF64 = LengthF64::const_zero();
-        assert_eq!(*ZERO_F64.raw(), 0.0);
+        assert_eq!(*ZERO_F64.base(), 0.0);
     }
 
     #[test]
     fn test_const_zero_runtime_use() {
         let zero_length = Length::ZERO;
-        assert_eq!(*zero_length.raw(), 0);
+        assert_eq!(*zero_length.base(), 0);
         assert!(zero_length.is_zero());
 
         let zero_time = crate::time::f64::Time::ZERO;
-        assert_eq!(*zero_time.raw(), 0.0);
+        assert_eq!(*zero_time.base(), 0.0);
         assert!(zero_time.is_zero());
     }
 
@@ -70,10 +70,10 @@ mod tests {
         const ZERO_F32: LengthF32 = LengthF32::ZERO;
         const ZERO_F64: LengthF64 = LengthF64::ZERO;
 
-        assert_eq!(*ZERO_I32.raw(), 0i32);
-        assert_eq!(*ZERO_U32.raw(), 0u32);
-        assert_eq!(*ZERO_F32.raw(), 0.0f32);
-        assert_eq!(*ZERO_F64.raw(), 0.0f64);
+        assert_eq!(*ZERO_I32.base(), 0i32);
+        assert_eq!(*ZERO_U32.base(), 0u32);
+        assert_eq!(*ZERO_F32.base(), 0.0f32);
+        assert_eq!(*ZERO_F64.base(), 0.0f64);
     }
 
     #[test]
@@ -84,8 +84,8 @@ mod tests {
         // These should have different types (different dimensions)
         // This is verified by the type system - if this compiles,
         // the dimensions are correctly preserved
-        assert_eq!(*ZERO_LENGTH.raw(), 0);
-        assert_eq!(*ZERO_TIME.raw(), 0);
+        assert_eq!(*ZERO_LENGTH.base(), 0);
+        assert_eq!(*ZERO_TIME.base(), 0);
     }
 
     #[test]
@@ -104,7 +104,7 @@ mod tests {
         }
 
         const RESULT: Length = const_function();
-        assert_eq!(*RESULT.raw(), 0);
+        assert_eq!(*RESULT.base(), 0);
     }
 
     #[test]
@@ -113,7 +113,7 @@ mod tests {
         const ZERO_ARRAY: [Length; 3] = [Length::ZERO, Length::ZERO, Length::ZERO];
 
         for zero in &ZERO_ARRAY {
-            assert_eq!(*zero.raw(), 0);
+            assert_eq!(*zero.base(), 0);
         }
     }
 
@@ -127,12 +127,12 @@ mod tests {
             zero_field: Length::ZERO,
         };
 
-        assert_eq!(*TEST_STRUCT.zero_field.raw(), 0);
+        assert_eq!(*TEST_STRUCT.zero_field.base(), 0);
     }
 
     #[test]
     fn test_const_zero_static() {
         static STATIC_ZERO: Length = Length::ZERO;
-        assert_eq!(*STATIC_ZERO.raw(), 0);
+        assert_eq!(*STATIC_ZERO.base(), 0);
     }
 }
