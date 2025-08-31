@@ -1,42 +1,10 @@
-/// Unit trait for defining units with linear conversions to base units
+/// Unit trait for defining units with their dimension and basic properties
 ///
-/// Units can have both a multiplication factor and an additive offset,
-/// allowing for conversions like temperature scales (Celsius, Fahrenheit).
-///
-/// The conversion formula is: base_value = factor * unit_value + offset
-///
-/// # Examples
-/// - Meter: factor = 1.0, offset = 0.0 (base unit for length)
-/// - Foot: factor = 0.3048, offset = 0.0 (1 foot = 0.3048 meters)
-/// - Celsius: factor = 1.0, offset = 273.15 (°C to Kelvin)
-/// - Fahrenheit: factor = 5.0/9.0, offset = 255.372222... (°F to Kelvin)
+/// This trait is used for unit identification and dimension tracking.
+/// Actual conversions are handled by the closure-based FromBaseUnit trait.
 pub trait Unit {
     /// The dimension this unit measures (Length, Mass, Temperature, etc.)
     type Dimension;
-
-    /// Multiplication factor to convert to base unit
-    const FACTOR: f64;
-
-    /// Additive offset to convert to base unit
-    const OFFSET: f64;
-
-    /// Convert a value in this unit to the base unit
-    /// base_value = FACTOR * unit_value + OFFSET
-    fn to_base<T>(value: T) -> T
-    where
-        T: num_traits::Num + Copy + From<f64>,
-    {
-        T::from(Self::FACTOR) * value + T::from(Self::OFFSET)
-    }
-
-    /// Convert a value from the base unit to this unit
-    /// unit_value = (base_value - OFFSET) / FACTOR
-    fn from_base<T>(base_value: T) -> T
-    where
-        T: num_traits::Num + Copy + From<f64>,
-    {
-        (base_value - T::from(Self::OFFSET)) / T::from(Self::FACTOR)
-    }
 }
 
 /// Helper macro to define unit structs
@@ -69,7 +37,6 @@ macro_rules! unit_constant {
         0.0
     };
 }
-
 
 /// Macro for defining individual units with detailed parameters
 ///
@@ -275,4 +242,124 @@ macro_rules! unit {
     };
 }
 
+/// Macro for defining units with ScaledSystem support
+///
+/// This macro generates unit structs and conversion methods for ScaledQuantity types.
+/// It supports the new dimension tagging syntax: `LENGTH: Meter`, `SCALAR: Radian`, etc.
+///
+/// # Syntax
+/// ```ignore
+/// scaled_unit! {
+///     system: scaled_system_type;
+///     quantity: quantity_module;
+///     @unit_name: coefficient; dimension_tag: base_unit, "abbreviation", "singular", "plural";
+/// }
+/// ```
+///
+/// # Parameters
+/// * `system`: The ScaledSystem type (e.g., `LengthSI`, `AngleRadians`)
+/// * `quantity`: The quantity module path
+/// * `dimension_tag`: The dimension identifier (e.g., `LENGTH`, `SCALAR`)
+/// * `base_unit`: The base unit type (e.g., `Meter`, `Radian`)
+///
+/// # Examples
+/// ```ignore
+/// # use num_units::scaled_unit;
+/// # use num_units::scaled_system::*;
+///
+/// scaled_unit! {
+///     system: LengthSI;
+///     quantity: crate::length;
+///     @meter: 1.0; LENGTH: Meter, "m", "meter", "meters";
+///     @kilometer: 1000.0; LENGTH: Meter, "km", "kilometer", "kilometers";
+/// }
+///
+/// scaled_unit! {
+///     system: AngleRadians;
+///     quantity: crate::angle;
+///     @radian: 1.0; SCALAR: Radian, "rad", "radian", "radians";
+///     @degree: 0.01745329252; SCALAR: Degree, "°", "degree", "degrees";
+/// }
+/// ```
+#[macro_export]
+macro_rules! scaled_unit {
+    // Unit definition with dimension tagging
+    (
+        system: $system:ty;
+        quantity: $quantity:path;
+        $($(#[$unit_attr:meta])* @$unit:ident: $coefficient:expr;
+            $dim_tag:ident: $base_unit:ty, $abbreviation:expr, $singular:expr, $plural:expr;)+
+    ) => {
+        // Import the quantity module
+        use $quantity as __quantity_module;
 
+        $(
+            $(#[$unit_attr])*
+            #[doc = $plural]
+            #[allow(non_camel_case_types)]
+            pub struct $unit;
+
+            impl $crate::unit::Unit for $unit {
+                type Dimension = $system;
+                type BaseUnit = $base_unit;
+                const FACTOR: f64 = $coefficient;
+                const OFFSET: f64 = 0.0;
+            }
+
+            // Generate conversion methods for all numeric types
+            ::paste::paste! {
+                // f32 conversions
+                impl $crate::quantity::ScaledQuantity<f32, $system> {
+                    #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
+                    pub fn [<from_ $unit:snake>](value: f32) -> Self {
+                        Self::from_raw($coefficient as f32 * value)
+                    }
+
+                    #[doc = concat!("Get the value of this quantity in ", stringify!($unit))]
+                    pub fn [<as_ $unit:snake>](&self) -> f32 {
+                        self.value / $coefficient as f32
+                    }
+                }
+
+                // f64 conversions
+                impl $crate::quantity::ScaledQuantity<f64, $system> {
+                    #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
+                    pub fn [<from_ $unit:snake>](value: f64) -> Self {
+                        Self::from_raw($coefficient * value)
+                    }
+
+                    #[doc = concat!("Get the value of this quantity in ", stringify!($unit))]
+                    pub fn [<as_ $unit:snake>](&self) -> f64 {
+                        self.value / $coefficient
+                    }
+                }
+
+                // i32 conversions
+                impl $crate::quantity::ScaledQuantity<i32, $system> {
+                    #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
+                    pub fn [<from_ $unit:snake>](value: i32) -> Self {
+                        Self::from_raw(($coefficient * value as f64) as i32)
+                    }
+
+                    #[doc = concat!("Get the value of this quantity in ", stringify!($unit))]
+                    pub fn [<as_ $unit:snake>](&self) -> i32 {
+                        (self.value as f64 / $coefficient) as i32
+                    }
+                }
+
+                // i64 conversions
+                impl $crate::quantity::ScaledQuantity<i64, $system> {
+                    #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
+                    pub fn [<from_ $unit:snake>](value: i64) -> Self {
+                        Self::from_raw(($coefficient * value as f64) as i64)
+                    }
+
+                    #[doc = concat!("Get the value of this quantity in ", stringify!($unit))]
+                    pub fn [<as_ $unit:snake>](&self) -> i64 {
+                        (self.value as f64 / $coefficient) as i64
+                    }
+                }
+            }
+        )+
+    };
+}

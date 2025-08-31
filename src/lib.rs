@@ -1,8 +1,13 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
+#[macro_use]
 pub mod prefix;
 #[macro_use]
 pub mod quantity;
+#[macro_use]
+pub mod base_units;
+pub mod conversions;
+pub mod scaled_system;
 pub mod si;
 pub mod system;
 pub mod unit;

@@ -247,3 +247,187 @@ mod tests {
         assert_eq!(*volume.raw(), 1000.0);
     }
 }
+
+/// Create a scaled quantity type alias for ScaledSystem
+///
+/// This macro generates quantity types that work with the ScaledSystem architecture,
+/// which encodes both dimensions and base units at the type level.
+///
+/// # Parameters
+/// - `$name`: The name of the quantity type to create
+/// - `$scaled_system`: The ScaledSystem type (e.g., `LengthSI`, `AngleRadians`)
+///
+/// # Examples
+/// ```rust
+/// # use num_units::scaled_quantity;
+/// # use num_units::scaled_system::*;
+///
+/// // Create a length quantity in SI system
+/// scaled_quantity!(Length, LengthSI);
+///
+/// // Create an angle quantity with radians
+/// scaled_quantity!(Angle, AngleRadians);
+///
+/// // Use the quantities
+/// let length = Length::<f64>::from_raw(100.0);
+/// let angle = Angle::<f64>::from_raw(1.57);
+/// ```
+#[macro_export]
+macro_rules! scaled_quantity {
+    ($name:ident, $scaled_system:ty) => {
+        ::paste::paste! {
+            pub mod [<$name:snake>] {
+                use super::*;
+
+                pub type Dimension = $scaled_system;
+
+                pub mod r#i8 {
+                    use super::*;
+                    pub type $name = $crate::quantity::ScaledQuantity<i8, $scaled_system>;
+                }
+
+                pub mod r#u8 {
+                    use super::*;
+                    pub type $name = $crate::quantity::ScaledQuantity<u8, $scaled_system>;
+                }
+
+                pub mod r#i16 {
+                    use super::*;
+                    pub type $name = $crate::quantity::ScaledQuantity<i16, $scaled_system>;
+                }
+
+                pub mod r#u16 {
+                    use super::*;
+                    pub type $name = $crate::quantity::ScaledQuantity<u16, $scaled_system>;
+                }
+
+                pub mod r#i32 {
+                    use super::*;
+                    pub type $name = $crate::quantity::ScaledQuantity<i32, $scaled_system>;
+                }
+
+                pub mod r#u32 {
+                    use super::*;
+                    pub type $name = $crate::quantity::ScaledQuantity<u32, $scaled_system>;
+                }
+
+                pub mod r#i64 {
+                    use super::*;
+                    pub type $name = $crate::quantity::ScaledQuantity<i64, $scaled_system>;
+                }
+
+                pub mod r#u64 {
+                    use super::*;
+                    pub type $name = $crate::quantity::ScaledQuantity<u64, $scaled_system>;
+                }
+
+                pub mod r#i128 {
+                    use super::*;
+                    pub type $name = $crate::quantity::ScaledQuantity<i128, $scaled_system>;
+                }
+
+                pub mod r#u128 {
+                    use super::*;
+                    pub type $name = $crate::quantity::ScaledQuantity<u128, $scaled_system>;
+                }
+
+                pub mod r#f32 {
+                    use super::*;
+                    pub type $name = $crate::quantity::ScaledQuantity<f32, $scaled_system>;
+                }
+
+                pub mod r#f64 {
+                    use super::*;
+                    pub type $name = $crate::quantity::ScaledQuantity<f64, $scaled_system>;
+                }
+
+                pub type $name<V> = $crate::quantity::ScaledQuantity<V, $scaled_system>;
+            }
+        }
+    };
+}
+
+/// A physical quantity with ScaledSystem encoding
+///
+/// This struct combines a numerical value with a ScaledSystem that encodes
+/// both dimensions and base units at the type level for maximum type safety.
+///
+/// # Type Parameters
+/// - `V`: The numerical type (must implement `num-traits::Num`)
+/// - `S`: The ScaledSystem type (encodes dimensions + base units)
+///
+/// # Examples
+/// ```rust
+/// # use num_units::quantity::ScaledQuantity;
+/// # use num_units::scaled_system::*;
+///
+/// let length = ScaledQuantity::<f64, LengthSI>::from_raw(100.0);
+/// let angle = ScaledQuantity::<f64, AngleRadians>::from_raw(1.57);
+/// ```
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct ScaledQuantity<V, S: crate::scaled_system::ScaledSystemTrait> {
+    pub value: V,
+    _system: core::marker::PhantomData<S>,
+}
+
+impl<V, S> ScaledQuantity<V, S>
+where
+    V: Num,
+    S: crate::scaled_system::ScaledSystemTrait,
+{
+    /// Get the numerical value of this quantity
+    pub fn raw(&self) -> &V {
+        &self.value
+    }
+
+    /// Get the numerical value of this quantity (consuming)
+    pub fn into_raw(self) -> V {
+        self.value
+    }
+
+    /// Create a quantity from a raw value
+    pub const fn from_raw(value: V) -> Self {
+        Self {
+            value,
+            _system: core::marker::PhantomData,
+        }
+    }
+
+    /// Get the dimension exponent for a given dimension index
+    pub const fn dimension_exponent(dim_index: usize) -> i32 {
+        match dim_index {
+            0 => S::LENGTH,
+            1 => S::MASS,
+            2 => S::TIME,
+            3 => S::CURRENT,
+            4 => S::TEMPERATURE,
+            5 => S::AMOUNT,
+            6 => S::LUMINOSITY,
+            _ => 0,
+        }
+    }
+
+    /// Check if this quantity is dimensionless
+    pub const fn is_dimensionless() -> bool {
+        S::IS_DIMENSIONLESS
+    }
+}
+
+// Unit-aware methods for f64 scaled quantities
+impl<S> ScaledQuantity<f64, S>
+where
+    S: crate::scaled_system::ScaledSystemTrait,
+{
+    // Unit-specific methods will be generated by the scaled_unit! macro
+}
+
+// Display implementation
+impl<V, S> core::fmt::Display for ScaledQuantity<V, S>
+where
+    V: core::fmt::Display,
+    S: crate::scaled_system::ScaledSystemTrait,
+{
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "{} [ScaledSystem]", self.value)
+    }
+}

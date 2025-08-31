@@ -1,21 +1,24 @@
-use crate::unit;
+use crate::base_units::*;
+use crate::unit::Unit;
 
-// All temperature units
-unit! {
-    system: crate::si;
-    quantity: crate::thermodynamic_temperature;
+// ===== SI BASE UNIT =====
+base_unit! {
+    dimension: TemperatureDimension;
+    Kelvin: "kelvin", "K";
+    Celsius: "celsius", "°C";
+    Fahrenheit: "fahrenheit", "°F";
+}
 
-    // SI base unit
-    @kelvin: 1.0; "K", "kelvin", "kelvins";
+// ===== CONVERSION RELATIONSHIPS =====
 
-    // Common temperature scales with offset
-    @celsius: 1.0, 273.15; "°C", "celsius", "celsius";
-    @fahrenheit: 5.0 / 9.0, 255.37222222222223; "°F", "fahrenheit", "fahrenheit";
+// Celsius to Kelvin (with offset)
+convert_base_unit! {
+    Kelvin: |kelvin| kelvin - 273.15;
+    Celsius: |celsius| celsius + 273.15;
+}
 
-    // Other temperature scales
-    @rankine: 5.0 / 9.0; "°R", "rankine", "rankine";
-    @delisle: -2.0 / 3.0, 559.725; "°De", "delisle", "delisle";
-    @newton: 100.0 / 33.0, 273.15; "°N", "newton", "newton";
-    @reaumur: 1.25, 273.15; "°Ré", "réaumur", "réaumur";
-    @romer: 40.0 / 21.0, 258.8642857142857; "°Rø", "rømer", "rømer";
+// Fahrenheit to Kelvin (with offset)
+convert_base_unit! {
+    Fahrenheit: |kelvin| (kelvin - 273.15) * 9.0 / 5.0 + 32.0;
+    Kelvin: |fahrenheit| (fahrenheit - 32.0) * 5.0 / 9.0 + 273.15;
 }

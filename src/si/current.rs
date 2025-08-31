@@ -1,28 +1,22 @@
-use crate::{
-    prefix::{KILO, MEGA, MICRO, MILLI, NANO, PICO},
-    unit,
-};
+use crate::{base_units::*, prefix::*, unit::Unit};
 
-// All electric current units
-unit! {
-    system: crate::si;
-    quantity: crate::electric_current;
+// ===== SI BASE UNIT =====
+base_unit! {
+    dimension: CurrentDimension;
+    Ampere: "ampere", "A";
+}
 
-    // SI base unit
-    @ampere: 1.0; "A", "ampere", "amperes";
+// ===== METRIC PREFIXES =====
+base_unit! {
+    dimension: CurrentDimension;
+    Milliampere: "milliampere", "mA";
+    Microampere: "microampere", "μA";
+}
 
-    // Metric prefixes
-    @milliampere: MILLI; "mA", "milliampere", "milliamperes";
-    @microampere: MICRO; "μA", "microampere", "microamperes";
-    @nanoampere: NANO; "nA", "nanoampere", "nanoamperes";
-    @picoampere: PICO; "pA", "picoampere", "picoamperes";
-    @kiloampere: KILO; "kA", "kiloampere", "kiloamperes";
-    @megaampere: MEGA; "MA", "megaampere", "megaamperes";
+// ===== CONVERSION RELATIONSHIPS =====
 
-    // Legacy/practical units
-    @Abampere: 10.0; "abA", "abampere", "abamperes";
-    @Statampere: 3.335641e-10; "statA", "statampere", "statamperes";
-
-    // Biot (alternative name for abampere)
-    @biot: 10.0; "Bi", "biot", "biots";
+// Metric prefix conversions
+convert_base_unit! {
+    Milliampere: |ampere| ampere * MILLI;
+    Ampere: |milliampere| milliampere / MILLI;
 }

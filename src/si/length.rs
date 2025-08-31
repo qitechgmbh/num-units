@@ -1,33 +1,45 @@
-use crate::unit;
+use crate::{
+    base_units::*,
+    prefix::{CENTI, KILO, MICRO, MILLI, NANO},
+    unit::Unit,
+};
 
-// SI base unit and all other units
-unit! {
-    system: crate::si;
-    quantity: crate::length;
+// SI base unit
+base_unit! {
+    dimension: LengthDimension;
+    Meter: "meter", "m";
+}
 
-    // ===== SI/METRIC UNITS =====
-    // SI base unit
-    @Meter: 1.0; "m", "meter", "meters";
+base_unit! {
+    dimension: LengthDimension;
+    Kilometer: "kilometer", "km";
+    Centimeter: "centimeter", "cm";
+    Millimeter: "millimeter", "mm";
+    Micrometer: "micrometer", "μm";
+    Nanometer: "nanometer", "nm";
+}
 
-    // Metric prefixes for meter
-    @Kilometer: 1000.0; "km", "kilometer", "kilometers";
-    @Centimeter: 0.01; "cm", "centimeter", "centimeters";
-    @Millimeter: 0.001; "mm", "millimeter", "millimeters";
-    @Micrometer: 0.000001; "μm", "micrometer", "micrometers";
-    @Nanometer: 0.000000001; "nm", "nanometer", "nanometers";
+convert_base_unit! {
+    Kilometer: |meter| meter / KILO;
+    Meter: |kilometer| kilometer * KILO;
+}
 
-    // Us/Imperial
-    @Foot: 0.3048; "ft", "foot", "feet";
-    @Inch: 0.0254; "in", "inch", "inches";
-    @Yard: 0.9144; "yd", "yard", "yards";
-    @Mile: 1609.344; "mi", "mile", "miles";
+convert_base_unit! {
+    Centimeter: |meter| meter / CENTI;
+    Meter: |centimeter| centimeter * CENTI;
+}
 
-    // ===== NAUTICAL UNITS =====
-    // Maritime navigation units
-    @NauticalMile: 1852.0; "nmi", "nautical mile", "nautical miles";
+convert_base_unit! {
+    Millimeter: |meter| meter / MILLI;
+    Meter: |millimeter| millimeter * MILLI;
+}
 
-    // Astronomical
-    @AstronomicalUnit: 149597870700.0; "AU", "astronomical unit", "astronomical units";
-    @LightYear: 9460730472580800.0; "ly", "light year", "light years";
-    @Parsec: 30857000000000000.0; "pc", "parsec", "parsecs";
+convert_base_unit! {
+    Micrometer: |meter| meter / MICRO;
+    Meter: |micrometer| micrometer * MICRO;
+}
+
+convert_base_unit! {
+    Nanometer: |meter| meter / NANO;
+    Meter: |nanometer| nanometer * NANO;
 }

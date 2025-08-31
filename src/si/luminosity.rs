@@ -1,24 +1,18 @@
-use crate::{
-    prefix::{KILO, MILLI},
-    unit,
-};
+use crate::{base_units::*, prefix::*, unit::Unit};
 
-// All luminous intensity units
-unit! {
-    system: crate::si;
-    quantity: crate::luminous_intensity;
+// ===== SI BASE UNIT =====
+base_unit! {
+    dimension: LuminosityDimension;
+    Candela: "candela", "cd";
+}
 
-    // SI base unit
-    @candela: 1.0; "cd", "candela", "candelas";
+// ===== METRIC PREFIXES =====
+base_unit! {
+    dimension: LuminosityDimension;
+    Millicandela: "millicandela", "mcd";
+}
 
-    // Metric prefixes
-    @millicandela: MILLI; "mcd", "millicandela", "millicandelas";
-    @kilocandela: KILO; "kcd", "kilocandela", "kilocandelas";
-
-    // Legacy photometric units
-    @hefnerkerze: 0.903; "HK", "hefnerkerze", "hefnerkerzes";
-    @international_candle: 1.02; "IC", "international candle", "international candles";
-
-    // Practical lighting units
-    @footcandle: 10.764; "fc", "footcandle", "footcandles";
+convert_base_unit! {
+    Candela: |candela| candela * MILLI;
+    Millicandela: |millicandela| millicandela / MILLI;
 }

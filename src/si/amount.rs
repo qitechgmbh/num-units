@@ -1,26 +1,57 @@
-use crate::{
-    prefix::{KILO, MICRO, MILLI, NANO, PICO},
-    unit,
-};
+use crate::{base_units::*, prefix::*, unit::Unit};
 
-// All amount of substance units
-unit! {
-    system: crate::si;
-    quantity: crate::amount_of_substance;
+// ===== SI BASE UNIT =====
+base_unit! {
+    dimension: AmountDimension;
+    Mole: "mole", "mol";
+}
 
-    // SI base unit
-    @mole: 1.0; "mol", "mole", "moles";
+// ===== METRIC PREFIXES =====
+base_unit! {
+    dimension: AmountDimension;
+    Millimole: "millimole", "mmol";
+    Micromole: "micromole", "μmol";
+    Nanomole: "nanomole", "nmol";
+    Picomole: "picomole", "pmol";
+    Kilomole: "kilomole", "kmol";
+}
 
-    // Metric prefixes
-    @millimole: MILLI; "mmol", "millimole", "millimoles";
-    @micromole: MICRO; "μmol", "micromole", "micromoles";
-    @nanomole: NANO; "nmol", "nanomole", "nanomoles";
-    @picomole: PICO; "pmol", "picomole", "picomoles";
-    @kilomole: KILO; "kmol", "kilomole", "kilomoles";
+// ===== PARTICLE COUNTING =====
+base_unit! {
+    dimension: AmountDimension;
+    Particle: "particle", "particle";
+}
 
-    // Legacy chemistry units
-    @pound_mole: 453.59237; "lb-mol", "pound-mole", "pound-moles";
+// ===== CONVERSION RELATIONSHIPS =====
 
-    // Particle counting
-    @particle: 1.66053906660e-24; "particle", "particle", "particles";
+// Metric prefix conversions
+convert_base_unit! {
+    Mole: |mole| mole * MILLI;
+    Millimole: |millimole| millimole / MILLI;
+}
+
+convert_base_unit! {
+    Mole: |mole| mole * MICRO;
+    Micromole: |micromole| micromole / MICRO;
+}
+
+convert_base_unit! {
+    Nanomole: |mole| mole * NANO;
+    Mole: |nanomole| nanomole / NANO;
+}
+
+convert_base_unit! {
+    Mole: |mole| mole * PICO;
+    Picomole: |picomole| picomole / PICO;
+}
+
+convert_base_unit! {
+    Mole: |mole| mole * KILO;
+    Kilomole: |kilomole| kilomole / KILO;
+}
+
+// Particle counting conversions
+convert_base_unit! {
+    Particle: |mole| mole / 1.66053906660e-24;
+    Mole: |particle| particle * 1.66053906660e-24;
 }
