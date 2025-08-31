@@ -1,8 +1,8 @@
 use typenum::*;
 
 // SI derived unit: meter per second squared
-base_units! {
-    MeterPerSecondSquared: "meter per second squared", "m/s²";
+units! {
+    MeterPerSecondSquared: "m/s²", "meter per second squared";
 }
 
 // Acceleration quantity definition (Length/Time²)

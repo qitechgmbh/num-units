@@ -1,32 +1,34 @@
 use typenum::*;
 
 // Dimensionless scalar quantities
-base_units! {
-    Scalar: "scalar", "";
-    Percent: "percent", "%";
-    PartsPerMillion: "parts per million", "ppm";
-    PartsPerBillion: "parts per billion", "ppb";
+units! {
+    Scalar: "", "scalar";
+    Percent: "%", "percent";
+    PartsPerMillion: "ppm", "parts per million";
+    PartsPerBillion: "ppb", "parts per billion";
 }
 
 // ===== CONVERSION RELATIONSHIPS =====
 
 // Percent to Scalar
-convert_base_unit! {
-    Percent: |scalar| scalar * 100.0;
-    Scalar: |percent| percent / 100.0;
+convert_unit! {
+    Percent: |scalar| scalar * HECTO;
+    Scalar: |percent| percent / HECTO;
 }
 
 // Parts per million to Scalar
-convert_base_unit! {
-    PartsPerMillion: |scalar| scalar * 1_000_000.0;
-    Scalar: |parts_per_million| parts_per_million / 1_000_000.0;
+convert_unit! {
+    PartsPerMillion: |scalar| scalar * MEGA;
+    Scalar: |parts_per_million| parts_per_million / MEGA;
 }
 
 // Parts per billion to Scalar
-convert_base_unit! {
-    PartsPerBillion: |scalar| scalar * 1_000_000_000.0;
-    Scalar: |parts_per_billion| parts_per_billion / 1_000_000_000.0;
+convert_unit! {
+    PartsPerBillion: |scalar| scalar * GIGA;
+    Scalar: |parts_per_billion| parts_per_billion / GIGA;
 }
+
+use crate::prefix::{GIGA, HECTO, MEGA};
 
 // Scalar quantity definition (dimensionless)
 use super::{SI, SIScale};

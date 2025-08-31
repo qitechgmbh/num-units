@@ -2,27 +2,27 @@ use crate::prefix::{CENTI, KILO, MILLI};
 use typenum::*;
 
 // SI base unit
-base_units! {
-    CubicMeter: "cubicmeter", "m³";
+units! {
+    CubicMeter: "m³", "cubic meter";
 }
 
-base_units! {
-    CubicKilometer: "cubickilometer", "km³";
-    CubicCentimeter: "cubiccentimeter", "cm³";
-    CubicMillimeter: "cubicmillimeter", "mm³";
+units! {
+    CubicKilometer: "km³", "cubic kilometer";
+    CubicCentimeter: "cm³", "cubic centimeter";
+    CubicMillimeter: "mm³", "cubic millimeter";
 }
 
-convert_base_unit! {
+convert_unit! {
     CubicKilometer: |cubicmeter| cubicmeter / (KILO * KILO * KILO);
     CubicMeter: |cubickilometer| cubickilometer * (KILO * KILO * KILO);
 }
 
-convert_base_unit! {
+convert_unit! {
     CubicCentimeter: |cubicmeter| cubicmeter / (CENTI * CENTI * CENTI);
     CubicMeter: |cubiccentimeter| cubiccentimeter * (CENTI * CENTI * CENTI);
 }
 
-convert_base_unit! {
+convert_unit! {
     CubicMillimeter: |cubicmeter| cubicmeter / (MILLI * MILLI * MILLI);
     CubicMeter: |cubicmillimeter| cubicmillimeter * (MILLI * MILLI * MILLI);
 }

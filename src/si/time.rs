@@ -2,40 +2,40 @@ use crate::prefix::{KILO, MICRO, MILLI, NANO, PICO};
 use typenum::*;
 
 // ===== SI BASE UNIT =====
-base_units! {
-    Second: "second", "s";
+units! {
+    Second: "s", "second";
 }
 
 // ===== METRIC PREFIXES =====
-base_units! {
-    Millisecond: "millisecond", "ms";
-    Microsecond: "microsecond", "μs";
-    Nanosecond: "nanosecond", "ns";
-    Picosecond: "picosecond", "ps";
-    Kilosecond: "kilosecond", "ks";
+units! {
+    Millisecond: "ms", "millisecond";
+    Microsecond: "μs", "microsecond";
+    Nanosecond: "ns", "nanosecond";
+    Picosecond: "ps", "picosecond";
+    Kilosecond: "ks", "kilosecond";
 }
 
-convert_base_unit! {
+convert_unit! {
     Millisecond: |second| second * MILLI;
     Second: |millisecond| millisecond / MILLI;
 }
 
-convert_base_unit! {
+convert_unit! {
     Microsecond: |second| second * MICRO;
     Second: |microsecond| microsecond / MICRO;
 }
 
-convert_base_unit! {
+convert_unit! {
     Nanosecond: |second| second * NANO;
     Second: |nanosecond| nanosecond / NANO;
 }
 
-convert_base_unit! {
+convert_unit! {
     Picosecond: |second| second * PICO;
     Second: |picosecond| picosecond / PICO;
 }
 
-convert_base_unit! {
+convert_unit! {
     Kilosecond: |second| second * KILO;
     Second: |kilosecond| kilosecond / KILO;
 }

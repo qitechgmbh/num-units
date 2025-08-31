@@ -40,217 +40,193 @@ pub trait Unit {
     const PLURAL: &'static str = "units";
 }
 
-/// Helper macro to define unit structs
-#[macro_export]
-#[doc(hidden)]
-macro_rules! unit_unit {
-    ($(#[$unit_attr:meta])+ @$unit:ident $plural:expr) => {
-        $(#[$unit_attr])*
-        #[doc = $plural]
-        #[allow(non_camel_case_types)]
-        #[derive(Clone, Copy, Debug, Hash)]
-        pub struct $unit;
-    };
-    (@$unit:ident $plural:expr) => {
-        #[doc = $plural]
-        #[allow(non_camel_case_types)]
-        #[derive(Clone, Copy, Debug, Hash)]
-        pub struct $unit;
-    };
-}
-
-/// Helper macro to handle unit constants
-#[macro_export]
-#[doc(hidden)]
-macro_rules! unit_constant {
-    ($const:expr) => {
-        $const
-    };
-    () => {
-        0.0
-    };
-}
-
-/// Macro for defining individual units with detailed parameters
+/// # Base Units - Fundamental Unit Definitions
 ///
-/// This macro generates unit structs with automatic conversion methods for all
-/// supported numeric types (i8, u8, i16, u16, i32, u32, i64, u64, f32, f64).
+/// This module provides the core infrastructure for defining base units and their
+/// conversion relationships. It includes macros for creating unit structs and
+/// establishing bidirectional conversion relationships between units.
 ///
-/// # Generated Methods
+/// ## Key Components
 ///
-/// For each unit defined with this macro, the following methods are generated:
-/// - `from_{unit_name}(value)` - Create quantity from this unit
-/// - `as_{unit_name}()` - Get value in this unit
+/// - **Base Units**: Fundamental units that cannot be expressed in terms of other units
+/// - **Derived Units**: Units created from combinations of base units
+/// - **Conversion Traits**: Bidirectional conversion between related units
+/// - **Unit Macros**: Generate unit structs with proper trait implementations
 ///
-/// # Examples
+/// ## Architecture
+///
+/// The base units system uses a layered approach:
+///
+/// 1. **Unit Definition**: `units!` macro creates unit structs
+/// 2. **Trait Implementation**: Automatic implementation of `Unit` trait
+/// 3. **Conversion Relationships**: `convert_unit!` establishes conversions
+/// 4. **Type Safety**: Compile-time dimensional analysis prevents errors
+///
+/// ## Example Usage
 ///
 /// ```rust
-/// use num_units::unit;
-/// use num_units::si::length;
+/// use num_units::units;
+/// use num_units::convert_unit;
+/// use num_units::prefix::KILO;
 ///
-/// // Define a custom unit (this would typically be done in the si/ modules)
-/// // unit! {
-/// //     system: crate::si;
-/// //     quantity: crate::si::length;
-/// //     @kilometer: 1000.0; "km", "kilometer", "kilometers";
-/// //     @foot: 0.3048; "ft", "foot", "feet";
-/// // }
+/// // Define base units
+/// units! {
+///     Meter: "m", "meter";
+///     Kilogram: "kg", "kilogram";
+/// }
 ///
-/// // Usage (using existing SI units):
-/// let dist = length::f64::Length::from_meter(1000.0);
-/// let km = dist.as_kilometer(); // Returns 1.0
+/// // Establish conversion relationships
+/// convert_unit! {
+///     Kilometer: |meter| meter / KILO;
+///     Meter: |kilometer| kilometer * KILO;
+/// }
+/// ```
+
+/// Macro for creating new base units
+///
+/// This macro generates unit structs with automatic implementation of the `Unit` trait.
+/// Each unit gets compile-time constants for abbreviation, singular name, and plural name.
+///
+/// # Syntax
+/// ```rust
+/// units! {
+///     UnitName: "abbreviation", "singular name";
+///     UnitName: "abbreviation", "singular name", "plural name";
+/// }
+/// ```
+///
+/// # Generated Code
+/// For each unit, this macro generates:
+/// - A unit struct with `Clone`, `Copy`, `Debug`, and `PartialEq` traits
+/// - Implementation of the `Unit` trait with proper constants
+/// - Documentation comments for the unit
+///
+/// # Examples
+/// ```rust
+/// use num_units::units;
+///
+/// units! {
+///     Meter: "m", "meter";
+///     Foot: "ft", "foot";
+/// }
 /// ```
 #[macro_export]
-macro_rules! unit {
-    // Unit definition syntax with system and quantity paths
-    (
-        system: $system:path;
-        quantity: $quantity:path;
-
-        $($(#[$unit_attr:meta])* @$unit:ident: $coefficient:expr $(, $offset:expr)?;
-            $abbreviation:expr, $singular:expr, $plural:expr;)+
-    ) => {
-        // Import the quantity module
-        use $quantity as __quantity_module;
-
+macro_rules! units {
+    // New syntax: abbreviation first, then singular, then optional plural
+    ($($(#[$unit_attr:meta])* $unit:ident: $abbrev:expr, $singular:expr, $plural:expr;)+) => {
         $(
             $(#[$unit_attr])*
-            #[doc = $plural]
             #[allow(non_camel_case_types)]
+            #[derive(Debug, Clone, PartialEq)]
+            #[doc = $abbrev]
             pub struct $unit;
 
-            // Generate conversion methods for all numeric types
-            paste::paste! {
-                // f32 conversions
-                impl $crate::quantity::Quantity<f32, __quantity_module::Dimension, __quantity_module::Scale> {
-                    #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
-                    pub fn [<from_ $unit:snake>](value: f32) -> Self {
-                        Self::from_raw($coefficient as f32 * value $(+ $offset as f32)?)
-                    }
-
-                    #[doc = concat!("Get the value of this quantity in ", stringify!($unit))]
-                    pub fn [<as_ $unit:snake>](&self) -> f32 {
-                        (self.value $( - $offset as f32)?) / $coefficient as f32
-                    }
-                }
-
-                // f64 conversions
-                impl $crate::quantity::Quantity<f64, __quantity_module::Dimension, __quantity_module::Scale> {
-                    #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
-                    pub fn [<from_ $unit:snake>](value: f64) -> Self {
-                        Self::from_raw($coefficient * value $(+ $offset)?)
-                    }
-
-                    #[doc = concat!("Get the value of this quantity in ", stringify!($unit))]
-                    pub fn [<as_ $unit:snake>](&self) -> f64 {
-                        (self.value $( - $offset)?) / $coefficient
-                    }
-                }
-
-                // i8 conversions
-                impl $crate::quantity::Quantity<i8, __quantity_module::Dimension, __quantity_module::Scale> {
-                    #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
-                    pub fn [<from_ $unit:snake>](value: i8) -> Self {
-                        Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as i8)
-                    }
-
-                    #[doc = concat!("Get the value of this quantity in ", stringify!($unit))]
-                    pub fn [<as_ $unit:snake>](&self) -> i8 {
-                        ((self.value as f64 $( - $offset)?) / $coefficient) as i8
-                    }
-                }
-
-                // u8 conversions
-                impl $crate::quantity::Quantity<u8, __quantity_module::Dimension, __quantity_module::Scale> {
-                    #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
-                    pub fn [<from_ $unit:snake>](value: u8) -> Self {
-                        Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as u8)
-                    }
-
-                    #[doc = concat!("Get the value of this quantity in ", stringify!($unit))]
-                    pub fn [<as_ $unit:snake>](&self) -> u8 {
-                        ((self.value as f64 $( - $offset)?) / $coefficient) as u8
-                    }
-                }
-
-                // i16 conversions
-                impl $crate::quantity::Quantity<i16, __quantity_module::Dimension, __quantity_module::Scale> {
-                    #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
-                    pub fn [<from_ $unit:snake>](value: i16) -> Self {
-                        Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as i16)
-                    }
-
-                    #[doc = concat!("Get the value of this quantity in ", stringify!($unit))]
-                    pub fn [<as_ $unit:snake>](&self) -> i16 {
-                        ((self.value as f64 $( - $offset)?) / $coefficient) as i16
-                    }
-                }
-
-                // u16 conversions
-                impl $crate::quantity::Quantity<u16, __quantity_module::Dimension, __quantity_module::Scale> {
-                    #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
-                    pub fn [<from_ $unit:snake>](value: u16) -> Self {
-                        Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as u16)
-                    }
-
-                    #[doc = concat!("Get the value of this quantity in ", stringify!($unit))]
-                    pub fn [<as_ $unit:snake>](&self) -> u16 {
-                        ((self.value as f64 $( - $offset)?) / $coefficient) as u16
-                    }
-                }
-
-                // i32 conversions
-                impl $crate::quantity::Quantity<i32, __quantity_module::Dimension, __quantity_module::Scale> {
-                    #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
-                    pub fn [<from_ $unit:snake>](value: i32) -> Self {
-                        Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as i32)
-                    }
-
-                    #[doc = concat!("Get the value of this quantity in ", stringify!($unit))]
-                    pub fn [<as_ $unit:snake>](&self) -> i32 {
-                        ((self.value as f64 $( - $offset)?) / $coefficient) as i32
-                    }
-                }
-
-                // u32 conversions
-                impl $crate::quantity::Quantity<u32, __quantity_module::Dimension, __quantity_module::Scale> {
-                    #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
-                    pub fn [<from_ $unit:snake>](value: u32) -> Self {
-                        Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as u32)
-                    }
-
-                    #[doc = concat!("Get the value of this quantity in ", stringify!($unit))]
-                    pub fn [<as_ $unit:snake>](&self) -> u32 {
-                        ((self.value as f64 $( - $offset)?) / $coefficient) as u32
-                    }
-                }
-
-                // i64 conversions
-                impl $crate::quantity::Quantity<i64, __quantity_module::Dimension, __quantity_module::Scale> {
-                    #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
-                    pub fn [<from_ $unit:snake>](value: i64) -> Self {
-                        Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as i64)
-                    }
-
-                    #[doc = concat!("Get the value of this quantity in ", stringify!($unit))]
-                    pub fn [<as_ $unit:snake>](&self) -> i64 {
-                        ((self.value as f64 $( - $offset)?) / $coefficient) as i64
-                    }
-                }
-
-                // u64 conversions
-                impl $crate::quantity::Quantity<u64, __quantity_module::Dimension, __quantity_module::Scale> {
-                    #[doc = concat!("Create a quantity from a value in ", stringify!($unit))]
-                    pub fn [<from_ $unit:snake>](value: u64) -> Self {
-                        Self::from_raw(($coefficient as f64 * value as f64 $(+ $offset)?) as u64)
-                    }
-
-                    #[doc = concat!("Get the value of this quantity in ", stringify!($unit))]
-                    pub fn [<as_ $unit:snake>](&self) -> u64 {
-                        ((self.value as f64 $( - $offset)?) / $coefficient) as u64
-                    }
-                }
+            impl $crate::unit::Unit for $unit {
+                const ABBREVIATION: &'static str = $abbrev;
+                const SINGULAR: &'static str = $singular;
+                const PLURAL: &'static str = $plural;
             }
         )+
     };
+
+    // New syntax: abbreviation first, then singular (plural auto-generated)
+    ($($(#[$unit_attr:meta])* $unit:ident: $abbrev:expr, $singular:expr;)+) => {
+        $(
+            $(#[$unit_attr])*
+            #[allow(non_camel_case_types)]
+            #[derive(Debug, Clone, PartialEq)]
+            #[doc = $abbrev]
+            pub struct $unit;
+
+            impl $crate::unit::Unit for $unit {
+                const ABBREVIATION: &'static str = $abbrev;
+                const SINGULAR: &'static str = $singular;
+                const PLURAL: &'static str = concat!($singular, "s");
+            }
+        )+
+    };
+}
+
+// ===== BASE UNIT CONVERSION TRAITS =====
+
+/// Trait for converting from a base unit to this unit
+pub trait FromBaseUnit<From: crate::unit::Unit> {
+    fn to_base(value: f64) -> f64;
+    fn from_base(base_value: f64) -> f64;
+}
+
+/// Trait for converting to a base unit from this unit
+pub trait IntoBaseUnit<To: crate::unit::Unit> {
+    fn to_base(value: f64) -> f64;
+    fn from_base(base_value: f64) -> f64;
+}
+
+/// Macro for establishing bidirectional conversion relationships between units
+///
+/// This macro creates conversion relationships between two units, allowing automatic
+/// conversion in both directions. The conversion functions use closures to define
+/// the mathematical relationship between units.
+///
+/// # Syntax
+/// ```rust
+/// convert_unit! {
+///     TargetUnit: |source_param| conversion_expression;
+///     SourceUnit: |target_param| reverse_conversion_expression;
+/// }
+/// ```
+///
+/// # Parameters
+/// - `TargetUnit`: The unit you're converting TO
+/// - `SourceUnit`: The unit you're converting FROM
+/// - `conversion_expression`: Expression defining how to convert from source to target
+/// - `reverse_conversion_expression`: Expression defining how to convert from target to source
+///
+/// # Examples
+/// ```rust
+/// use num_units::convert_unit;
+/// use num_units::prefix::KILO;
+///
+/// // Define conversion between meters and kilometers
+/// convert_unit! {
+///     Kilometer: |meter| meter / KILO;      // km = m / 1000
+///     Meter: |kilometer| kilometer * KILO;  // m = km * 1000
+/// }
+/// ```
+#[macro_export]
+macro_rules! convert_unit {
+    // New syntax: UnitA: |param| expr; UnitB: |param| expr;
+    // Process pairs of units
+    ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
+        // Forward conversion: $unit2 -> $unit1
+        impl $crate::unit::FromBaseUnit<$unit2> for $unit1 {
+            fn to_base(value: f64) -> f64 {
+                let $param2 = value;
+                $expr2
+            }
+
+            fn from_base(base_value: f64) -> f64 {
+                let $param1 = base_value;
+                $expr1
+            }
+        }
+
+        // Reverse conversion: $unit1 -> $unit2
+        impl $crate::unit::FromBaseUnit<$unit1> for $unit2 {
+            fn to_base(value: f64) -> f64 {
+                let $param1 = value;
+                $expr1
+            }
+
+            fn from_base(base_value: f64) -> f64 {
+                let $param2 = base_value;
+                $expr2
+            }
+        }
+
+        // Process remaining conversions recursively
+        convert_unit! { $($rest)* }
+    };
+
+    // Base case: no more conversions to process
+    () => {};
 }

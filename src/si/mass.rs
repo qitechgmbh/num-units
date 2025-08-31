@@ -1,21 +1,21 @@
-use crate::prefix::KILO;
+use crate::prefix::{KILO, MEGA};
 use typenum::*;
 
 // ===== SI/METRIC UNITS =====
 // SI base unit
-base_units! {
-    Gram: "gram", "g";
-    Kilogram: "kilogram", "kg";
-    Tonne: "tonne", "t";
+units! {
+    Gram: "g", "gram";
+    Kilogram: "kg", "kilogram";
+    Tonne: "t", "tonne";
 }
 
-convert_base_unit! {
+convert_unit! {
     Kilogram: |gram| gram * KILO;
     Gram: |kilogram| kilogram / KILO;
 }
-convert_base_unit! {
-    Tonne: |gram| gram / 1_000_000.0;
-    Gram: |tonne| tonne * 1_000_000.0;
+convert_unit! {
+    Tonne: |gram| gram / MEGA;
+    Gram: |tonne| tonne * MEGA;
 }
 
 // Mass quantity definition

@@ -6,14 +6,13 @@ pub mod prefix;
 #[macro_use]
 pub mod quantity;
 #[macro_use]
-pub mod base_units;
+pub mod unit;
 #[macro_use]
 pub mod scale;
 #[macro_use]
 pub mod system;
 pub mod conversions;
 pub mod si;
-pub mod unit;
 
 // Re-export num_traits for convenience
 pub use num_traits;

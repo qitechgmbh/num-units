@@ -2,27 +2,27 @@ use crate::prefix::{CENTI, KILO, MILLI};
 use typenum::*;
 
 // SI base unit
-base_units! {
-    SquareMeter: "squaremeter", "m²";
+units! {
+    SquareMeter: "m²", "square meter";
 }
 
-base_units! {
-    SquareKilometer: "squarekilometer", "km²";
-    SquareCentimeter: "squarecentimeter", "cm²";
-    SquareMillimeter: "squaremillimeter", "mm²";
+units! {
+    SquareKilometer: "km²", "square kilometer";
+    SquareCentimeter: "cm²", "square centimeter";
+    SquareMillimeter: "mm²", "square millimeter";
 }
 
-convert_base_unit! {
+convert_unit! {
     SquareKilometer: |squaremeter| squaremeter / (KILO * KILO);
     SquareMeter: |squarekilometer| squarekilometer * (KILO * KILO);
 }
 
-convert_base_unit! {
+convert_unit! {
     SquareCentimeter: |squaremeter| squaremeter / (CENTI * CENTI);
     SquareMeter: |squarecentimeter| squarecentimeter * (CENTI * CENTI);
 }
 
-convert_base_unit! {
+convert_unit! {
     SquareMillimeter: |squaremeter| squaremeter / (MILLI * MILLI);
     SquareMeter: |squaremillimeter| squaremillimeter * (MILLI * MILLI);
 }

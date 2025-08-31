@@ -2,16 +2,16 @@ use crate::prefix::MILLI;
 use typenum::*;
 
 // ===== SI BASE UNIT =====
-base_units! {
-    Candela: "candela", "cd";
+units! {
+    Candela: "cd", "candela";
 }
 
 // ===== METRIC PREFIXES =====
-base_units! {
-    Millicandela: "millicandela", "mcd";
+units! {
+    Millicandela: "mcd", "millicandela";
 }
 
-convert_base_unit! {
+convert_unit! {
     Millicandela: |candela| candela * MILLI;
     Candela: |millicandela| millicandela / MILLI;
 }

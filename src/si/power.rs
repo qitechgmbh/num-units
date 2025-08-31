@@ -1,32 +1,34 @@
 use typenum::*;
 
 // SI derived unit: watt (kilogram meter squared per second cubed)
-base_units! {
-    Watt: "watt", "W";
-    Kilowatt: "kilowatt", "kW";
-    Megawatt: "megawatt", "MW";
-    Horsepower: "horsepower", "hp";
+units! {
+    Watt: "W", "watt";
+    Kilowatt: "kW", "kilowatt";
+    Megawatt: "MW", "megawatt";
+    Horsepower: "hp", "horsepower";
 }
 
 // ===== CONVERSION RELATIONSHIPS =====
 
 // Kilowatt to Watt
-convert_base_unit! {
-    Kilowatt: |watt| watt / 1000.0;
-    Watt: |kilowatt| kilowatt * 1000.0;
+convert_unit! {
+    Kilowatt: |watt| watt / KILO;
+    Watt: |kilowatt| kilowatt * KILO;
 }
 
 // Megawatt to Watt
-convert_base_unit! {
-    Megawatt: |watt| watt / 1_000_000.0;
-    Watt: |megawatt| megawatt * 1_000_000.0;
+convert_unit! {
+    Megawatt: |watt| watt / MEGA;
+    Watt: |megawatt| megawatt * MEGA;
 }
 
 // Horsepower to Watt (mechanical horsepower: 1 hp = 745.7 W)
-convert_base_unit! {
+convert_unit! {
     Horsepower: |watt| watt / 745.7;
     Watt: |horsepower| horsepower * 745.7;
 }
+
+use crate::prefix::{KILO, MEGA};
 
 // Power quantity definition (Mass×Length²/Time³)
 use super::{SI, SIScale};

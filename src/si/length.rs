@@ -40,44 +40,43 @@
 /// - All length operations are dimensionally consistent
 /// - Unit conversions are automatic and type-safe
 /// - Compile-time dimensional analysis prevents errors
-
 use crate::prefix::{CENTI, KILO, MICRO, MILLI, NANO};
 use typenum::*;
 
 // SI base unit
-base_units! {
-    Meter: "meter", "m";
+units! {
+    Meter: "m", "meter";
 }
 
-base_units! {
-    Kilometer: "kilometer", "km";
-    Centimeter: "centimeter", "cm";
-    Millimeter: "millimeter", "mm";
-    Micrometer: "micrometer", "μm";
-    Nanometer: "nanometer", "nm";
+units! {
+    Kilometer: "km", "kilometer";
+    Centimeter: "cm", "centimeter";
+    Millimeter: "mm", "millimeter";
+    Micrometer: "μm", "micrometer";
+    Nanometer: "nm", "nanometer";
 }
 
-convert_base_unit! {
+convert_unit! {
     Kilometer: |meter| meter / KILO;
     Meter: |kilometer| kilometer * KILO;
 }
 
-convert_base_unit! {
+convert_unit! {
     Centimeter: |meter| meter / CENTI;
     Meter: |centimeter| centimeter * CENTI;
 }
 
-convert_base_unit! {
+convert_unit! {
     Millimeter: |meter| meter / MILLI;
     Meter: |millimeter| millimeter * MILLI;
 }
 
-convert_base_unit! {
+convert_unit! {
     Micrometer: |meter| meter / MICRO;
     Meter: |micrometer| micrometer * MICRO;
 }
 
-convert_base_unit! {
+convert_unit! {
     Nanometer: |meter| meter / NANO;
     Meter: |nanometer| nanometer * NANO;
 }
