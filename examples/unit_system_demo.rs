@@ -1,9 +1,9 @@
 #![feature(generic_const_exprs)]
 
-use nom::quantity::Quantity;
-use nom::si::length::LengthDimension;
-use nom::si::mass::MassDimension;
-use nom::si::temperature::ThermodynamicTemperatureDimension;
+use num_units::quantity::Quantity;
+use num_units::si::length::LengthDimension;
+use num_units::si::mass::MassDimension;
+use num_units::si::temperature::ThermodynamicTemperatureDimension;
 
 fn main() {
     println!("🎯 Unit System Demo with Individual Unit Definitions!");

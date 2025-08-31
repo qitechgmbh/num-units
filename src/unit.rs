@@ -62,8 +62,8 @@ pub trait Unit {
 ///
 /// # Examples
 /// ```ignore
-/// # use nom::unit;
-/// # use nom::si::{Length, ThermodynamicTemperature};
+/// # use num_units::unit;
+/// # use num_units::si::{Length, ThermodynamicTemperature};
 /// unit!(Meter, meters, 1.0, 0.0, "Meter", "m", Length);
 /// unit!(Foot, feet, 0.3048, 0.0, "Foot", "ft", Length);
 /// unit!(Celsius, celsius, 1.0, 273.15, "Celsius", "°C", ThermodynamicTemperature);

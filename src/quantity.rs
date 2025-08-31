@@ -13,8 +13,8 @@ use num_traits::{Num, Zero};
 /// # Examples
 /// ```rust
 /// # #![feature(generic_const_exprs)]
-/// # use nom::quantity::Quantity;
-/// # use nom_macros::dimension;
+/// # use num_units::quantity::Quantity;
+/// # use num_units_macros::dimension;
 /// # #[dimension(L, M, T)] pub struct Physics;
 /// # type LengthDimension = Physics<1, 0, 0>;
 ///

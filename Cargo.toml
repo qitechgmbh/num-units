@@ -1,12 +1,12 @@
 [package]
-name = "nom"
+name = "num-units"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-nom-macros = { path = "nom-macros" }
+num-units-macros = { path = "num-units-macros" }
 num-traits = { version = "0.2", default-features = false }
 paste = "1.0"
 
 [workspace]
-members = ["nom-macros"]
+members = ["num-units-macros"]
