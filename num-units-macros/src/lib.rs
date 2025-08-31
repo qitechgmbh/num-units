@@ -19,10 +19,10 @@
 //!
 //! ```rust
 //! #![feature(generic_const_exprs)]
-//! use nom_macros::dimension;
+//! use nom_macros::system;
 //!
 //! // Define your dimensional system
-//! #[dimension(L, M, T)]  // Length, Mass, Time
+//! #[system(L, M, T)]  // Length, Mass, Time
 //! pub struct Physics;
 //!
 //! // Create type aliases
@@ -71,7 +71,7 @@ impl Parse for DimensionArgs {
     }
 }
 
-/// # The Ultimate Dimension Analysis Proc Macro! 🎩✨⚡
+/// # The Ultimate System Analysis Proc Macro! 🎩✨⚡
 ///
 /// This procedural macro generates a compile-time dimensional analysis system using
 /// const generic expressions. It creates zero-cost abstractions for unit checking
@@ -81,10 +81,10 @@ impl Parse for DimensionArgs {
 ///
 /// ```rust
 /// #![feature(generic_const_exprs)]
-/// use nom_macros::dimension;
+/// use nom_macros::system;
 ///
 /// // Define a dimensional system with any number of dimensions
-/// #[dimension(L, M, T)]  // Length, Mass, Time
+/// #[system(L, M, T)]  // Length, Mass, Time
 /// pub struct Physics;
 ///
 /// // Create type aliases for common quantities
@@ -104,8 +104,8 @@ impl Parse for DimensionArgs {
 /// Dimensional exponents are added during multiplication:
 /// ```rust
 /// # #![feature(generic_const_exprs)]
-/// # use nom_macros::dimension;
-/// # #[dimension(L, M, T)] pub struct Physics;
+/// # use nom_macros::system;
+/// # #[system(L, M, T)] pub struct Physics;
 /// # type Length = Physics<1, 0, 0>;
 /// # type Time = Physics<0, 0, 1>;
 /// # type Velocity = Physics<1, 0, -1>;
@@ -118,8 +118,8 @@ impl Parse for DimensionArgs {
 /// Dimensional exponents are subtracted during division:
 /// ```rust
 /// # #![feature(generic_const_exprs)]
-/// # use nom_macros::dimension;
-/// # #[dimension(L, M, T)] pub struct Physics;
+/// # use nom_macros::system;
+/// # #[system(L, M, T)] pub struct Physics;
 /// # type Length = Physics<1, 0, 0>;
 /// # type Area = Physics<2, 0, 0>;
 /// let area: Area = Physics::new();
@@ -135,8 +135,8 @@ impl Parse for DimensionArgs {
 ///
 /// ```rust
 /// # #![feature(generic_const_exprs)]
-/// # use nom_macros::dimension;
-/// # #[dimension(L, M, T)] pub struct Physics;
+/// # use nom_macros::system;
+/// # #[system(L, M, T)] pub struct Physics;
 /// # type Length = Physics<1, 0, 0>;
 /// # type Area = Physics<2, 0, 0>;
 /// # type Volume = Physics<3, 0, 0>;
@@ -154,9 +154,9 @@ impl Parse for DimensionArgs {
 ///
 /// ```rust
 /// # #![feature(generic_const_exprs)]
-/// # use nom_macros::dimension;
+/// # use nom_macros::system;
 /// # use num_traits::{CheckedMul, Zero, One};
-/// # #[dimension(L, M, T)] pub struct Physics;
+/// # #[system(L, M, T)] pub struct Physics;
 /// # type Length = Physics<1, 0, 0>;
 /// let length1: Length = Physics::new();
 /// let length2: Length = Physics::new();
@@ -173,7 +173,7 @@ impl Parse for DimensionArgs {
 ///
 /// ### Classical Mechanics (SI Base Units)
 /// ```rust
-/// #[dimension(L, M, T, I, TH, N, J)]  // Length, Mass, Time, Current, Temperature, Amount, Luminosity
+/// #[system(L, M, T, I, TH, N, J)]  // Length, Mass, Time, Current, Temperature, Amount, Luminosity
 /// pub struct SI;
 ///
 /// type Meter = SI<1, 0, 0, 0, 0, 0, 0>;
@@ -184,7 +184,7 @@ impl Parse for DimensionArgs {
 ///
 /// ### Electromagnetism
 /// ```rust
-/// #[dimension(Q, B, E)]  // Charge, Magnetic field, Energy
+/// #[system(Q, B, E)]  // Charge, Magnetic field, Energy
 /// pub struct ElectroMagnetic;
 ///
 /// type Charge = ElectroMagnetic<1, 0, 0>;
@@ -195,7 +195,7 @@ impl Parse for DimensionArgs {
 ///
 /// ### Computer Graphics (3D Space)
 /// ```rust
-/// #[dimension(X, Y, Z)]
+/// #[system(X, Y, Z)]
 /// pub struct Space3D;
 ///
 /// type XAxis = Space3D<1, 0, 0>;
@@ -210,8 +210,8 @@ impl Parse for DimensionArgs {
 /// The dimensional analysis happens entirely at compile time:
 /// ```rust,compile_fail
 /// # #![feature(generic_const_exprs)]
-/// # use nom_macros::dimension;
-/// # #[dimension(L, T)] pub struct Physics;
+/// # use nom_macros::system;
+/// # #[system(L, T)] pub struct Physics;
 /// # type Length = Physics<1, 0>;
 /// # type Time = Physics<0, 1>;
 /// let length: Length = Physics::new();
@@ -222,8 +222,8 @@ impl Parse for DimensionArgs {
 /// But valid operations compile without overhead:
 /// ```rust
 /// # #![feature(generic_const_exprs)]
-/// # use nom_macros::dimension;
-/// # #[dimension(L, T)] pub struct Physics;
+/// # use nom_macros::system;
+/// # #[system(L, T)] pub struct Physics;
 /// # type Length = Physics<1, 0>;
 /// # type Time = Physics<0, 1>;
 /// # type Velocity = Physics<1, -1>;
@@ -240,12 +240,12 @@ impl Parse for DimensionArgs {
 /// ## Requirements
 ///
 /// - Requires nightly Rust with `#![feature(generic_const_exprs)]`
-/// - Dimension names must be valid Rust identifiers
-/// - At least one dimension must be specified
+/// - System names must be valid Rust identifiers
+/// - At least one system must be specified
 ///
 /// ## Generated Code Structure
 ///
-/// For `#[dimension(A, B, C)]`, the macro generates:
+/// For `#[system(A, B, C)]`, the macro generates:
 ///
 /// ```rust,ignore
 /// #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -274,7 +274,7 @@ impl Parse for DimensionArgs {
 /// }
 /// ```
 #[proc_macro_attribute]
-pub fn dimension(args: TokenStream, input: TokenStream) -> TokenStream {
+pub fn system(args: TokenStream, input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let struct_name = &input.ident;
 
@@ -285,7 +285,7 @@ pub fn dimension(args: TokenStream, input: TokenStream) -> TokenStream {
     if dimensions.is_empty() {
         return syn::Error::new_spanned(
             struct_name,
-            "Expected dimension names as arguments, e.g., #[dimension(L, M, T)]",
+            "Expected dimension names as arguments, e.g., #[system(L, M, T)]",
         )
         .to_compile_error()
         .into();
@@ -313,7 +313,7 @@ pub fn dimension(args: TokenStream, input: TokenStream) -> TokenStream {
             }
         }
 
-        // 🔥⚡ DIMENSIONAL ANALYSIS with core::ops::Add and Sub! ⚡🔥
+        // 🔥⚡ SYSTEM ANALYSIS with core::ops::Add and Sub! ⚡🔥
 
         // Add: represents dimensional multiplication (add exponents)
         // Length + Length = Area (in dimensional space)

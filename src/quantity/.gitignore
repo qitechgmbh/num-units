@@ -1,4 +1,3 @@
-# *.rs
 as_primitive.rs
 checked_add.rs
 checked_div.rs

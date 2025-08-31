@@ -1,10 +1,10 @@
 use crate::{
     prefix::{MICRO, MILLI, NANO, PICO},
-    si::SI,
+    si::ISQ,
     unit,
 };
 
-pub type TimeDimension = SI<0, 0, 1, 0, 0, 0, 0>;
+pub type TimeDimension = ISQ<0, 0, 1, 0, 0, 0, 0>;
 
 // SI base unit
 unit!(Second, seconds, 1.0, 0.0, "second", "s", TimeDimension);

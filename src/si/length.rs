@@ -1,10 +1,10 @@
 use crate::{
     prefix::{CENTI, KILO, MICRO, MILLI, NANO},
-    si::SI,
+    si::ISQ,
     unit,
 };
 
-pub type LengthDimension = SI<1, 0, 0, 0, 0, 0, 0>;
+pub type LengthDimension = ISQ<1, 0, 0, 0, 0, 0, 0>;
 
 // SI base unit
 unit!(Meter, meters, 1.0, 0.0, "meter", "m", LengthDimension);

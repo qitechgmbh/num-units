@@ -1,4 +1,4 @@
-dimension!(SI, L, M, T, I, TH, N, J);
+system!(ISQ, L, M, T, I, TH, N, J);
 
 // Unit modules
 pub mod amount;
@@ -18,4 +18,4 @@ pub use mass::*;
 pub use temperature::*;
 pub use time::*;
 
-use crate::dimension;
+use crate::system;

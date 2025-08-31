@@ -1,10 +1,10 @@
 use crate::{
     prefix::{KILO, MEGA, MICRO, MILLI, NANO, PICO},
-    si::SI,
+    si::ISQ,
     unit,
 };
 
-pub type ElectricCurrentDimension = SI<0, 0, 0, 1, 0, 0, 0>;
+pub type ElectricCurrentDimension = ISQ<0, 0, 0, 1, 0, 0, 0>;
 
 // SI base unit
 unit!(

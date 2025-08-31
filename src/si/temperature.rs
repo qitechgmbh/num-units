@@ -1,6 +1,6 @@
-use crate::{si::SI, unit};
+use crate::{si::ISQ, unit};
 
-pub type ThermodynamicTemperatureDimension = SI<0, 0, 0, 0, 1, 0, 0>;
+pub type ThermodynamicTemperatureDimension = ISQ<0, 0, 0, 0, 1, 0, 0>;
 
 // SI base unit
 unit!(

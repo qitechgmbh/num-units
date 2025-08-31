@@ -26,7 +26,7 @@ where
 //
 // This provides power operations like:
 // - quantity^u32 (always available for integer bases)
-// - quantity^i32 (for integer base types, always available) 
+// - quantity^i32 (for integer base types, always available)
 // - f32_quantity^f32 (only with "std" or "libm" features)
 // - f64_quantity^f64 (only with "std" or "libm" features)
 //
@@ -47,9 +47,9 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::motion::length::i32::Length;
     use crate::motion::length::f32::Length as LengthF32;
     use crate::motion::length::f64::Length as LengthF64;
+    use crate::motion::length::i32::Length;
     use num_traits::Pow; // Import the Pow trait to use the .pow() method
 
     #[test]

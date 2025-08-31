@@ -1,20 +1,29 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![feature(generic_const_exprs)]
 
-pub mod dimension;
 pub mod prefix;
+#[macro_use]
 pub mod quantity;
 pub mod si;
+pub mod system;
 pub mod unit;
 
 // Re-export num_traits for convenience
 pub use num_traits;
 
+system!(
+    ISQ,
+    LENGTH,
+    MASS,
+    TIME,
+    CURRENT,
+    TEMPERATURE,
+    AMOUNT_OF_SUBSTANCE,
+    LUMINOSITY
+);
+
 pub mod motion {
-    use crate::{dimension, quantity};
-
-    dimension!(Motion, LENGTH, TIME); // Length / Time
-
+    crate::system!(Motion, LENGTH, TIME); // Length / Time
     // Basic
     quantity!(Scalar, Motion<0, 0>);
     quantity!(Time, Motion<0, 1>); // Time
