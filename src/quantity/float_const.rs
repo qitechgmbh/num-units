@@ -160,8 +160,8 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::motion::length::f64::Length;
-    use crate::motion::length::f32::Length as LengthF32;
+    use crate::length::f64::Length;
+    use crate::length::f32::Length as LengthF32;
     use num_traits::FloatConst;
 
     #[test]

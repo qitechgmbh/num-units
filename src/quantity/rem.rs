@@ -31,10 +31,10 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::motion::length::i32::Length;
-    use crate::motion::length::u32::Length as LengthU32;
-    use crate::motion::length::i64::Length as LengthI64;
-    use crate::motion::length::f64::Length as LengthF64;
+    use crate::length::i32::Length;
+    use crate::length::u32::Length as LengthU32;
+    use crate::length::i64::Length as LengthI64;
+    use crate::length::f64::Length as LengthF64;
 
     #[test]
     fn test_remainder_same_dimension() {

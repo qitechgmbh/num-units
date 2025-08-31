@@ -1,18 +1,16 @@
-use crate::{base_units::*, prefix::*, unit::Unit};
+use crate::prefix::MILLI;
 
 // ===== SI BASE UNIT =====
-base_unit! {
-    dimension: LuminosityDimension;
+base_units! {
     Candela: "candela", "cd";
 }
 
 // ===== METRIC PREFIXES =====
-base_unit! {
-    dimension: LuminosityDimension;
+base_units! {
     Millicandela: "millicandela", "mcd";
 }
 
 convert_base_unit! {
-    Candela: |candela| candela * MILLI;
-    Millicandela: |millicandela| millicandela / MILLI;
+    Millicandela: |candela| candela * MILLI;
+    Candela: |millicandela| millicandela / MILLI;
 }

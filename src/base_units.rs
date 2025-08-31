@@ -15,6 +15,14 @@ pub struct TemperatureDimension;
 #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub struct LengthDimension;
 
+/// Area dimension
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
+pub struct AreaDimension;
+
+/// Volume dimension
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
+pub struct VolumeDimension;
+
 /// Mass dimension
 #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub struct MassDimension;
@@ -39,11 +47,15 @@ pub struct LuminosityDimension;
 #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub struct ScalarDimension;
 
+/// Angle dimension (for angular quantities)
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
+pub struct AngleDimension;
+
 /// Macro for creating new base units
 ///
 /// # Syntax
 /// ```ignore
-/// base_unit! {
+/// base_units! {
 ///     dimension: DimensionType;
 ///     UnitName: "unit name", "abbreviation";
 /// }
@@ -51,39 +63,26 @@ pub struct ScalarDimension;
 ///
 /// # Examples
 /// ```ignore
-/// base_unit! {
+/// base_units! {
 ///     dimension: LengthDimension;
 ///     Meter: "meter", "m";
 ///     Foot: "foot", "ft";
 /// }
 /// ```
 #[macro_export]
-macro_rules! base_unit {
-    (dimension: $dimension:ty; $($(#[$unit_attr:meta])* $unit:ident: $name:expr, $abbrev:expr;)+) => {
-        $(
-            $(#[$unit_attr])*
-            #[doc = $name]
-            #[allow(non_camel_case_types)]
-            #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
-            pub struct $unit;
+macro_rules! base_units {
 
-            impl Unit for $unit {
-                type Dimension = $dimension;
-            }
-        )+
-    };
 
-    // Legacy syntax for backward compatibility (assumes no dimension)
+    // Legacy syntax for backward compatibility
     ($($(#[$unit_attr:meta])* $unit:ident: $name:expr, $abbrev:expr;)+) => {
         $(
             $(#[$unit_attr])*
             #[doc = $name]
+            #[doc = concat!("Abbreviation: `", $abbrev, "`")]
             #[allow(non_camel_case_types)]
-            #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
             pub struct $unit;
 
-            // Note: Unit trait implementation is minimal now - just a marker trait
-            // Actual conversions are handled by FromBaseUnit implementations
+            impl $crate::unit::Unit for $unit {}
         )+
     };
 }
@@ -104,32 +103,15 @@ pub trait IntoBaseUnit<To: Unit> {
 
 /// Macro for establishing bidirectional conversion relationships between units
 ///
-/// # Syntax
-/// ```ignore
-/// convert_base_unit! {
-///     TargetUnitA: |source_param| { conversion_from_source_to_target };
-///     TargetUnitB: |target_param| { conversion_from_target_to_source };
-/// }
-/// ```
-///
 /// The first unit is the **target** unit (what you're converting TO).
 /// The closure defines how to convert FROM the source unit TO the target unit.
 ///
 /// # Examples
 /// ```ignore
-/// convert_base_unit! {
-///     Celsius: |kelvin| kelvin - 273.15;      // To get Celsius, subtract 273.15 from Kelvin
-///     Kelvin: |celsius| celsius + 273.15;     // To get Kelvin, add 273.15 to Celsius
-/// }
 ///
 /// convert_base_unit! {
-///     Fahrenheit: |kelvin| (kelvin - 273.15) * 9.0 / 5.0 + 32.0;  // Kelvin to Fahrenheit
-///     Kelvin: |fahrenheit| (fahrenheit - 32.0) * 5.0 / 9.0 + 273.15;  // Fahrenheit to Kelvin
-/// }
-///
-/// convert_base_unit! {
-///     Kilometer: |meter| meter / 1000.0;      // To get Kilometer, divide Meter by 1000
-///     Meter: |kilometer| kilometer * 1000.0;  // To get Meter, multiply Kilometer by 1000
+///     Kilometer: |meter| meter * KILO;      // To get Kilometer, divide Meter by 1000
+///     Meter: |kilometer| kilometer / KILO;  // To get Meter, multiply Kilometer by 1000
 /// }
 /// ```
 #[macro_export]
@@ -138,7 +120,7 @@ macro_rules! convert_base_unit {
     // Process pairs of units
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1
-        impl FromBaseUnit<$unit2> for $unit1 {
+        impl $crate::base_units::FromBaseUnit<$unit2> for $unit1 {
             fn to_base(value: f64) -> f64 {
                 let $param2 = value;
                 $expr2
@@ -151,7 +133,7 @@ macro_rules! convert_base_unit {
         }
 
         // Reverse conversion: $unit1 -> $unit2
-        impl FromBaseUnit<$unit1> for $unit2 {
+        impl $crate::base_units::FromBaseUnit<$unit1> for $unit2 {
             fn to_base(value: f64) -> f64 {
                 let $param1 = value;
                 $expr1
@@ -167,89 +149,6 @@ macro_rules! convert_base_unit {
         convert_base_unit! { $($rest)* }
     };
 
-    // Base case: empty
+    // Base case: no more conversions to process
     () => {};
-
-    // Legacy syntax patterns (keeping for backward compatibility)
-
-    // |param1: UnitA| { expr }; |param2: UnitB| { expr };
-    (|$param1:ident: $from:ident| $forward:expr; |$param2:ident: $to:ident| $reverse:expr;) => {
-        // Forward conversion: From -> To
-        impl FromBaseUnit<$from> for $to {
-            fn to_base(value: f64) -> f64 {
-                let $param1 = value;
-                $forward
-            }
-
-            fn from_base(base_value: f64) -> f64 {
-                base_value
-            }
-        }
-
-        // Reverse conversion: To -> From
-        impl FromBaseUnit<$to> for $from {
-            fn to_base(value: f64) -> f64 {
-                let $param2 = value;
-                $reverse
-            }
-
-            fn from_base(base_value: f64) -> f64 {
-                base_value
-            }
-        }
-    };
-
-    // Old syntax: DerivedUnit = BaseUnit * CONSTANT
-    ($($derived:ident = $base:ident * $constant:expr;)+) => {
-        $(
-            // Forward conversion: Base -> Derived
-            impl FromBaseUnit<$base> for $derived {
-                fn to_base(value: f64) -> f64 {
-                    value * $constant
-                }
-
-                fn from_base(base_value: f64) -> f64 {
-                    base_value / $constant
-                }
-            }
-
-            // Reverse conversion: Derived -> Base
-            impl FromBaseUnit<$derived> for $base {
-                fn to_base(value: f64) -> f64 {
-                    value / $constant
-                }
-
-                fn from_base(base_value: f64) -> f64 {
-                    base_value * $constant
-                }
-            }
-        )+
-    };
-
-    // Old syntax with offset: Kelvin = Celsius * 1.0 + 273.15
-    ($($derived:ident = $base:ident * $factor:tt + $offset:tt;)+) => {
-        $(
-            // Forward conversion: Base -> Derived
-            impl FromBaseUnit<$base> for $derived {
-                fn to_base(value: f64) -> f64 {
-                    value * $factor + $offset
-                }
-
-                fn from_base(base_value: f64) -> f64 {
-                    (base_value - $offset) / $factor
-                }
-            }
-
-            // Reverse conversion: Derived -> Base
-            impl FromBaseUnit<$derived> for $base {
-                fn to_base(value: f64) -> f64 {
-                    (value - $offset) / $factor
-                }
-
-                fn from_base(base_value: f64) -> f64 {
-                    value * $factor + $offset
-                }
-            }
-        )+
-    };
 }

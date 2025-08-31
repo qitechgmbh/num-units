@@ -1,6 +1,6 @@
 //! Demonstration that the quantity! macro works with any dimension system
 
-use num_units::motion::{area::Area, length::Length, scalar::Scalar, volume::Volume};
+use num_units::{area::Area, length::Length, scalar::Scalar, volume::Volume};
 
 fn main() {
     println!("quantity! macro works with any dimension system!");

@@ -1,14 +1,12 @@
-use crate::{base_units::*, prefix::*, unit::Unit};
+use crate::prefix::KILO;
 
 // ===== SI/METRIC UNITS =====
 // SI base unit
-base_unit! {
-    dimension: MassDimension;
+base_units! {
     Gram: "gram", "g";
     Kilogram: "kilogram", "kg";
     Tonne: "tonne", "t";
 }
-
 
 convert_base_unit! {
     Kilogram: |gram| gram * KILO;

@@ -1,17 +1,11 @@
-use crate::{
-    base_units::*,
-    prefix::{CENTI, KILO, MICRO, MILLI, NANO},
-    unit::Unit,
-};
+use crate::prefix::{CENTI, KILO, MICRO, MILLI, NANO};
 
 // SI base unit
-base_unit! {
-    dimension: LengthDimension;
+base_units! {
     Meter: "meter", "m";
 }
 
-base_unit! {
-    dimension: LengthDimension;
+base_units! {
     Kilometer: "kilometer", "km";
     Centimeter: "centimeter", "cm";
     Millimeter: "millimeter", "mm";

@@ -1,6 +1,6 @@
 use super::Quantity;
-use num_traits::{Num, One};
 use core::ops::Add;
+use num_traits::{Num, One};
 
 // One trait implementation for quantities
 // Provides the multiplicative identity (one) for quantities
@@ -44,11 +44,11 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::motion::length::i32::Length;
-    use crate::motion::length::u32::Length as LengthU32;
-    use crate::motion::length::f32::Length as LengthF32;
-    use crate::motion::length::f64::Length as LengthF64;
-    use crate::motion::time::i32::Time;
+    use crate::length::f32::Length as LengthF32;
+    use crate::length::f64::Length as LengthF64;
+    use crate::length::i32::Length;
+    use crate::length::u32::Length as LengthU32;
+    use crate::time::i32::Time;
     use num_traits::Zero;
 
     #[test]
@@ -58,7 +58,7 @@ mod tests {
         assert_eq!(*one_length.raw(), 1);
         assert!(one_length.is_one());
 
-        let one_time = crate::motion::time::f64::Time::one();
+        let one_time = crate::time::f64::Time::one();
         assert_eq!(*one_time.raw(), 1.0);
         assert!(one_time.is_one());
     }

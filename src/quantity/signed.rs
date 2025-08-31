@@ -29,8 +29,8 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::motion::length::f64::Length;
-    use crate::motion::length::i32::Length as LengthI32;
+    use crate::length::f64::Length;
+    use crate::length::i32::Length as LengthI32;
 
     #[test]
     fn test_absolute_value() {

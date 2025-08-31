@@ -18,7 +18,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::motion::length::f64::Length;
+    use crate::length::f64::Length;
 
     #[test]
     fn test_zero() {

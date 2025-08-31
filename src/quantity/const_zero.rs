@@ -1,5 +1,5 @@
 use super::Quantity;
-use num_traits::{Num, ConstZero};
+use num_traits::{ConstZero, Num};
 
 // ConstZero trait implementation for quantities
 // Provides a const zero value for quantities at compile time
@@ -25,11 +25,11 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::motion::length::i32::Length;
-    use crate::motion::length::u32::Length as LengthU32;
-    use crate::motion::length::f32::Length as LengthF32;
-    use crate::motion::length::f64::Length as LengthF64;
-    use crate::motion::time::i32::Time;
+    use crate::length::f32::Length as LengthF32;
+    use crate::length::f64::Length as LengthF64;
+    use crate::length::i32::Length;
+    use crate::length::u32::Length as LengthU32;
+    use crate::time::i32::Time;
     use num_traits::{ConstZero, Zero};
 
     #[test]
@@ -38,7 +38,7 @@ mod tests {
         const ZERO_LENGTH: Length = Length::ZERO;
         assert_eq!(*ZERO_LENGTH.raw(), 0);
 
-        const ZERO_TIME: crate::motion::time::f64::Time = crate::motion::time::f64::Time::ZERO;
+        const ZERO_TIME: crate::time::f64::Time = crate::time::f64::Time::ZERO;
         assert_eq!(*ZERO_TIME.raw(), 0.0);
     }
 
@@ -57,7 +57,7 @@ mod tests {
         assert_eq!(*zero_length.raw(), 0);
         assert!(zero_length.is_zero());
 
-        let zero_time = crate::motion::time::f64::Time::ZERO;
+        let zero_time = crate::time::f64::Time::ZERO;
         assert_eq!(*zero_time.raw(), 0.0);
         assert!(zero_time.is_zero());
     }
@@ -110,11 +110,7 @@ mod tests {
     #[test]
     fn test_const_zero_array() {
         // Test that const zero can be used to initialize arrays
-        const ZERO_ARRAY: [Length; 3] = [
-            Length::ZERO,
-            Length::ZERO,
-            Length::ZERO,
-        ];
+        const ZERO_ARRAY: [Length; 3] = [Length::ZERO, Length::ZERO, Length::ZERO];
 
         for zero in &ZERO_ARRAY {
             assert_eq!(*zero.raw(), 0);

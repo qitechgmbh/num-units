@@ -47,9 +47,9 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::motion::length::f32::Length as LengthF32;
-    use crate::motion::length::f64::Length as LengthF64;
-    use crate::motion::length::i32::Length;
+    use crate::length::f32::Length as LengthF32;
+    use crate::length::f64::Length as LengthF64;
+    use crate::length::i32::Length;
     use num_traits::Pow; // Import the Pow trait to use the .pow() method
 
     #[test]

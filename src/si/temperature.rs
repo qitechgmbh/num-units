@@ -1,9 +1,5 @@
-use crate::base_units::*;
-use crate::unit::Unit;
-
 // ===== SI BASE UNIT =====
-base_unit! {
-    dimension: TemperatureDimension;
+base_units! {
     Kelvin: "kelvin", "K";
     Celsius: "celsius", "°C";
     Fahrenheit: "fahrenheit", "°F";

@@ -67,10 +67,10 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::motion::length::f64::Length;
-    use crate::motion::length::i32::Length as LengthI32;
-    use crate::motion::scalar::f64::Scalar;
-    use crate::motion::scalar::i32::Scalar as ScalarI32;
+    use crate::length::f64::Length;
+    use crate::length::i32::Length as LengthI32;
+    use crate::scalar::f64::Scalar;
+    use crate::scalar::i32::Scalar as ScalarI32;
 
     #[test]
     fn test_mul_add_same_type() {

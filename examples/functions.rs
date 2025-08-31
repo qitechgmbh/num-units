@@ -1,9 +1,7 @@
 //! Demonstration that the quantity! macro works with any dimension system
 
 use num_traits::Num;
-use num_units::motion::{
-    area::Area, length::Length, time::Time, velocity::Velocity, volume::Volume,
-};
+use num_units::{area::Area, length::Length, time::Time, velocity::Velocity, volume::Volume};
 
 fn calc_area<V>(length: Length<V>, width: Length<V>) -> Area<V>
 where
@@ -22,9 +20,9 @@ where
 fn main() {
     println!("quantity! macro works with any dimension system!");
 
-    let l1 = Length::from_raw(3);
-    let l2 = Length::from_raw(4);
-    let t1 = Time::from_raw(5);
+    let l1 = Length::from_raw(3.0);
+    let l2 = Length::from_raw(4.0);
+    let t1 = Time::from_raw(5.0);
 
     // Infer dimensions in expressions
     let l3: Length<_> = l1 + l2; // Length + Length = Length
@@ -32,10 +30,10 @@ fn main() {
     let vol1: Volume<_> = a1 * l1; // Area * Length = Volume
     let vel1: Velocity<_> = l3 / t1; // Length / Time = Velocity
 
-    assert_eq!(*l3.raw(), 7);
-    assert_eq!(*a1.raw(), 12);
-    assert_eq!(*vol1.raw(), 36);
-    assert_eq!(*vel1.raw(), 7 / 5);
+    assert_eq!(*l3.raw(), 7.0);
+    assert_eq!(*a1.raw(), 12.0);
+    assert_eq!(*vol1.raw(), 36.0);
+    assert_eq!(*vel1.raw(), 7.0 / 5.0);
 
     // Create generic functions over quantities
     let length: Length<i8> = Length::from_raw(1);

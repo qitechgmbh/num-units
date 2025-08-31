@@ -1,14 +1,12 @@
-use crate::{base_units::*, prefix::*, unit::Unit};
+use crate::prefix::{KILO, MICRO, MILLI, NANO, PICO};
 
 // ===== SI BASE UNIT =====
-base_unit! {
-    dimension: AmountDimension;
+base_units! {
     Mole: "mole", "mol";
 }
 
 // ===== METRIC PREFIXES =====
-base_unit! {
-    dimension: AmountDimension;
+base_units! {
     Millimole: "millimole", "mmol";
     Micromole: "micromole", "μmol";
     Nanomole: "nanomole", "nmol";
@@ -17,8 +15,7 @@ base_unit! {
 }
 
 // ===== PARTICLE COUNTING =====
-base_unit! {
-    dimension: AmountDimension;
+base_units! {
     Particle: "particle", "particle";
 }
 

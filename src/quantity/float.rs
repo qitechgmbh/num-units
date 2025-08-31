@@ -276,7 +276,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::motion::length::f64::Length;
+    use crate::length::f64::Length;
 
     #[test]
     fn test_float_constants() {
@@ -533,7 +533,7 @@ mod tests {
     fn test_different_dimensions() {
         // Test that Float operations work regardless of dimension
         let length = Length::from_raw(3.14);
-        let time = crate::motion::time::f64::Time::from_raw(2.71);
+        let time = crate::time::f64::Time::from_raw(2.71);
 
         assert!(length.is_finite());
         assert!(time.is_finite());

@@ -31,8 +31,8 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::motion::length::f64::Length;
-    use crate::motion::area::f64::Area;
+    use crate::length::f64::Length;
+    use crate::area::f64::Area;
 
     #[test]
     fn test_scalar_multiplication() {

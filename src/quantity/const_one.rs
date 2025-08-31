@@ -23,10 +23,10 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::motion::length::i32::Length;
-    use crate::motion::length::u32::Length as LengthU32;
-    use crate::motion::length::f32::Length as LengthF32;
-    use crate::motion::length::f64::Length as LengthF64;
+    use crate::length::f32::Length as LengthF32;
+    use crate::length::f64::Length as LengthF64;
+    use crate::length::i32::Length;
+    use crate::length::u32::Length as LengthU32;
 
     #[test]
     fn test_one_basic() {

@@ -16,12 +16,11 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::motion;
 
     #[test]
     fn test_same_dimension_subtraction() {
-        let length1 = motion::length::f64::Length::from_raw(5.0);
-        let length2 = motion::length::f64::Length::from_raw(3.0);
+        let length1 = crate::length::f64::Length::from_raw(5.0);
+        let length2 = crate::length::f64::Length::from_raw(3.0);
 
         let diff = length1 - length2;
         assert_eq!(*diff.raw(), 2.0);

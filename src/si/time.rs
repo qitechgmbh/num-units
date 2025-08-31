@@ -1,14 +1,16 @@
-use crate::{base_units::*, prefix::*, unit::Unit};
+use crate::prefix::{KILO, MICRO, MILLI, NANO, PICO};
+
+// ===== SI BASE UNIT =====rate::prefix::{KILO, MICRO, MILLI, NANO, PICO};
+quantity!(Time, crate::ISQ<Z0, Z0, Z0, P1, Z0, Z0, Z0>); // Time
+use typenum::*;
 
 // ===== SI BASE UNIT =====
-base_unit! {
-    dimension: TimeDimension;
+base_units! {
     Second: "second", "s";
 }
 
 // ===== METRIC PREFIXES =====
-base_unit! {
-    dimension: TimeDimension;
+base_units! {
     Millisecond: "millisecond", "ms";
     Microsecond: "microsecond", "μs";
     Nanosecond: "nanosecond", "ns";
