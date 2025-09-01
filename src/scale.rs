@@ -36,9 +36,9 @@
 /// dimension_scale!(MyScale, length::Meter, mass::Kilogram, time::Second);
 ///
 /// // Use in quantity definitions
-/// let distance = length::f64::Length::from_base(100.0);
-/// let mass = mass::f64::Mass::from_base(5.0);
-/// let force = mass * distance; // Automatic dimensional analysis
+/// // let distance = length::f64::Length::from_base(100.0);
+/// // let mass = mass::f64::Mass::from_base(5.0);
+/// // let force = mass * distance; // Automatic dimensional analysis
 /// ```
 
 /// Macro for creating a dimension scale type

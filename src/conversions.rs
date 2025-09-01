@@ -29,15 +29,16 @@
 /// ## Usage Patterns
 ///
 /// ```rust
-/// use num_units::si::length;
+/// use num_units::length::Length;
+/// use num_units::si::length::{Meter, Kilometer};
 ///
 /// // Create quantities in different units
-/// let meters = length::f64::Length::from_meter(1000.0);
-/// let kilometers = length::f64::Length::from_kilometer(1.0);
+/// let meters = Length::from::<Meter>(1000.0);
+/// let kilometers = Length::from::<Kilometer>(1.0);
 ///
 /// // Automatic conversions between units
-/// let meters_from_km = kilometers.as_meter();  // Returns 1000.0
-/// let km_from_meters = meters.as_kilometer();  // Returns 1.0
+/// let meters_from_km = kilometers.to::<Meter>();  // Returns 1000.0
+/// let km_from_meters = meters.to::<Kilometer>();  // Returns 1.0
 ///
 /// // All conversions are type-safe and checked at compile time
 /// ```

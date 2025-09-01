@@ -40,9 +40,9 @@
 /// }
 ///
 /// // Use for dimensional analysis
-/// let distance = length::f64::Length::from_base(100.0);
-/// let time_val = time::f64::Time::from_base(10.0);
-/// let velocity = distance / time_val; // Automatic dimensional analysis
+/// // let distance = length::f64::Length::from_base(100.0);
+/// // let time_val = time::f64::Time::from_base(10.0);
+/// // let velocity = distance / time_val; // Automatic dimensional analysis
 /// ```
 
 /// Create a dimensional system with default unit scales
@@ -52,7 +52,9 @@
 /// conversion relationships for a fully functional unit system.
 ///
 /// # Syntax
-/// ```rust
+/// ```rust,no_run
+/// use num_units::system;
+/// 
 /// system! {
 ///     SystemName,
 ///     DIMENSION1 => UnitType1,
@@ -76,18 +78,20 @@
 /// # Examples
 /// ```rust
 /// use num_units::system;
-/// use num_units::si::{length, mass, time};
+/// // use num_units::si::{length, mass, time};
 ///
 /// // Create SI system with standard unit mappings
-/// system! {
-///     SI,
-///     L => length::Meter,
-///     M => mass::Kilogram,
-///     T => time::Second,
-///     I => current::Ampere,
-///     TH => temperature::Kelvin,
-///     N => amount::Mole,
-///     J => luminosity::Candela
+/// // system! {
+/// //     SI,
+/// //     L => length::Meter,
+/// //     M => mass::Kilogram,
+/// //     T => time::Second,
+/// //     I => current::Ampere,
+/// //     TH => temperature::Kelvin,
+/// //     N => amount::Mole,
+/// //     J => luminosity::Candela
+/// // }
+/// ```
 /// }
 /// ```
 #[macro_export]

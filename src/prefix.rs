@@ -16,6 +16,9 @@
 /// use num_units::prefix::{KILO, MILLI, MICRO};
 ///
 /// // Use in unit conversions
+/// let meters = 1000.0;
+/// let grams = 1000.0;
+/// let seconds = 1000000.0;
 /// let kilometers = meters / KILO;  // Convert meters to kilometers
 /// let milligrams = grams / MILLI;  // Convert grams to milligrams
 /// let microseconds = seconds / MICRO;  // Convert seconds to microseconds

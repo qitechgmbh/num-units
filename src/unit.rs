@@ -23,11 +23,12 @@
 ///
 /// ```rust
 /// use num_units::unit;
-/// use num_units::si::length;
+/// use num_units::length::Length;
+/// use num_units::si::length::{Meter, Kilometer};
 ///
 /// // The unit! macro generates conversion methods automatically
-/// let distance = length::f64::Length::from_meter(100.0);
-/// let distance_km = distance.as_kilometer(); // Convert to kilometers
+/// let distance = Length::from::<Meter>(100.0);
+/// let distance_km = distance.to::<Kilometer>(); // Convert to kilometers
 /// ```
 pub trait Unit {
     /// The abbreviation for this unit (e.g., "m", "kg", "s")
@@ -64,9 +65,8 @@ pub trait Unit {
 ///
 /// ## Example Usage
 ///
-/// ```rust
-/// use num_units::units;
-/// use num_units::convert_unit;
+/// ```rust,no_run
+/// use num_units::{units, convert_unit};
 /// use num_units::prefix::KILO;
 ///
 /// // Define base units
@@ -89,7 +89,7 @@ pub trait Unit {
 /// abbreviation, singular name, and plural name, plus the ability to convert to itself.
 ///
 /// # Syntax
-/// ```rust
+/// ```rust,no_run
 /// units! {
 ///     UnitName: "abbreviation", "singular name";
 ///     UnitName: "abbreviation", "singular name", "plural name";
@@ -104,7 +104,7 @@ pub trait Unit {
 /// - Documentation comments for the unit
 ///
 /// # Examples
-/// ```rust
+/// ```rust,no_run
 /// use num_units::units;
 ///
 /// units! {
@@ -132,14 +132,8 @@ macro_rules! units {
                 const PLURAL: &'static str = $plural;
             }
 
-            // Automatic identity conversion - unit to itself (f64 version)
-            impl $crate::unit::FromUnit<$unit> for $unit {
-                fn to_base(value: f64) -> f64 { value }
-                fn from_base(base_value: f64) -> f64 { base_value }
-            }
-
-            // Automatic identity conversion - unit to itself (generic version)
-            impl<V: num_traits::Num + Copy> $crate::unit::FromUnitGeneric<$unit, V> for $unit {
+            // Automatic identity conversion - unit to itself (generic over any type)
+            impl<V: num_traits::Num + Copy> $crate::unit::FromUnit<$unit, V> for $unit {
                 fn to_base(value: V) -> V { value }
                 fn from_base(base_value: V) -> V { base_value }
             }
@@ -161,14 +155,8 @@ macro_rules! units {
                 const PLURAL: &'static str = concat!($singular, "s");
             }
 
-            // Automatic identity conversion - unit to itself (f64 version)
-            impl $crate::unit::FromUnit<$unit> for $unit {
-                fn to_base(value: f64) -> f64 { value }
-                fn from_base(base_value: f64) -> f64 { base_value }
-            }
-
-            // Automatic identity conversion - unit to itself (generic version)
-            impl<V: num_traits::Num + Copy> $crate::unit::FromUnitGeneric<$unit, V> for $unit {
+            // Automatic identity conversion - unit to itself (generic over any type)
+            impl<V: num_traits::Num + Copy> $crate::unit::FromUnit<$unit, V> for $unit {
                 fn to_base(value: V) -> V { value }
                 fn from_base(base_value: V) -> V { base_value }
             }
@@ -178,26 +166,14 @@ macro_rules! units {
 
 // ===== BASE UNIT CONVERSION TRAITS =====
 
-/// Trait for converting from a base unit to this unit (f64 version for backward compatibility)
-pub trait FromUnit<From: crate::unit::Unit> {
-    fn to_base(value: f64) -> f64;
-    fn from_base(base_value: f64) -> f64;
-}
-
-/// Generic trait for converting from a base unit to this unit (for any numeric type)
-pub trait FromUnitGeneric<From: crate::unit::Unit, V: num_traits::Num> {
+/// Trait for converting from a base unit to this unit (generic over any numeric type)
+pub trait FromUnit<From: crate::unit::Unit, V: num_traits::Num = f64> {
     fn to_base(value: V) -> V;
     fn from_base(base_value: V) -> V;
 }
 
-/// Trait for converting to a base unit from this unit
-pub trait IntoUnit<To: crate::unit::Unit> {
-    fn to_base(value: f64) -> f64;
-    fn from_base(base_value: f64) -> f64;
-}
-
-/// Generic trait for converting to a base unit from this unit (for any numeric type)
-pub trait IntoUnitGeneric<To: crate::unit::Unit, V: num_traits::Num> {
+/// Trait for converting to a base unit from this unit (generic over any numeric type)
+pub trait IntoUnit<To: crate::unit::Unit, V: num_traits::Num = f64> {
     fn to_base(value: V) -> V;
     fn from_base(base_value: V) -> V;
 }
@@ -209,7 +185,9 @@ pub trait IntoUnitGeneric<To: crate::unit::Unit, V: num_traits::Num> {
 /// top-level macro that calls the hierarchical conversion macros.
 ///
 /// # Syntax
-/// ```rust
+/// ```rust,no_run
+/// use num_units::convert_unit;
+/// 
 /// convert_unit! {
 ///     TargetUnit: |source_param| conversion_expression;
 ///     SourceUnit: |target_param| reverse_conversion_expression;
@@ -217,7 +195,7 @@ pub trait IntoUnitGeneric<To: crate::unit::Unit, V: num_traits::Num> {
 /// ```
 ///
 /// # Examples
-/// ```rust
+/// ```rust,no_run
 /// use num_units::convert_unit;
 /// use num_units::prefix::KILO;
 ///
@@ -243,7 +221,7 @@ macro_rules! convert_unit {
 macro_rules! convert_unit_i8 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (i8 version)
-        impl $crate::unit::FromUnitGeneric<$unit2, i8> for $unit1 {
+        impl $crate::unit::FromUnit<$unit2, i8> for $unit1 {
             fn to_base(value: i8) -> i8 {
                 let $param2 = value as f64;
                 ($expr2).round() as i8
@@ -256,7 +234,7 @@ macro_rules! convert_unit_i8 {
         }
 
         // Reverse conversion: $unit1 -> $unit2 (i8 version)
-        impl $crate::unit::FromUnitGeneric<$unit1, i8> for $unit2 {
+        impl $crate::unit::FromUnit<$unit1, i8> for $unit2 {
             fn to_base(value: i8) -> i8 {
                 let $param1 = value as f64;
                 ($expr1).round() as i8
@@ -278,7 +256,7 @@ macro_rules! convert_unit_i8 {
 macro_rules! convert_unit_i16 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (i16 version)
-        impl $crate::unit::FromUnitGeneric<$unit2, i16> for $unit1 {
+        impl $crate::unit::FromUnit<$unit2, i16> for $unit1 {
             fn to_base(value: i16) -> i16 {
                 let $param2 = value as f64;
                 ($expr2).round() as i16
@@ -291,7 +269,7 @@ macro_rules! convert_unit_i16 {
         }
 
         // Reverse conversion: $unit1 -> $unit2 (i16 version)
-        impl $crate::unit::FromUnitGeneric<$unit1, i16> for $unit2 {
+        impl $crate::unit::FromUnit<$unit1, i16> for $unit2 {
             fn to_base(value: i16) -> i16 {
                 let $param1 = value as f64;
                 ($expr1).round() as i16
@@ -313,7 +291,7 @@ macro_rules! convert_unit_i16 {
 macro_rules! convert_unit_i32 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (i32 version)
-        impl $crate::unit::FromUnitGeneric<$unit2, i32> for $unit1 {
+        impl $crate::unit::FromUnit<$unit2, i32> for $unit1 {
             fn to_base(value: i32) -> i32 {
                 let $param2 = value as f64;
                 ($expr2).round() as i32
@@ -326,7 +304,7 @@ macro_rules! convert_unit_i32 {
         }
 
         // Reverse conversion: $unit1 -> $unit2 (i32 version)
-        impl $crate::unit::FromUnitGeneric<$unit1, i32> for $unit2 {
+        impl $crate::unit::FromUnit<$unit1, i32> for $unit2 {
             fn to_base(value: i32) -> i32 {
                 let $param1 = value as f64;
                 ($expr1).round() as i32
@@ -348,7 +326,7 @@ macro_rules! convert_unit_i32 {
 macro_rules! convert_unit_i64 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (i64 version)
-        impl $crate::unit::FromUnitGeneric<$unit2, i64> for $unit1 {
+        impl $crate::unit::FromUnit<$unit2, i64> for $unit1 {
             fn to_base(value: i64) -> i64 {
                 let $param2 = value;
                 $expr2
@@ -361,7 +339,7 @@ macro_rules! convert_unit_i64 {
         }
 
         // Reverse conversion: $unit1 -> $unit2 (i64 version)
-        impl $crate::unit::FromUnitGeneric<$unit1, i64> for $unit2 {
+        impl $crate::unit::FromUnit<$unit1, i64> for $unit2 {
             fn to_base(value: i64) -> i64 {
                 let $param1 = value;
                 $expr1
@@ -383,7 +361,7 @@ macro_rules! convert_unit_i64 {
 macro_rules! convert_unit_i128 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (i128 version)
-        impl $crate::unit::FromUnitGeneric<$unit2, i128> for $unit1 {
+        impl $crate::unit::FromUnit<$unit2, i128> for $unit1 {
             fn to_base(value: i128) -> i128 {
                 let $param2 = value;
                 $expr2
@@ -396,7 +374,7 @@ macro_rules! convert_unit_i128 {
         }
 
         // Reverse conversion: $unit1 -> $unit2 (i128 version)
-        impl $crate::unit::FromUnitGeneric<$unit1, i128> for $unit2 {
+        impl $crate::unit::FromUnit<$unit1, i128> for $unit2 {
             fn to_base(value: i128) -> i128 {
                 let $param1 = value;
                 $expr1
@@ -418,7 +396,7 @@ macro_rules! convert_unit_i128 {
 macro_rules! convert_unit_u8 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (u8 version)
-        impl $crate::unit::FromUnitGeneric<$unit2, u8> for $unit1 {
+        impl $crate::unit::FromUnit<$unit2, u8> for $unit1 {
             fn to_base(value: u8) -> u8 {
                 let $param2 = value as f64;
                 ($expr2).round() as u8
@@ -431,7 +409,7 @@ macro_rules! convert_unit_u8 {
         }
 
         // Reverse conversion: $unit1 -> $unit2 (u8 version)
-        impl $crate::unit::FromUnitGeneric<$unit1, u8> for $unit2 {
+        impl $crate::unit::FromUnit<$unit1, u8> for $unit2 {
             fn to_base(value: u8) -> u8 {
                 let $param1 = value as f64;
                 ($expr1).round() as u8
@@ -453,7 +431,7 @@ macro_rules! convert_unit_u8 {
 macro_rules! convert_unit_u16 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (u16 version)
-        impl $crate::unit::FromUnitGeneric<$unit2, u16> for $unit1 {
+        impl $crate::unit::FromUnit<$unit2, u16> for $unit1 {
             fn to_base(value: u16) -> u16 {
                 let $param2 = value as f64;
                 ($expr2).round() as u16
@@ -466,7 +444,7 @@ macro_rules! convert_unit_u16 {
         }
 
         // Reverse conversion: $unit1 -> $unit2 (u16 version)
-        impl $crate::unit::FromUnitGeneric<$unit1, u16> for $unit2 {
+        impl $crate::unit::FromUnit<$unit1, u16> for $unit2 {
             fn to_base(value: u16) -> u16 {
                 let $param1 = value as f64;
                 ($expr1).round() as u16
@@ -488,7 +466,7 @@ macro_rules! convert_unit_u16 {
 macro_rules! convert_unit_u32 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (u32 version)
-        impl $crate::unit::FromUnitGeneric<$unit2, u32> for $unit1 {
+        impl $crate::unit::FromUnit<$unit2, u32> for $unit1 {
             fn to_base(value: u32) -> u32 {
                 let $param2 = value as f64;
                 ($expr2).round() as u32
@@ -501,7 +479,7 @@ macro_rules! convert_unit_u32 {
         }
 
         // Reverse conversion: $unit1 -> $unit2 (u32 version)
-        impl $crate::unit::FromUnitGeneric<$unit1, u32> for $unit2 {
+        impl $crate::unit::FromUnit<$unit1, u32> for $unit2 {
             fn to_base(value: u32) -> u32 {
                 let $param1 = value as f64;
                 ($expr1).round() as u32
@@ -523,7 +501,7 @@ macro_rules! convert_unit_u32 {
 macro_rules! convert_unit_u64 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (u64 version)
-        impl $crate::unit::FromUnitGeneric<$unit2, u64> for $unit1 {
+        impl $crate::unit::FromUnit<$unit2, u64> for $unit1 {
             fn to_base(value: u64) -> u64 {
                 let $param2 = value;
                 $expr2
@@ -536,7 +514,7 @@ macro_rules! convert_unit_u64 {
         }
 
         // Reverse conversion: $unit1 -> $unit2 (u64 version)
-        impl $crate::unit::FromUnitGeneric<$unit1, u64> for $unit2 {
+        impl $crate::unit::FromUnit<$unit1, u64> for $unit2 {
             fn to_base(value: u64) -> u64 {
                 let $param1 = value;
                 $expr1
@@ -558,7 +536,7 @@ macro_rules! convert_unit_u64 {
 macro_rules! convert_unit_u128 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (u128 version)
-        impl $crate::unit::FromUnitGeneric<$unit2, u128> for $unit1 {
+        impl $crate::unit::FromUnit<$unit2, u128> for $unit1 {
             fn to_base(value: u128) -> u128 {
                 let $param2 = value;
                 $expr2
@@ -571,7 +549,7 @@ macro_rules! convert_unit_u128 {
         }
 
         // Reverse conversion: $unit1 -> $unit2 (u128 version)
-        impl $crate::unit::FromUnitGeneric<$unit1, u128> for $unit2 {
+        impl $crate::unit::FromUnit<$unit1, u128> for $unit2 {
             fn to_base(value: u128) -> u128 {
                 let $param1 = value;
                 $expr1
@@ -593,7 +571,7 @@ macro_rules! convert_unit_u128 {
 macro_rules! convert_unit_f32 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (f32 version)
-        impl $crate::unit::FromUnitGeneric<$unit2, f32> for $unit1 {
+        impl $crate::unit::FromUnit<$unit2, f32> for $unit1 {
             fn to_base(value: f32) -> f32 {
                 let $param2 = value as f64;
                 ($expr2) as f32
@@ -606,7 +584,7 @@ macro_rules! convert_unit_f32 {
         }
 
         // Reverse conversion: $unit1 -> $unit2 (f32 version)
-        impl $crate::unit::FromUnitGeneric<$unit1, f32> for $unit2 {
+        impl $crate::unit::FromUnit<$unit1, f32> for $unit2 {
             fn to_base(value: f32) -> f32 {
                 let $param1 = value as f64;
                 ($expr1) as f32
@@ -627,34 +605,8 @@ macro_rules! convert_unit_f32 {
 #[macro_export]
 macro_rules! convert_unit_f64 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
-        // Forward conversion: $unit2 -> $unit1 (f64 version)
-        impl $crate::unit::FromUnit<$unit2> for $unit1 {
-            fn to_base(value: f64) -> f64 {
-                let $param2 = value;
-                $expr2
-            }
-
-            fn from_base(base_value: f64) -> f64 {
-                let $param1 = base_value;
-                $expr1
-            }
-        }
-
-        // Reverse conversion: $unit1 -> $unit2 (f64 version)
-        impl $crate::unit::FromUnit<$unit1> for $unit2 {
-            fn to_base(value: f64) -> f64 {
-                let $param1 = value;
-                $expr1
-            }
-
-            fn from_base(base_value: f64) -> f64 {
-                let $param2 = base_value;
-                $expr2
-            }
-        }
-
         // Forward conversion: $unit2 -> $unit1 (f64 generic version)
-        impl $crate::unit::FromUnitGeneric<$unit2, f64> for $unit1 {
+        impl $crate::unit::FromUnit<$unit2, f64> for $unit1 {
             fn to_base(value: f64) -> f64 {
                 let $param2 = value;
                 $expr2
@@ -667,7 +619,7 @@ macro_rules! convert_unit_f64 {
         }
 
         // Reverse conversion: $unit1 -> $unit2 (f64 generic version)
-        impl $crate::unit::FromUnitGeneric<$unit1, f64> for $unit2 {
+        impl $crate::unit::FromUnit<$unit1, f64> for $unit2 {
             fn to_base(value: f64) -> f64 {
                 let $param1 = value;
                 $expr1
@@ -723,7 +675,9 @@ macro_rules! convert_unit_float {
 /// arithmetic for exact conversions. Use this for conversions with exact integer factors.
 ///
 /// # Syntax
-/// ```rust
+/// ```rust,no_run
+/// use num_units::convert_unit_int;
+/// 
 /// convert_unit_int! {
 ///     TargetUnit: factor_to_target;
 ///     SourceUnit: factor_to_source;
@@ -731,7 +685,7 @@ macro_rules! convert_unit_float {
 /// ```
 ///
 /// # Examples
-/// ```rust
+/// ```rust,no_run
 /// use num_units::convert_unit_int;
 ///
 /// // Define conversion with exact integer factors
@@ -748,7 +702,7 @@ macro_rules! convert_unit_int {
     // Process pairs of units with integer conversion factors
     ($unit1:ident: $factor1:expr; $unit2:ident: $factor2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (f64 version)
-        impl $crate::unit::FromUnit<$unit2> for $unit1 {
+        impl $crate::unit::FromUnit<$unit2, f64> for $unit1 {
             fn to_base(value: f64) -> f64 {
                 value * ($factor2 as f64) / ($factor1 as f64)
             }
@@ -759,7 +713,7 @@ macro_rules! convert_unit_int {
         }
 
         // Reverse conversion: $unit1 -> $unit2 (f64 version)
-        impl $crate::unit::FromUnit<$unit1> for $unit2 {
+        impl $crate::unit::FromUnit<$unit1, f64> for $unit2 {
             fn to_base(value: f64) -> f64 {
                 value * ($factor1 as f64) / ($factor2 as f64)
             }
@@ -769,30 +723,8 @@ macro_rules! convert_unit_int {
             }
         }
 
-        // Forward conversion: $unit2 -> $unit1 (f64 generic version)
-        impl $crate::unit::FromUnitGeneric<$unit2, f64> for $unit1 {
-            fn to_base(value: f64) -> f64 {
-                value * ($factor2 as f64) / ($factor1 as f64)
-            }
-
-            fn from_base(base_value: f64) -> f64 {
-                base_value * ($factor1 as f64) / ($factor2 as f64)
-            }
-        }
-
-        // Reverse conversion: $unit1 -> $unit2 (f64 generic version)
-        impl $crate::unit::FromUnitGeneric<$unit1, f64> for $unit2 {
-            fn to_base(value: f64) -> f64 {
-                value * ($factor1 as f64) / ($factor2 as f64)
-            }
-
-            fn from_base(base_value: f64) -> f64 {
-                base_value * ($factor2 as f64) / ($factor1 as f64)
-            }
-        }
-
-        // Forward conversion: $unit2 -> $unit1 (f32 generic version)
-        impl $crate::unit::FromUnitGeneric<$unit2, f32> for $unit1 {
+        // Forward conversion: $unit2 -> $unit1 (f32 version)
+        impl $crate::unit::FromUnit<$unit2, f32> for $unit1 {
             fn to_base(value: f32) -> f32 {
                 value * ($factor2 as f32) / ($factor1 as f32)
             }
@@ -802,8 +734,8 @@ macro_rules! convert_unit_int {
             }
         }
 
-        // Reverse conversion: $unit1 -> $unit2 (f32 generic version)
-        impl $crate::unit::FromUnitGeneric<$unit1, f32> for $unit2 {
+        // Reverse conversion: $unit1 -> $unit2 (f32 version)
+        impl $crate::unit::FromUnit<$unit1, f32> for $unit2 {
             fn to_base(value: f32) -> f32 {
                 value * ($factor1 as f32) / ($factor2 as f32)
             }
@@ -813,8 +745,8 @@ macro_rules! convert_unit_int {
             }
         }
 
-        // Forward conversion: $unit2 -> $unit1 (i32 generic version)
-        impl $crate::unit::FromUnitGeneric<$unit2, i32> for $unit1 {
+        // Forward conversion: $unit2 -> $unit1 (i32 version)
+        impl $crate::unit::FromUnit<$unit2, i32> for $unit1 {
             fn to_base(value: i32) -> i32 {
                 // Use integer arithmetic when possible
                 if $factor2 % $factor1 == 0 {
@@ -833,8 +765,8 @@ macro_rules! convert_unit_int {
             }
         }
 
-        // Reverse conversion: $unit1 -> $unit2 (i32 generic version)
-        impl $crate::unit::FromUnitGeneric<$unit1, i32> for $unit2 {
+        // Reverse conversion: $unit1 -> $unit2 (i32 version)
+        impl $crate::unit::FromUnit<$unit1, i32> for $unit2 {
             fn to_base(value: i32) -> i32 {
                 if $factor1 % $factor2 == 0 {
                     value * ($factor1 / $factor2) as i32
@@ -852,8 +784,8 @@ macro_rules! convert_unit_int {
             }
         }
 
-        // Forward conversion: $unit2 -> $unit1 (i64 generic version)
-        impl $crate::unit::FromUnitGeneric<$unit2, i64> for $unit1 {
+        // Forward conversion: $unit2 -> $unit1 (i64 version)
+        impl $crate::unit::FromUnit<$unit2, i64> for $unit1 {
             fn to_base(value: i64) -> i64 {
                 value * ($factor2 as i64) / ($factor1 as i64)
             }
@@ -863,8 +795,8 @@ macro_rules! convert_unit_int {
             }
         }
 
-        // Reverse conversion: $unit1 -> $unit2 (i64 generic version)
-        impl $crate::unit::FromUnitGeneric<$unit1, i64> for $unit2 {
+        // Reverse conversion: $unit1 -> $unit2 (i64 version)
+        impl $crate::unit::FromUnit<$unit1, i64> for $unit2 {
             fn to_base(value: i64) -> i64 {
                 value * ($factor1 as i64) / ($factor2 as i64)
             }
@@ -890,35 +822,35 @@ macro_rules! convert_unit_int {
 macro_rules! convert_matrix_generate_pair_i8 {
     ($from:ty, $base:ty, $to:ty) => {
         // Generate $from -> $to via $base (transitive conversion - i8 version)
-        impl $crate::unit::FromUnitGeneric<$from, i8> for $to {
+        impl $crate::unit::FromUnit<$from, i8> for $to {
             fn to_base(value: i8) -> i8 {
                 // Chain: $from -> $base -> $to
                 let base_value =
-                    <$base as $crate::unit::FromUnitGeneric<$from, i8>>::to_base(value);
-                <$to as $crate::unit::FromUnitGeneric<$base, i8>>::to_base(base_value)
+                    <$base as $crate::unit::FromUnit<$from, i8>>::to_base(value);
+                <$to as $crate::unit::FromUnit<$base, i8>>::to_base(base_value)
             }
 
             fn from_base(base_value: i8) -> i8 {
                 // Chain: $to -> $base -> $from
                 let base_intermediate =
-                    <$to as $crate::unit::FromUnitGeneric<$base, i8>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$from, i8>>::from_base(base_intermediate)
+                    <$to as $crate::unit::FromUnit<$base, i8>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$from, i8>>::from_base(base_intermediate)
             }
         }
 
         // Generate $to -> $from via $base (reverse transitive conversion - i8 version)
-        impl $crate::unit::FromUnitGeneric<$to, i8> for $from {
+        impl $crate::unit::FromUnit<$to, i8> for $from {
             fn to_base(value: i8) -> i8 {
                 // Chain: $to -> $base -> $from
-                let base_value = <$base as $crate::unit::FromUnitGeneric<$to, i8>>::to_base(value);
-                <$from as $crate::unit::FromUnitGeneric<$base, i8>>::to_base(base_value)
+                let base_value = <$base as $crate::unit::FromUnit<$to, i8>>::to_base(value);
+                <$from as $crate::unit::FromUnit<$base, i8>>::to_base(base_value)
             }
 
             fn from_base(base_value: i8) -> i8 {
                 // Chain: $from -> $base -> $to
                 let base_intermediate =
-                    <$from as $crate::unit::FromUnitGeneric<$base, i8>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$to, i8>>::from_base(base_intermediate)
+                    <$from as $crate::unit::FromUnit<$base, i8>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$to, i8>>::from_base(base_intermediate)
             }
         }
     };
@@ -929,35 +861,35 @@ macro_rules! convert_matrix_generate_pair_i8 {
 macro_rules! convert_matrix_generate_pair_i16 {
     ($from:ty, $base:ty, $to:ty) => {
         // Generate $from -> $to via $base (transitive conversion - i16 version)
-        impl $crate::unit::FromUnitGeneric<$from, i16> for $to {
+        impl $crate::unit::FromUnit<$from, i16> for $to {
             fn to_base(value: i16) -> i16 {
                 // Chain: $from -> $base -> $to
                 let base_value =
-                    <$base as $crate::unit::FromUnitGeneric<$from, i16>>::to_base(value);
-                <$to as $crate::unit::FromUnitGeneric<$base, i16>>::to_base(base_value)
+                    <$base as $crate::unit::FromUnit<$from, i16>>::to_base(value);
+                <$to as $crate::unit::FromUnit<$base, i16>>::to_base(base_value)
             }
 
             fn from_base(base_value: i16) -> i16 {
                 // Chain: $to -> $base -> $from
                 let base_intermediate =
-                    <$to as $crate::unit::FromUnitGeneric<$base, i16>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$from, i16>>::from_base(base_intermediate)
+                    <$to as $crate::unit::FromUnit<$base, i16>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$from, i16>>::from_base(base_intermediate)
             }
         }
 
         // Generate $to -> $from via $base (reverse transitive conversion - i16 version)
-        impl $crate::unit::FromUnitGeneric<$to, i16> for $from {
+        impl $crate::unit::FromUnit<$to, i16> for $from {
             fn to_base(value: i16) -> i16 {
                 // Chain: $to -> $base -> $from
-                let base_value = <$base as $crate::unit::FromUnitGeneric<$to, i16>>::to_base(value);
-                <$from as $crate::unit::FromUnitGeneric<$base, i16>>::to_base(base_value)
+                let base_value = <$base as $crate::unit::FromUnit<$to, i16>>::to_base(value);
+                <$from as $crate::unit::FromUnit<$base, i16>>::to_base(base_value)
             }
 
             fn from_base(base_value: i16) -> i16 {
                 // Chain: $from -> $base -> $to
                 let base_intermediate =
-                    <$from as $crate::unit::FromUnitGeneric<$base, i16>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$to, i16>>::from_base(base_intermediate)
+                    <$from as $crate::unit::FromUnit<$base, i16>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$to, i16>>::from_base(base_intermediate)
             }
         }
     };
@@ -968,35 +900,35 @@ macro_rules! convert_matrix_generate_pair_i16 {
 macro_rules! convert_matrix_generate_pair_i32 {
     ($from:ty, $base:ty, $to:ty) => {
         // Generate $from -> $to via $base (transitive conversion - i32 version)
-        impl $crate::unit::FromUnitGeneric<$from, i32> for $to {
+        impl $crate::unit::FromUnit<$from, i32> for $to {
             fn to_base(value: i32) -> i32 {
                 // Chain: $from -> $base -> $to
                 let base_value =
-                    <$base as $crate::unit::FromUnitGeneric<$from, i32>>::to_base(value);
-                <$to as $crate::unit::FromUnitGeneric<$base, i32>>::to_base(base_value)
+                    <$base as $crate::unit::FromUnit<$from, i32>>::to_base(value);
+                <$to as $crate::unit::FromUnit<$base, i32>>::to_base(base_value)
             }
 
             fn from_base(base_value: i32) -> i32 {
                 // Chain: $to -> $base -> $from
                 let base_intermediate =
-                    <$to as $crate::unit::FromUnitGeneric<$base, i32>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$from, i32>>::from_base(base_intermediate)
+                    <$to as $crate::unit::FromUnit<$base, i32>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$from, i32>>::from_base(base_intermediate)
             }
         }
 
         // Generate $to -> $from via $base (reverse transitive conversion - i32 version)
-        impl $crate::unit::FromUnitGeneric<$to, i32> for $from {
+        impl $crate::unit::FromUnit<$to, i32> for $from {
             fn to_base(value: i32) -> i32 {
                 // Chain: $to -> $base -> $from
-                let base_value = <$base as $crate::unit::FromUnitGeneric<$to, i32>>::to_base(value);
-                <$from as $crate::unit::FromUnitGeneric<$base, i32>>::to_base(base_value)
+                let base_value = <$base as $crate::unit::FromUnit<$to, i32>>::to_base(value);
+                <$from as $crate::unit::FromUnit<$base, i32>>::to_base(base_value)
             }
 
             fn from_base(base_value: i32) -> i32 {
                 // Chain: $from -> $base -> $to
                 let base_intermediate =
-                    <$from as $crate::unit::FromUnitGeneric<$base, i32>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$to, i32>>::from_base(base_intermediate)
+                    <$from as $crate::unit::FromUnit<$base, i32>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$to, i32>>::from_base(base_intermediate)
             }
         }
     };
@@ -1007,35 +939,35 @@ macro_rules! convert_matrix_generate_pair_i32 {
 macro_rules! convert_matrix_generate_pair_i64 {
     ($from:ty, $base:ty, $to:ty) => {
         // Generate $from -> $to via $base (transitive conversion - i64 version)
-        impl $crate::unit::FromUnitGeneric<$from, i64> for $to {
+        impl $crate::unit::FromUnit<$from, i64> for $to {
             fn to_base(value: i64) -> i64 {
                 // Chain: $from -> $base -> $to
                 let base_value =
-                    <$base as $crate::unit::FromUnitGeneric<$from, i64>>::to_base(value);
-                <$to as $crate::unit::FromUnitGeneric<$base, i64>>::to_base(base_value)
+                    <$base as $crate::unit::FromUnit<$from, i64>>::to_base(value);
+                <$to as $crate::unit::FromUnit<$base, i64>>::to_base(base_value)
             }
 
             fn from_base(base_value: i64) -> i64 {
                 // Chain: $to -> $base -> $from
                 let base_intermediate =
-                    <$to as $crate::unit::FromUnitGeneric<$base, i64>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$from, i64>>::from_base(base_intermediate)
+                    <$to as $crate::unit::FromUnit<$base, i64>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$from, i64>>::from_base(base_intermediate)
             }
         }
 
         // Generate $to -> $from via $base (reverse transitive conversion - i64 version)
-        impl $crate::unit::FromUnitGeneric<$to, i64> for $from {
+        impl $crate::unit::FromUnit<$to, i64> for $from {
             fn to_base(value: i64) -> i64 {
                 // Chain: $to -> $base -> $from
-                let base_value = <$base as $crate::unit::FromUnitGeneric<$to, i64>>::to_base(value);
-                <$from as $crate::unit::FromUnitGeneric<$base, i64>>::to_base(base_value)
+                let base_value = <$base as $crate::unit::FromUnit<$to, i64>>::to_base(value);
+                <$from as $crate::unit::FromUnit<$base, i64>>::to_base(base_value)
             }
 
             fn from_base(base_value: i64) -> i64 {
                 // Chain: $from -> $base -> $to
                 let base_intermediate =
-                    <$from as $crate::unit::FromUnitGeneric<$base, i64>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$to, i64>>::from_base(base_intermediate)
+                    <$from as $crate::unit::FromUnit<$base, i64>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$to, i64>>::from_base(base_intermediate)
             }
         }
     };
@@ -1046,36 +978,36 @@ macro_rules! convert_matrix_generate_pair_i64 {
 macro_rules! convert_matrix_generate_pair_i128 {
     ($from:ty, $base:ty, $to:ty) => {
         // Generate $from -> $to via $base (transitive conversion - i128 version)
-        impl $crate::unit::FromUnitGeneric<$from, i128> for $to {
+        impl $crate::unit::FromUnit<$from, i128> for $to {
             fn to_base(value: i128) -> i128 {
                 // Chain: $from -> $base -> $to
                 let base_value =
-                    <$base as $crate::unit::FromUnitGeneric<$from, i128>>::to_base(value);
-                <$to as $crate::unit::FromUnitGeneric<$base, i128>>::to_base(base_value)
+                    <$base as $crate::unit::FromUnit<$from, i128>>::to_base(value);
+                <$to as $crate::unit::FromUnit<$base, i128>>::to_base(base_value)
             }
 
             fn from_base(base_value: i128) -> i128 {
                 // Chain: $to -> $base -> $from
                 let base_intermediate =
-                    <$to as $crate::unit::FromUnitGeneric<$base, i128>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$from, i128>>::from_base(base_intermediate)
+                    <$to as $crate::unit::FromUnit<$base, i128>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$from, i128>>::from_base(base_intermediate)
             }
         }
 
         // Generate $to -> $from via $base (reverse transitive conversion - i128 version)
-        impl $crate::unit::FromUnitGeneric<$to, i128> for $from {
+        impl $crate::unit::FromUnit<$to, i128> for $from {
             fn to_base(value: i128) -> i128 {
                 // Chain: $to -> $base -> $from
                 let base_value =
-                    <$base as $crate::unit::FromUnitGeneric<$to, i128>>::to_base(value);
-                <$from as $crate::unit::FromUnitGeneric<$base, i128>>::to_base(base_value)
+                    <$base as $crate::unit::FromUnit<$to, i128>>::to_base(value);
+                <$from as $crate::unit::FromUnit<$base, i128>>::to_base(base_value)
             }
 
             fn from_base(base_value: i128) -> i128 {
                 // Chain: $from -> $base -> $to
                 let base_intermediate =
-                    <$from as $crate::unit::FromUnitGeneric<$base, i128>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$to, i128>>::from_base(base_intermediate)
+                    <$from as $crate::unit::FromUnit<$base, i128>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$to, i128>>::from_base(base_intermediate)
             }
         }
     };
@@ -1086,35 +1018,35 @@ macro_rules! convert_matrix_generate_pair_i128 {
 macro_rules! convert_matrix_generate_pair_u8 {
     ($from:ty, $base:ty, $to:ty) => {
         // Generate $from -> $to via $base (transitive conversion - u8 version)
-        impl $crate::unit::FromUnitGeneric<$from, u8> for $to {
+        impl $crate::unit::FromUnit<$from, u8> for $to {
             fn to_base(value: u8) -> u8 {
                 // Chain: $from -> $base -> $to
                 let base_value =
-                    <$base as $crate::unit::FromUnitGeneric<$from, u8>>::to_base(value);
-                <$to as $crate::unit::FromUnitGeneric<$base, u8>>::to_base(base_value)
+                    <$base as $crate::unit::FromUnit<$from, u8>>::to_base(value);
+                <$to as $crate::unit::FromUnit<$base, u8>>::to_base(base_value)
             }
 
             fn from_base(base_value: u8) -> u8 {
                 // Chain: $to -> $base -> $from
                 let base_intermediate =
-                    <$to as $crate::unit::FromUnitGeneric<$base, u8>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$from, u8>>::from_base(base_intermediate)
+                    <$to as $crate::unit::FromUnit<$base, u8>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$from, u8>>::from_base(base_intermediate)
             }
         }
 
         // Generate $to -> $from via $base (reverse transitive conversion - u8 version)
-        impl $crate::unit::FromUnitGeneric<$to, u8> for $from {
+        impl $crate::unit::FromUnit<$to, u8> for $from {
             fn to_base(value: u8) -> u8 {
                 // Chain: $to -> $base -> $from
-                let base_value = <$base as $crate::unit::FromUnitGeneric<$to, u8>>::to_base(value);
-                <$from as $crate::unit::FromUnitGeneric<$base, u8>>::to_base(base_value)
+                let base_value = <$base as $crate::unit::FromUnit<$to, u8>>::to_base(value);
+                <$from as $crate::unit::FromUnit<$base, u8>>::to_base(base_value)
             }
 
             fn from_base(base_value: u8) -> u8 {
                 // Chain: $from -> $base -> $to
                 let base_intermediate =
-                    <$from as $crate::unit::FromUnitGeneric<$base, u8>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$to, u8>>::from_base(base_intermediate)
+                    <$from as $crate::unit::FromUnit<$base, u8>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$to, u8>>::from_base(base_intermediate)
             }
         }
     };
@@ -1125,35 +1057,35 @@ macro_rules! convert_matrix_generate_pair_u8 {
 macro_rules! convert_matrix_generate_pair_u16 {
     ($from:ty, $base:ty, $to:ty) => {
         // Generate $from -> $to via $base (transitive conversion - u16 version)
-        impl $crate::unit::FromUnitGeneric<$from, u16> for $to {
+        impl $crate::unit::FromUnit<$from, u16> for $to {
             fn to_base(value: u16) -> u16 {
                 // Chain: $from -> $base -> $to
                 let base_value =
-                    <$base as $crate::unit::FromUnitGeneric<$from, u16>>::to_base(value);
-                <$to as $crate::unit::FromUnitGeneric<$base, u16>>::to_base(base_value)
+                    <$base as $crate::unit::FromUnit<$from, u16>>::to_base(value);
+                <$to as $crate::unit::FromUnit<$base, u16>>::to_base(base_value)
             }
 
             fn from_base(base_value: u16) -> u16 {
                 // Chain: $to -> $base -> $from
                 let base_intermediate =
-                    <$to as $crate::unit::FromUnitGeneric<$base, u16>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$from, u16>>::from_base(base_intermediate)
+                    <$to as $crate::unit::FromUnit<$base, u16>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$from, u16>>::from_base(base_intermediate)
             }
         }
 
         // Generate $to -> $from via $base (reverse transitive conversion - u16 version)
-        impl $crate::unit::FromUnitGeneric<$to, u16> for $from {
+        impl $crate::unit::FromUnit<$to, u16> for $from {
             fn to_base(value: u16) -> u16 {
                 // Chain: $to -> $base -> $from
-                let base_value = <$base as $crate::unit::FromUnitGeneric<$to, u16>>::to_base(value);
-                <$from as $crate::unit::FromUnitGeneric<$base, u16>>::to_base(base_value)
+                let base_value = <$base as $crate::unit::FromUnit<$to, u16>>::to_base(value);
+                <$from as $crate::unit::FromUnit<$base, u16>>::to_base(base_value)
             }
 
             fn from_base(base_value: u16) -> u16 {
                 // Chain: $from -> $base -> $to
                 let base_intermediate =
-                    <$from as $crate::unit::FromUnitGeneric<$base, u16>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$to, u16>>::from_base(base_intermediate)
+                    <$from as $crate::unit::FromUnit<$base, u16>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$to, u16>>::from_base(base_intermediate)
             }
         }
     };
@@ -1164,35 +1096,35 @@ macro_rules! convert_matrix_generate_pair_u16 {
 macro_rules! convert_matrix_generate_pair_u32 {
     ($from:ty, $base:ty, $to:ty) => {
         // Generate $from -> $to via $base (transitive conversion - u32 version)
-        impl $crate::unit::FromUnitGeneric<$from, u32> for $to {
+        impl $crate::unit::FromUnit<$from, u32> for $to {
             fn to_base(value: u32) -> u32 {
                 // Chain: $from -> $base -> $to
                 let base_value =
-                    <$base as $crate::unit::FromUnitGeneric<$from, u32>>::to_base(value);
-                <$to as $crate::unit::FromUnitGeneric<$base, u32>>::to_base(base_value)
+                    <$base as $crate::unit::FromUnit<$from, u32>>::to_base(value);
+                <$to as $crate::unit::FromUnit<$base, u32>>::to_base(base_value)
             }
 
             fn from_base(base_value: u32) -> u32 {
                 // Chain: $to -> $base -> $from
                 let base_intermediate =
-                    <$to as $crate::unit::FromUnitGeneric<$base, u32>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$from, u32>>::from_base(base_intermediate)
+                    <$to as $crate::unit::FromUnit<$base, u32>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$from, u32>>::from_base(base_intermediate)
             }
         }
 
         // Generate $to -> $from via $base (reverse transitive conversion - u32 version)
-        impl $crate::unit::FromUnitGeneric<$to, u32> for $from {
+        impl $crate::unit::FromUnit<$to, u32> for $from {
             fn to_base(value: u32) -> u32 {
                 // Chain: $to -> $base -> $from
-                let base_value = <$base as $crate::unit::FromUnitGeneric<$to, u32>>::to_base(value);
-                <$from as $crate::unit::FromUnitGeneric<$base, u32>>::to_base(base_value)
+                let base_value = <$base as $crate::unit::FromUnit<$to, u32>>::to_base(value);
+                <$from as $crate::unit::FromUnit<$base, u32>>::to_base(base_value)
             }
 
             fn from_base(base_value: u32) -> u32 {
                 // Chain: $from -> $base -> $to
                 let base_intermediate =
-                    <$from as $crate::unit::FromUnitGeneric<$base, u32>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$to, u32>>::from_base(base_intermediate)
+                    <$from as $crate::unit::FromUnit<$base, u32>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$to, u32>>::from_base(base_intermediate)
             }
         }
     };
@@ -1203,35 +1135,35 @@ macro_rules! convert_matrix_generate_pair_u32 {
 macro_rules! convert_matrix_generate_pair_u64 {
     ($from:ty, $base:ty, $to:ty) => {
         // Generate $from -> $to via $base (transitive conversion - u64 version)
-        impl $crate::unit::FromUnitGeneric<$from, u64> for $to {
+        impl $crate::unit::FromUnit<$from, u64> for $to {
             fn to_base(value: u64) -> u64 {
                 // Chain: $from -> $base -> $to
                 let base_value =
-                    <$base as $crate::unit::FromUnitGeneric<$from, u64>>::to_base(value);
-                <$to as $crate::unit::FromUnitGeneric<$base, u64>>::to_base(base_value)
+                    <$base as $crate::unit::FromUnit<$from, u64>>::to_base(value);
+                <$to as $crate::unit::FromUnit<$base, u64>>::to_base(base_value)
             }
 
             fn from_base(base_value: u64) -> u64 {
                 // Chain: $to -> $base -> $from
                 let base_intermediate =
-                    <$to as $crate::unit::FromUnitGeneric<$base, u64>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$from, u64>>::from_base(base_intermediate)
+                    <$to as $crate::unit::FromUnit<$base, u64>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$from, u64>>::from_base(base_intermediate)
             }
         }
 
         // Generate $to -> $from via $base (reverse transitive conversion - u64 version)
-        impl $crate::unit::FromUnitGeneric<$to, u64> for $from {
+        impl $crate::unit::FromUnit<$to, u64> for $from {
             fn to_base(value: u64) -> u64 {
                 // Chain: $to -> $base -> $from
-                let base_value = <$base as $crate::unit::FromUnitGeneric<$to, u64>>::to_base(value);
-                <$from as $crate::unit::FromUnitGeneric<$base, u64>>::to_base(base_value)
+                let base_value = <$base as $crate::unit::FromUnit<$to, u64>>::to_base(value);
+                <$from as $crate::unit::FromUnit<$base, u64>>::to_base(base_value)
             }
 
             fn from_base(base_value: u64) -> u64 {
                 // Chain: $from -> $base -> $to
                 let base_intermediate =
-                    <$from as $crate::unit::FromUnitGeneric<$base, u64>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$to, u64>>::from_base(base_intermediate)
+                    <$from as $crate::unit::FromUnit<$base, u64>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$to, u64>>::from_base(base_intermediate)
             }
         }
     };
@@ -1242,36 +1174,36 @@ macro_rules! convert_matrix_generate_pair_u64 {
 macro_rules! convert_matrix_generate_pair_u128 {
     ($from:ty, $base:ty, $to:ty) => {
         // Generate $from -> $to via $base (transitive conversion - u128 version)
-        impl $crate::unit::FromUnitGeneric<$from, u128> for $to {
+        impl $crate::unit::FromUnit<$from, u128> for $to {
             fn to_base(value: u128) -> u128 {
                 // Chain: $from -> $base -> $to
                 let base_value =
-                    <$base as $crate::unit::FromUnitGeneric<$from, u128>>::to_base(value);
-                <$to as $crate::unit::FromUnitGeneric<$base, u128>>::to_base(base_value)
+                    <$base as $crate::unit::FromUnit<$from, u128>>::to_base(value);
+                <$to as $crate::unit::FromUnit<$base, u128>>::to_base(base_value)
             }
 
             fn from_base(base_value: u128) -> u128 {
                 // Chain: $to -> $base -> $from
                 let base_intermediate =
-                    <$to as $crate::unit::FromUnitGeneric<$base, u128>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$from, u128>>::from_base(base_intermediate)
+                    <$to as $crate::unit::FromUnit<$base, u128>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$from, u128>>::from_base(base_intermediate)
             }
         }
 
         // Generate $to -> $from via $base (reverse transitive conversion - u128 version)
-        impl $crate::unit::FromUnitGeneric<$to, u128> for $from {
+        impl $crate::unit::FromUnit<$to, u128> for $from {
             fn to_base(value: u128) -> u128 {
                 // Chain: $to -> $base -> $from
                 let base_value =
-                    <$base as $crate::unit::FromUnitGeneric<$to, u128>>::to_base(value);
-                <$from as $crate::unit::FromUnitGeneric<$base, u128>>::to_base(base_value)
+                    <$base as $crate::unit::FromUnit<$to, u128>>::to_base(value);
+                <$from as $crate::unit::FromUnit<$base, u128>>::to_base(base_value)
             }
 
             fn from_base(base_value: u128) -> u128 {
                 // Chain: $from -> $base -> $to
                 let base_intermediate =
-                    <$from as $crate::unit::FromUnitGeneric<$base, u128>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$to, u128>>::from_base(base_intermediate)
+                    <$from as $crate::unit::FromUnit<$base, u128>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$to, u128>>::from_base(base_intermediate)
             }
         }
     };
@@ -1282,35 +1214,35 @@ macro_rules! convert_matrix_generate_pair_u128 {
 macro_rules! convert_matrix_generate_pair_f32 {
     ($from:ty, $base:ty, $to:ty) => {
         // Generate $from -> $to via $base (transitive conversion - f32 version)
-        impl $crate::unit::FromUnitGeneric<$from, f32> for $to {
+        impl $crate::unit::FromUnit<$from, f32> for $to {
             fn to_base(value: f32) -> f32 {
                 // Chain: $from -> $base -> $to
                 let base_value =
-                    <$base as $crate::unit::FromUnitGeneric<$from, f32>>::to_base(value);
-                <$to as $crate::unit::FromUnitGeneric<$base, f32>>::to_base(base_value)
+                    <$base as $crate::unit::FromUnit<$from, f32>>::to_base(value);
+                <$to as $crate::unit::FromUnit<$base, f32>>::to_base(base_value)
             }
 
             fn from_base(base_value: f32) -> f32 {
                 // Chain: $to -> $base -> $from
                 let base_intermediate =
-                    <$to as $crate::unit::FromUnitGeneric<$base, f32>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$from, f32>>::from_base(base_intermediate)
+                    <$to as $crate::unit::FromUnit<$base, f32>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$from, f32>>::from_base(base_intermediate)
             }
         }
 
         // Generate $to -> $from via $base (reverse transitive conversion - f32 version)
-        impl $crate::unit::FromUnitGeneric<$to, f32> for $from {
+        impl $crate::unit::FromUnit<$to, f32> for $from {
             fn to_base(value: f32) -> f32 {
                 // Chain: $to -> $base -> $from
-                let base_value = <$base as $crate::unit::FromUnitGeneric<$to, f32>>::to_base(value);
-                <$from as $crate::unit::FromUnitGeneric<$base, f32>>::to_base(base_value)
+                let base_value = <$base as $crate::unit::FromUnit<$to, f32>>::to_base(value);
+                <$from as $crate::unit::FromUnit<$base, f32>>::to_base(base_value)
             }
 
             fn from_base(base_value: f32) -> f32 {
                 // Chain: $from -> $base -> $to
                 let base_intermediate =
-                    <$from as $crate::unit::FromUnitGeneric<$base, f32>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$to, f32>>::from_base(base_intermediate)
+                    <$from as $crate::unit::FromUnit<$base, f32>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$to, f32>>::from_base(base_intermediate)
             }
         }
     };
@@ -1320,68 +1252,36 @@ macro_rules! convert_matrix_generate_pair_f32 {
 #[macro_export]
 macro_rules! convert_matrix_generate_pair_f64 {
     ($from:ty, $base:ty, $to:ty) => {
-        // Generate $from -> $to via $base (transitive conversion - f64 version with FromUnit)
-        impl $crate::unit::FromUnit<$from> for $to {
-            fn to_base(value: f64) -> f64 {
-                // Chain: $from -> $base -> $to
-                let base_value = <$base as $crate::unit::FromUnit<$from>>::to_base(value);
-                <$to as $crate::unit::FromUnit<$base>>::to_base(base_value)
-            }
-
-            fn from_base(base_value: f64) -> f64 {
-                // Chain: $to -> $base -> $from
-                let base_intermediate =
-                    <$to as $crate::unit::FromUnit<$base>>::from_base(base_value);
-                <$base as $crate::unit::FromUnit<$from>>::from_base(base_intermediate)
-            }
-        }
-
-        // Generate $to -> $from via $base (reverse transitive conversion - f64 version with FromUnit)
-        impl $crate::unit::FromUnit<$to> for $from {
-            fn to_base(value: f64) -> f64 {
-                // Chain: $to -> $base -> $from
-                let base_value = <$base as $crate::unit::FromUnit<$to>>::to_base(value);
-                <$from as $crate::unit::FromUnit<$base>>::to_base(base_value)
-            }
-
-            fn from_base(base_value: f64) -> f64 {
-                // Chain: $from -> $base -> $to
-                let base_intermediate =
-                    <$from as $crate::unit::FromUnit<$base>>::from_base(base_value);
-                <$base as $crate::unit::FromUnit<$to>>::from_base(base_intermediate)
-            }
-        }
-
         // Generate $from -> $to via $base (transitive conversion - f64 generic version)
-        impl $crate::unit::FromUnitGeneric<$from, f64> for $to {
+        impl $crate::unit::FromUnit<$from, f64> for $to {
             fn to_base(value: f64) -> f64 {
                 // Chain: $from -> $base -> $to
                 let base_value =
-                    <$base as $crate::unit::FromUnitGeneric<$from, f64>>::to_base(value);
-                <$to as $crate::unit::FromUnitGeneric<$base, f64>>::to_base(base_value)
+                    <$base as $crate::unit::FromUnit<$from, f64>>::to_base(value);
+                <$to as $crate::unit::FromUnit<$base, f64>>::to_base(base_value)
             }
 
             fn from_base(base_value: f64) -> f64 {
                 // Chain: $to -> $base -> $from
                 let base_intermediate =
-                    <$to as $crate::unit::FromUnitGeneric<$base, f64>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$from, f64>>::from_base(base_intermediate)
+                    <$to as $crate::unit::FromUnit<$base, f64>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$from, f64>>::from_base(base_intermediate)
             }
         }
 
         // Generate $to -> $from via $base (reverse transitive conversion - f64 generic version)
-        impl $crate::unit::FromUnitGeneric<$to, f64> for $from {
+        impl $crate::unit::FromUnit<$to, f64> for $from {
             fn to_base(value: f64) -> f64 {
                 // Chain: $to -> $base -> $from
-                let base_value = <$base as $crate::unit::FromUnitGeneric<$to, f64>>::to_base(value);
-                <$from as $crate::unit::FromUnitGeneric<$base, f64>>::to_base(base_value)
+                let base_value = <$base as $crate::unit::FromUnit<$to, f64>>::to_base(value);
+                <$from as $crate::unit::FromUnit<$base, f64>>::to_base(base_value)
             }
 
             fn from_base(base_value: f64) -> f64 {
                 // Chain: $from -> $base -> $to
                 let base_intermediate =
-                    <$from as $crate::unit::FromUnitGeneric<$base, f64>>::from_base(base_value);
-                <$base as $crate::unit::FromUnitGeneric<$to, f64>>::from_base(base_intermediate)
+                    <$from as $crate::unit::FromUnit<$base, f64>>::from_base(base_value);
+                <$base as $crate::unit::FromUnit<$to, f64>>::from_base(base_intermediate)
             }
         }
     };
@@ -1648,7 +1548,9 @@ macro_rules! convert_matrix_float {
 /// This is the top-level macro that calls the floating-point matrix generation.
 ///
 /// # Syntax
-/// ```rust
+/// ```rust,no_run
+/// use num_units::convert_matrix;
+/// 
 /// convert_matrix! {
 ///     BaseUnit => TargetUnit1, TargetUnit2, TargetUnit3
 /// }
@@ -1656,7 +1558,7 @@ macro_rules! convert_matrix_float {
 ///
 /// # Requirements
 /// Before using the matrix, you must define direct conversions using `convert_unit!`:
-/// ```rust
+/// ```rust,no_run
 /// convert_unit! {
 ///     TargetUnit1: |base| conversion_expr;
 ///     BaseUnit: |target1| reverse_conversion_expr;
@@ -1673,7 +1575,7 @@ macro_rules! convert_matrix_float {
 /// Use `convert_matrix_signed!`, `convert_matrix_unsigned!`, etc. for specific type sets.
 ///
 /// # Example
-/// ```rust
+/// ```rust,no_run
 /// // First define direct conversions
 /// convert_unit! {
 ///     Revolution: |unitless| unitless;

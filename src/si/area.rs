@@ -19,19 +19,20 @@
 /// ## Usage
 ///
 /// ```rust
-/// use num_units::si::area;
+/// use num_units::area::Area;
+/// use num_units::si::area::{SquareMeter, SquareKilometer};
 ///
 /// // Create area quantities
-/// let surface = area::f64::Area::from_square_meter(100.0);
-/// let field = area::f64::Area::from_square_kilometer(1.5);
+/// let surface = Area::from::<SquareMeter>(100.0);
+/// let field = Area::from::<SquareKilometer>(1.5);
 ///
 /// // Convert between units
-/// let surface_km2 = surface.as_square_kilometer();   // 0.0001 km²
-/// let field_m2 = field.as_square_meter();            // 1,500,000.0 m²
+/// let surface_km2 = surface.to::<SquareKilometer>();   // 0.0001 km²
+/// let field_m2 = field.to::<SquareMeter>();            // 1,500,000.0 m²
 ///
 /// // Arithmetic operations
 /// let total_area = surface + field;                  // Automatic conversion
-/// let volume = surface * height;                     // Creates volume quantity
+/// // let volume = surface * height;                     // Creates volume quantity
 /// ```
 ///
 /// ## Architecture

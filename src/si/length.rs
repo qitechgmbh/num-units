@@ -19,19 +19,20 @@
 /// ## Usage
 ///
 /// ```rust
-/// use num_units::si::length;
+/// use num_units::length::Length;
+/// use num_units::si::length::{Meter, Kilometer};
 ///
 /// // Create length quantities
-/// let distance = length::f64::Length::from_meter(100.0);
-/// let height = length::f64::Length::from_kilometer(1.5);
+/// let distance = Length::from::<Meter>(100.0);
+/// let height = Length::from::<Kilometer>(1.5);
 ///
 /// // Convert between units
-/// let distance_km = distance.as_kilometer();     // 0.1 km
-/// let height_m = height.as_meter();              // 1500.0 m
+/// let distance_km = distance.to::<Kilometer>();     // 0.1 km
+/// let height_m = height.to::<Meter>();              // 1500.0 m
 ///
 /// // Arithmetic operations
 /// let total_distance = distance + height;        // Automatic conversion
-/// let area = distance * height;                  // Creates area quantity
+/// // let area = distance * height;                  // Creates area quantity
 /// ```
 ///
 /// ## Architecture

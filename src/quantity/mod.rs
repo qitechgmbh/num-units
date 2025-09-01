@@ -17,12 +17,13 @@ use num_traits::Num;
 /// # Examples
 /// ```rust
 /// use num_units::quantity::Quantity;
-/// use num_units::si::{length, time};
+/// use num_units::{length, time};
+/// use num_units::si::{length as length_units, time as time_units};
 /// use typenum::*;
 ///
 /// // Create quantities with dimensional safety
-/// let distance = length::f64::Length::from_base(100.0);
-/// let time_val = time::f64::Time::from_base(10.0);
+/// let distance = length::Length::from::<length_units::Meter>(100.0);
+/// let time_val = time::Time::from::<time_units::Second>(10.0);
 ///
 /// // Automatic dimensional analysis - velocity = distance / time
 /// let velocity = distance / time_val;
@@ -239,11 +240,11 @@ where
     where
         U: crate::unit::Unit,
         S: BaseUnitOf<D>,
-        S::BaseUnit: crate::unit::Unit + crate::unit::FromUnitGeneric<U, V>,
+        S::BaseUnit: crate::unit::Unit + crate::unit::FromUnit<U, V>,
     {
-        use crate::unit::FromUnitGeneric;
+        use crate::unit::FromUnit;
         // Due to the conversion trait semantics, from_base actually converts FROM U TO BaseUnit
-        let base_value = <S::BaseUnit as FromUnitGeneric<U, V>>::from_base(value);
+        let base_value = <S::BaseUnit as FromUnit<U, V>>::from_base(value);
         Self::from_base(base_value)
     }
 
@@ -273,11 +274,10 @@ where
     where
         U: crate::unit::Unit,
         S: BaseUnitOf<D>,
-        S::BaseUnit: crate::unit::Unit + crate::unit::FromUnitGeneric<U, V>,
+        S::BaseUnit: crate::unit::Unit + crate::unit::FromUnit<U, V>,
     {
-        use crate::unit::FromUnitGeneric;
         // Due to the conversion trait semantics, to_base actually converts FROM BaseUnit TO U
-        <S::BaseUnit as FromUnitGeneric<U, V>>::to_base(self.value)
+        <S::BaseUnit as crate::unit::FromUnit<U, V>>::to_base(self.value)
     }
 
     /// Get the value of this quantity in the base unit (no conversion)

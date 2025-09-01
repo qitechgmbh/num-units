@@ -105,7 +105,7 @@ A comprehensive, zero-cost dimensional analysis library that prevents unit conve
 
 
 ### Conversion
-- [X] `num_traits::AsPrimitive`
+- [ ] `num_traits::AsPrimitive`
   - `Quantity.as_::<T>()`
 - [ ] `num_traits::FromPrimitive`
   - `Quantity::from_i8(n)`, `Quantity::from_i16(n)`, `Quantity::from_i32(n)`, `Quantity::from_i64(n)`, `Quantity::from_i128(n)`

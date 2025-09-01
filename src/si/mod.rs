@@ -37,12 +37,13 @@
 /// ## Usage
 ///
 /// ```rust
-/// use num_units::si::{length, time, mass};
+/// use num_units::{length, time, mass};
+/// use num_units::si::{length as length_units, time as time_units, mass as mass_units};
 ///
 /// // Create quantities with automatic unit tracking
-/// let distance = length::f64::Length::from_meter(100.0);
-/// let time_val = time::f64::Time::from_second(10.0);
-/// let mass_val = mass::f64::Mass::from_kilogram(5.0);
+/// let distance = length::Length::from::<length_units::Meter>(100.0);
+/// let time_val = time::Time::from::<time_units::Second>(10.0);
+/// let mass_val = mass::Mass::from::<mass_units::Kilogram>(5.0);
 ///
 /// // Automatic dimensional analysis
 /// let velocity = distance / time_val;        // m/s
@@ -50,8 +51,8 @@
 /// let force = mass_val * distance / (time_val * time_val); // N
 ///
 /// // Easy unit conversions
-/// let distance_km = distance.as_kilometer(); // Convert to km
-/// let time_ms = time_val.as_millisecond();   // Convert to ms
+/// let distance_km = distance.to::<length_units::Kilometer>(); // Convert to km
+/// let time_ms = time_val.to::<time_units::Millisecond>();     // Convert to ms
 /// ```
 ///
 /// ## Architecture
