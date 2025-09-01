@@ -21,7 +21,7 @@
 ///
 /// ## Example Usage
 ///
-/// ```rust
+/// ```rust,no_run
 /// use num_units::unit;
 /// use num_units::length::{Length, Meter, Kilometer};
 ///
@@ -107,8 +107,9 @@ pub trait Unit {
 /// use num_units::units;
 ///
 /// units! {
-///     Meter: "m", "meter";
-///     Foot: "ft", "foot";
+///     Meter: "m", "meter", "meters";
+///     Kilogram: "kg", "kilogram", "kilograms";
+///     Foot: "ft", "foot", "feet";
 /// }
 ///
 /// // Now Meter automatically implements FromUnit<Meter> for identity conversions

@@ -39,7 +39,7 @@ use num_traits::Num;
 macro_rules! quantity {
     ($name:ident, $dimension:ty, $scale:ty, $base_unit:ty) => {
         ::paste::paste! {
-            pub mod [<$name:snake>] {
+            mod [<$name:snake>] {
                 use super::*;
 
                 pub type Dimension = $dimension;

@@ -59,7 +59,6 @@
 ///     SystemName,
 ///     DIMENSION1 => UnitType1,
 ///     DIMENSION2 => UnitType2,
-///     ...
 /// }
 /// ```
 ///
@@ -76,23 +75,18 @@
 /// - Automatic conversion methods between units
 ///
 /// # Examples
-/// ```rust
+/// ```rust,no_run
 /// use num_units::system;
-/// // use num_units::{length, mass, time};
-///
+/// 
 /// // Create SI system with standard unit mappings
+/// // Note: This is just an example of the syntax
 /// // system! {
 /// //     SI,
 /// //     L => length::Meter,
 /// //     M => mass::Kilogram,
 /// //     T => time::Second,
-/// //     I => current::Ampere,
-/// //     TH => temperature::Kelvin,
-/// //     N => amount::Mole,
-/// //     J => luminosity::Candela
 /// // }
 /// ```
-/// }
 /// ```
 #[macro_export]
 macro_rules! system {

@@ -1,8 +1,8 @@
 /// Tests for generic functions with SI quantities
 use num_traits::Num;
 use num_units::{
-    length::{Kilometer, Meter, length},
-    mass::{Gram, Kilogram, mass},
+    length::{self, Kilometer, Length, Meter},
+    mass::{self, Gram, Kilogram, Mass},
 };
 
 // Generic function that works with any numeric type
@@ -14,7 +14,7 @@ where
 }
 
 // Function working with length quantities
-fn add_lengths<V>(length1: length::Length<V>, length2: length::Length<V>) -> length::Length<V>
+fn add_lengths<V>(length1: Length<V>, length2: Length<V>) -> Length<V>
 where
     V: Num,
 {
@@ -22,7 +22,7 @@ where
 }
 
 // Function working with mass quantities
-fn add_masses<V>(mass1: mass::Mass<V>, mass2: mass::Mass<V>) -> mass::Mass<V>
+fn add_masses<V>(mass1: Mass<V>, mass2: Mass<V>) -> Mass<V>
 where
     V: Num,
 {

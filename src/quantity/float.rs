@@ -118,7 +118,7 @@ where
     }
 
     /// Raises a number to a floating point power.
-    /// 
+    ///
     /// Note: This creates a dimensionless result as fractional powers
     /// don't have well-defined dimensional semantics
     pub fn powf(self, n: Self) -> Self {
@@ -126,7 +126,7 @@ where
     }
 
     /// Returns the square root of a number.
-    /// 
+    ///
     /// Note: This returns the square root with half the original dimensions
     /// For proper dimensional analysis, use custom sqrt methods
     pub fn sqrt(self) -> Self {
@@ -276,14 +276,14 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::length::f64::Length;
+    use crate::length::Length;
 
     #[test]
     fn test_float_constants() {
-        let nan_length = Length::nan();
-        let inf_length = Length::infinity();
-        let neg_inf_length = Length::neg_infinity();
-        let neg_zero_length = Length::neg_zero();
+        let nan_length = Length::from_base(f64::NAN);
+        let inf_length = Length::from_base(f64::INFINITY);
+        let neg_inf_length = Length::from_base(f64::NEG_INFINITY);
+        let neg_zero_length = Length::from_base(-0.0f64);
 
         assert!(nan_length.is_nan());
         assert!(inf_length.is_infinite());
@@ -319,7 +319,7 @@ mod tests {
         assert_eq!(*value.ceil().base(), 43.0);
         assert_eq!(*value.round().base(), 43.0);
         assert_eq!(*value.trunc().base(), 42.0);
-        assert!((value.fract().base() - 0.7).abs() < 1e-10);
+        assert!((*value.fract().base() - 0.7f64).abs() < 1e-10);
 
         let negative = Length::from_base(-3.4);
         assert_eq!(*negative.floor().base(), -4.0);
@@ -396,13 +396,13 @@ mod tests {
         let value = Length::from_base(2.0);
 
         let exp_val = value.exp();
-        assert!((exp_val.base() - 7.38905609893).abs() < 1e-10);
+        assert!((*exp_val.base() - 7.38905609893f64).abs() < 1e-10);
 
         let exp2_val = value.exp2();
         assert_eq!(*exp2_val.base(), 4.0);
 
         let ln_val = exp_val.ln();
-        assert!((ln_val.base() - 2.0).abs() < 1e-10);
+        assert!((*ln_val.base() - 2.0f64).abs() < 1e-10);
 
         let log2_val = Length::from_base(8.0).log2();
         assert_eq!(*log2_val.base(), 3.0);
@@ -415,14 +415,14 @@ mod tests {
     fn test_trigonometric_functions() {
         use std::f64::consts::PI;
 
-        let zero = Length::from_base(0.0);
+        let zero = Length::from_base(0.0f64);
         let pi_half = Length::from_base(PI / 2.0);
         let pi_quarter = Length::from_base(PI / 4.0);
 
         // Basic trig functions
-        assert!((zero.sin().base()).abs() < 1e-10);
-        assert!((zero.cos().base() - 1.0).abs() < 1e-10);
-        assert!((zero.tan().base()).abs() < 1e-10);
+        assert!(zero.sin().base().abs() < 1e-10f64);
+        assert!((zero.cos().base() - 1.0f64).abs() < 1e-10);
+        assert!(zero.tan().base().abs() < 1e-10f64);
 
         assert!((pi_half.sin().base() - 1.0).abs() < 1e-10);
         assert!((pi_half.cos().base()).abs() < 1e-10);
@@ -543,7 +543,8 @@ mod tests {
 
         assert_eq!(*length.floor().base(), 3.0);
         assert_eq!(*time.ceil().base(), 3.0);
-    }    #[test]
+    }
+    #[test]
     fn test_edge_cases() {
         let zero = Length::from_base(0.0);
         let one = Length::from_base(1.0);

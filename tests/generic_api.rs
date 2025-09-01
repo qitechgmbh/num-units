@@ -2,8 +2,7 @@
 ///
 /// This shows how the improved API eliminates the need to specify base units
 /// while maintaining compile-time dimensional safety.
-use num_units::length::f32::Length;
-use num_units::length::{Centimeter, Kilometer, Meter, Micrometer, Millimeter};
+use num_units::length::{Centimeter, Kilometer, Length, Meter, Micrometer, Millimeter};
 
 #[test]
 fn test_generic_api_creation() {
