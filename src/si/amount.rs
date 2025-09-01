@@ -57,3 +57,7 @@ convert_unit! {
 // Amount quantity definition
 use super::{SI, SIScale};
 quantity!(Amount, SI<Z0, Z0, Z0, Z0, Z0, P1, Z0>, SIScale, Mole);
+
+// Re-export types for convenience
+pub use amount::Amount;
+pub use amount::*;

@@ -30,7 +30,7 @@
 ///
 /// ```rust
 /// use num_units::dimension_scale;
-/// use num_units::si::{length, mass, time};
+/// use num_units::{length, mass, time};
 ///
 /// // Create a dimension scale mapping dimensions to units
 /// dimension_scale!(MyScale, length::Meter, mass::Kilogram, time::Second);
@@ -61,7 +61,7 @@
 /// # Examples
 /// ```rust
 /// use num_units::dimension_scale;
-/// use num_units::si::{length, mass, time};
+/// use num_units::{length, mass, time};
 ///
 /// // Create a scale mapping dimensions to specific units
 /// dimension_scale!(PhysicsScale, length::Meter, mass::Kilogram, time::Second);
@@ -108,7 +108,7 @@ macro_rules! dimension_scale {
 /// # Examples
 /// ```rust
 /// use num_units::scaled_unit_system;
-/// use num_units::si::{length, mass, time};
+/// use num_units::{length, mass, time};
 ///
 /// // Create a complete scaled unit system
 /// scaled_unit_system!(MySystem, MyScale, length::Meter, mass::Kilogram, time::Second);

@@ -38,7 +38,7 @@
 ///
 /// ```rust
 /// use num_units::{length, time, mass};
-/// use num_units::si::{length as length_units, time as time_units, mass as mass_units};
+/// use num_units::{length as length_units, time as time_units, mass as mass_units};
 ///
 /// // Create quantities with automatic unit tracking
 /// let distance = length::Length::from::<length_units::Meter>(100.0);

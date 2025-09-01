@@ -19,8 +19,7 @@
 /// ## Usage
 ///
 /// ```rust
-/// use num_units::length::Length;
-/// use num_units::si::length::{Meter, Kilometer};
+/// use num_units::length::{Length, Meter, Kilometer};
 ///
 /// // Create length quantities
 /// let distance = Length::from::<Meter>(100.0);
@@ -67,7 +66,7 @@ convert_unit_int! {
 }
 
 convert_unit_int! {
-    Millimeter: 1000;    // 1 meter = 1000 mm  
+    Millimeter: 1000;    // 1 meter = 1000 mm
     Meter: 1;            // 1 meter = 1 meter (base unit)
 }
 
@@ -88,3 +87,7 @@ convert_matrix! {
 // Length quantity definition
 use super::{SI, SIScale};
 quantity!(Length, SI<P1, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale, Meter);
+
+// Re-export types for convenience
+pub use length::Length;
+pub use length::*;

@@ -33,3 +33,7 @@ use crate::prefix::{KILO, MEGA};
 // Power quantity definition (Mass×Length²/Time³)
 use super::{SI, SIScale};
 quantity!(Power, SI<P2, P1, N3, Z0, Z0, Z0, Z0>, SIScale, Watt);
+
+// Re-export types for convenience
+pub use power::Power;
+pub use power::*;

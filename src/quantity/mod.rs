@@ -18,7 +18,7 @@ use num_traits::Num;
 /// ```rust
 /// use num_units::quantity::Quantity;
 /// use num_units::{length, time};
-/// use num_units::si::{length as length_units, time as time_units};
+/// use num_units::{length as length_units, time as time_units};
 /// use typenum::*;
 ///
 /// // Create quantities with dimensional safety
@@ -165,7 +165,7 @@ pub mod zero;
 /// # Examples
 /// ```rust
 /// # use num_units::quantity::Quantity;
-/// # use num_units::si::{SI, SIScale};
+/// # use num_units::{SI, SIScale};
 /// # use typenum::*;
 ///
 /// let length = Quantity::<f64, SI<P1, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale>::from_base(5.0);
@@ -233,7 +233,7 @@ where
     /// use num_units::length;
     ///
     /// // Create a length from kilometers - automatically converts to meters (base unit)
-    /// let distance = length::f64::Length::from::<num_units::si::length::Kilometer>(2.5);
+    /// let distance = length::f64::Length::from::<num_units::length::Kilometer>(2.5);
     /// assert_eq!(*distance.base(), 2500.0); // Stored as 2500 meters
     /// ```
     pub fn from<U>(value: V) -> Self
@@ -267,7 +267,7 @@ where
     /// use num_units::length;
     ///
     /// let distance = length::f64::Length::from_base(2500.0); // 2500 meters
-    /// let km_value = distance.to::<num_units::si::length::Kilometer>();
+    /// let km_value = distance.to::<num_units::length::Kilometer>();
     /// assert_eq!(km_value, 2.5);
     /// ```
     pub fn to<U>(&self) -> V

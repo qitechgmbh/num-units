@@ -203,3 +203,7 @@ convert_unit! {
 // Scalar quantity definition (dimensionless)
 use super::{SI, SIScale};
 quantity!(Scalar, SI<Z0, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale, Unitless);
+
+// Re-export types for convenience
+pub use scalar::Scalar;
+pub use scalar::*;

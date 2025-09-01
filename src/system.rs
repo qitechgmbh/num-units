@@ -29,7 +29,7 @@
 ///
 /// ```rust
 /// use num_units::system;
-/// use num_units::si::{length, mass, time};
+/// use num_units::{length, mass, time};
 ///
 /// // Create a dimensional system with unit mappings
 /// system! {
@@ -78,7 +78,7 @@
 /// # Examples
 /// ```rust
 /// use num_units::system;
-/// // use num_units::si::{length, mass, time};
+/// // use num_units::{length, mass, time};
 ///
 /// // Create SI system with standard unit mappings
 /// // system! {

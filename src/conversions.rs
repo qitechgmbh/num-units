@@ -29,8 +29,7 @@
 /// ## Usage Patterns
 ///
 /// ```rust
-/// use num_units::length::Length;
-/// use num_units::si::length::{Meter, Kilometer};
+/// use num_units::length::{Length, Meter, Kilometer};
 ///
 /// // Create quantities in different units
 /// let meters = Length::from::<Meter>(1000.0);

@@ -20,7 +20,7 @@
 ///
 /// ```rust
 /// use num_units::area::Area;
-/// use num_units::si::area::{SquareMeter, SquareKilometer};
+/// use num_units::area::{SquareMeter, SquareKilometer};
 ///
 /// // Create area quantities
 /// let surface = Area::from::<SquareMeter>(100.0);
@@ -89,3 +89,7 @@ crate::convert_matrix! {
 // Area quantity definition
 use super::{SI, SIScale};
 quantity!(Area, SI<P2, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale, SquareMeter);
+
+// Re-export types for convenience
+pub use area::Area;
+pub use area::*;

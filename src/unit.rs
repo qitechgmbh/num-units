@@ -23,8 +23,7 @@
 ///
 /// ```rust
 /// use num_units::unit;
-/// use num_units::length::Length;
-/// use num_units::si::length::{Meter, Kilometer};
+/// use num_units::length::{Length, Meter, Kilometer};
 ///
 /// // The unit! macro generates conversion methods automatically
 /// let distance = Length::from::<Meter>(100.0);

@@ -28,3 +28,7 @@ crate::convert_matrix! {
 // Temperature quantity definition
 use super::{SI, SIScale};
 quantity!(Temperature, SI<Z0, Z0, Z0, Z0, P1, Z0, Z0>, SIScale, Kelvin);
+
+// Re-export types for convenience
+pub use temperature::Temperature;
+pub use temperature::*;
