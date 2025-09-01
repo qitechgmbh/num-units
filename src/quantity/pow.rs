@@ -47,9 +47,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::length::f32::Length as LengthF32;
-    use crate::length::f64::Length as LengthF64;
-    use crate::length::i32::Length;
+    use crate::length::Length;
     use num_traits::Pow; // Import the Pow trait to use the .pow() method
 
     #[test]
@@ -58,11 +56,11 @@ mod tests {
         let length = Length::from_base(3);
 
         // Test with u32 exponent (i32 implements Pow<u32>)
-        let squared: Length = length.pow(2u32);
+        let squared: Length<_> = length.pow(2u32);
         assert_eq!(*squared.base(), 9);
 
         // Test with another working combination
-        let cubed: Length = length.pow(3u32);
+        let cubed: Length<_> = length.pow(3u32);
         assert_eq!(*cubed.base(), 27);
     }
 
@@ -71,7 +69,7 @@ mod tests {
     #[test]
     fn test_float_power_operations() {
         // f32 tests
-        let length_f32 = LengthF32::from_base(2.0);
+        let length_f32 = Length::from_base(2.0_f32);
 
         // Test f32^i32
         let squared_f32 = length_f32.pow(2i32);
@@ -82,10 +80,10 @@ mod tests {
         assert!((sqrt_result_f32.into_base() - 1.4142135).abs() < 1e-6);
 
         // f64 tests
-        let length_f64 = LengthF64::from_base(3.0);
+        let length_f64 = Length::from_base(3.0);
 
         // Test f64^i32
-        let cubed_f64 = length_f64.pow(3i32);
+        let cubed_f64: Length<f64> = length_f64.pow(3i32);
         assert!((cubed_f64.into_base() - 27.0).abs() < 1e-10);
 
         // Test f64^f64
@@ -93,8 +91,8 @@ mod tests {
         assert!((sqrt_result_f64.into_base() - 1.7320508075688772).abs() < 1e-10);
 
         // Mixed float power: f64^f32
-        let length_f64_mixed = LengthF64::from_base(4.0);
-        let result_mixed = length_f64_mixed.pow(1.5f32);
+        let length_f64_mixed = Length::from_base(4.0);
+        let result_mixed: Length<f64> = length_f64_mixed.pow(1.5f32);
         assert!((result_mixed.into_base() - 8.0).abs() < 1e-10);
     }
 }

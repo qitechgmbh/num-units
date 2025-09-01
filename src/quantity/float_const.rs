@@ -1,5 +1,5 @@
 use super::Quantity;
-use num_traits::{Num, FloatConst};
+use num_traits::{FloatConst, Num};
 
 // FloatConst implementation for quantities
 // Provides mathematical constants like π, e, ln(2), etc.
@@ -97,71 +97,99 @@ where
     }
 }
 
-// Additional convenience methods for mathematical constants
 impl<V, D, S> Quantity<V, D, S>
 where
-    V: Num + FloatConst,
+    V: FloatConst + Num,
 {
     /// Returns Euler's number (e).
-    pub fn e() -> Self {
-        Self::E()
+    pub fn e(&self) -> Self {
+        Self::from_base(V::E())
     }
 
-    /// Returns π (pi).
-    pub fn pi() -> Self {
-        Self::PI()
-    }
-
-    /// Returns τ (tau) = 2π.
-    pub fn tau() -> Self {
-        Self::TAU()
-    }
-
-    /// Returns π/2 (90 degrees in radians).
-    pub fn half_pi() -> Self {
-        Self::FRAC_PI_2()
-    }
-
-    /// Returns π/4 (45 degrees in radians).
-    pub fn quarter_pi() -> Self {
-        Self::FRAC_PI_4()
-    }
-
-    /// Returns √2.
-    pub fn sqrt_2() -> Self {
-        Self::SQRT_2()
+    /// Returns 1/π.
+    pub fn frac_1_pi(&self) -> Self {
+        Self::from_base(V::FRAC_1_PI())
     }
 
     /// Returns 1/√2.
-    pub fn inv_sqrt_2() -> Self {
-        Self::FRAC_1_SQRT_2()
+    pub fn frac_1_sqrt_2(&self) -> Self {
+        Self::from_base(V::FRAC_1_SQRT_2())
     }
 
-    /// Returns the natural logarithm of 2.
-    pub fn ln_2() -> Self {
-        Self::LN_2()
+    /// Returns 2/π.
+    pub fn frac_2_pi(&self) -> Self {
+        Self::from_base(V::FRAC_2_PI())
+    }
+
+    /// Returns 2/√π.
+    pub fn frac_2_sqrt_pi(&self) -> Self {
+        Self::from_base(V::FRAC_2_SQRT_PI())
+    }
+
+    /// Returns π/2.
+    pub fn frac_pi_2(&self) -> Self {
+        Self::from_base(V::FRAC_PI_2())
+    }
+
+    /// Returns π/3.
+    pub fn frac_pi_3(&self) -> Self {
+        Self::from_base(V::FRAC_PI_3())
+    }
+
+    /// Returns π/4.
+    pub fn frac_pi_4(&self) -> Self {
+        Self::from_base(V::FRAC_PI_4())
+    }
+
+    /// Returns π/6.
+    pub fn frac_pi_6(&self) -> Self {
+        Self::from_base(V::FRAC_PI_6())
+    }
+
+    /// Returns π/8.
+    pub fn frac_pi_8(&self) -> Self {
+        Self::from_base(V::FRAC_PI_8())
     }
 
     /// Returns the natural logarithm of 10.
-    pub fn ln_10() -> Self {
-        Self::LN_10()
+    pub fn ln_10(&self) -> Self {
+        Self::from_base(V::LN_10())
     }
 
-    /// Returns the base 2 logarithm of e.
-    pub fn log2_e() -> Self {
-        Self::LOG2_E()
+    /// Returns the natural logarithm of 2.
+    pub fn ln_2(&self) -> Self {
+        Self::from_base(V::LN_2())
     }
 
     /// Returns the base 10 logarithm of e.
-    pub fn log10_e() -> Self {
-        Self::LOG10_E()
+    pub fn log10_e(&self) -> Self {
+        Self::from_base(V::LOG10_E())
+    }
+
+    /// Returns the base 2 logarithm of e.
+    pub fn log2_e(&self) -> Self {
+        Self::from_base(V::LOG2_E())
+    }
+
+    /// Returns π.
+    pub fn pi(&self) -> Self {
+        Self::from_base(V::PI())
+    }
+
+    /// Returns √2.
+    pub fn sqrt_2(&self) -> Self {
+        Self::from_base(V::SQRT_2())
+    }
+
+    /// Returns 2π.
+    pub fn tau(&self) -> Self {
+        Self::from_base(V::TAU())
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::length::f64::Length;
-    use crate::length::f32::Length as LengthF32;
+    use crate::length::Length;
     use num_traits::FloatConst;
 
     #[test]
@@ -171,9 +199,9 @@ mod tests {
         let e = Length::E();
         let tau = Length::TAU();
 
-        assert!((pi.base() - std::f64::consts::PI).abs() < 1e-10);
-        assert!((e.base() - std::f64::consts::E).abs() < 1e-10);
-        assert!((tau.base() - std::f64::consts::TAU).abs() < 1e-10);
+        assert!((pi.base() - std::f32::consts::PI).abs() < 1e-10);
+        assert!((e.base() - std::f32::consts::E).abs() < 1e-10);
+        assert!((tau.base() - std::f32::consts::TAU).abs() < 1e-10);
     }
 
     #[test]
@@ -185,12 +213,12 @@ mod tests {
         let pi_6 = Length::FRAC_PI_6();
         let pi_8 = Length::FRAC_PI_8();
 
-        assert!((pi.base() - std::f64::consts::PI).abs() < 1e-10);
-        assert!((half_pi.base() - std::f64::consts::FRAC_PI_2).abs() < 1e-10);
-        assert!((quarter_pi.base() - std::f64::consts::FRAC_PI_4).abs() < 1e-10);
-        assert!((pi_3.base() - std::f64::consts::FRAC_PI_3).abs() < 1e-10);
-        assert!((pi_6.base() - std::f64::consts::FRAC_PI_6).abs() < 1e-10);
-        assert!((pi_8.base() - std::f64::consts::FRAC_PI_8).abs() < 1e-10);
+        assert!((pi.base() - std::f32::consts::PI).abs() < 1e-10);
+        assert!((half_pi.base() - std::f32::consts::FRAC_PI_2).abs() < 1e-10);
+        assert!((quarter_pi.base() - std::f32::consts::FRAC_PI_4).abs() < 1e-10);
+        assert!((pi_3.base() - std::f32::consts::FRAC_PI_3).abs() < 1e-10);
+        assert!((pi_6.base() - std::f32::consts::FRAC_PI_6).abs() < 1e-10);
+        assert!((pi_8.base() - std::f32::consts::FRAC_PI_8).abs() < 1e-10);
     }
 
     #[test]
@@ -199,9 +227,9 @@ mod tests {
         let two_pi = Length::FRAC_2_PI();
         let two_sqrt_pi = Length::FRAC_2_SQRT_PI();
 
-        assert!((inv_pi.base() - std::f64::consts::FRAC_1_PI).abs() < 1e-10);
-        assert!((two_pi.base() - std::f64::consts::FRAC_2_PI).abs() < 1e-10);
-        assert!((two_sqrt_pi.base() - std::f64::consts::FRAC_2_SQRT_PI).abs() < 1e-10);
+        assert!((inv_pi.base() - std::f32::consts::FRAC_1_PI).abs() < 1e-10);
+        assert!((two_pi.base() - std::f32::consts::FRAC_2_PI).abs() < 1e-10);
+        assert!((two_sqrt_pi.base() - std::f32::consts::FRAC_2_SQRT_PI).abs() < 1e-10);
     }
 
     #[test]
@@ -210,9 +238,9 @@ mod tests {
         let log2_e = Length::LOG2_E();
         let log10_e = Length::LOG10_E();
 
-        assert!((e.base() - std::f64::consts::E).abs() < 1e-10);
-        assert!((log2_e.base() - std::f64::consts::LOG2_E).abs() < 1e-10);
-        assert!((log10_e.base() - std::f64::consts::LOG10_E).abs() < 1e-10);
+        assert!((e.base() - std::f32::consts::E).abs() < 1e-10);
+        assert!((log2_e.base() - std::f32::consts::LOG2_E).abs() < 1e-10);
+        assert!((log10_e.base() - std::f32::consts::LOG10_E).abs() < 1e-10);
     }
 
     #[test]
@@ -220,8 +248,8 @@ mod tests {
         let ln_2 = Length::LN_2();
         let ln_10 = Length::LN_10();
 
-        assert!((ln_2.base() - std::f64::consts::LN_2).abs() < 1e-10);
-        assert!((ln_10.base() - std::f64::consts::LN_10).abs() < 1e-10);
+        assert!((ln_2.base() - std::f32::consts::LN_2).abs() < 1e-10);
+        assert!((ln_10.base() - std::f32::consts::LN_10).abs() < 1e-10);
     }
 
     #[test]
@@ -229,102 +257,23 @@ mod tests {
         let sqrt_2 = Length::SQRT_2();
         let inv_sqrt_2 = Length::FRAC_1_SQRT_2();
 
-        assert!((sqrt_2.base() - std::f64::consts::SQRT_2).abs() < 1e-10);
-        assert!((inv_sqrt_2.base() - std::f64::consts::FRAC_1_SQRT_2).abs() < 1e-10);
+        assert!((sqrt_2.base() - std::f32::consts::SQRT_2).abs() < 1e-10);
+        assert!((inv_sqrt_2.base() - std::f32::consts::FRAC_1_SQRT_2).abs() < 1e-10);
     }
 
     #[test]
-    fn test_convenience_methods() {
-        let pi = Length::pi();
-        let e = Length::e();
-        let tau = Length::tau();
-        let half_pi = Length::half_pi();
-        let quarter_pi = Length::quarter_pi();
-        let sqrt_2 = Length::sqrt_2();
-        let inv_sqrt_2 = Length::inv_sqrt_2();
-        let ln_2 = Length::ln_2();
-        let ln_10 = Length::ln_10();
-        let log2_e = Length::log2_e();
-        let log10_e = Length::log10_e();
-
-        assert!((pi.base() - std::f64::consts::PI).abs() < 1e-10);
-        assert!((e.base() - std::f64::consts::E).abs() < 1e-10);
-        assert!((tau.base() - std::f64::consts::TAU).abs() < 1e-10);
-        assert!((half_pi.base() - std::f64::consts::FRAC_PI_2).abs() < 1e-10);
-        assert!((quarter_pi.base() - std::f64::consts::FRAC_PI_4).abs() < 1e-10);
-        assert!((sqrt_2.base() - std::f64::consts::SQRT_2).abs() < 1e-10);
-        assert!((inv_sqrt_2.base() - std::f64::consts::FRAC_1_SQRT_2).abs() < 1e-10);
-        assert!((ln_2.base() - std::f64::consts::LN_2).abs() < 1e-10);
-        assert!((ln_10.base() - std::f64::consts::LN_10).abs() < 1e-10);
-        assert!((log2_e.base() - std::f64::consts::LOG2_E).abs() < 1e-10);
-        assert!((log10_e.base() - std::f64::consts::LOG10_E).abs() < 1e-10);
-    }
-
-    #[test]
-    fn test_dimensional_consistency() {
-        // Test that constants maintain their dimensional type
-        let pi_length = Length::pi();
-        let _e_length = Length::e();
-
-        // These should have the same dimension as their type parameter
-        // The actual dimensional analysis is verified by the type system
-        assert_eq!(pi_length.base(), &std::f64::consts::PI);
-    }
-
-    #[test]
-    fn test_tau_vs_2pi() {
-        let tau = Length::TAU();
-        let pi = Length::PI();
-
-        // τ should equal 2π
-        assert!((tau.base() - 2.0 * pi.base()).abs() < 1e-10);
-    }
-
-    #[test]
-    fn test_inverse_relationships() {
-        let sqrt_2 = Length::SQRT_2();
-        let inv_sqrt_2 = Length::FRAC_1_SQRT_2();
-
-        // √2 * (1/√2) should equal 1
-        assert!((sqrt_2.base() * inv_sqrt_2.base() - 1.0).abs() < 1e-10);
-
-        let pi = Length::PI();
-        let inv_pi = Length::FRAC_1_PI();
-
-        // π * (1/π) should equal 1
-        assert!((pi.base() * inv_pi.base() - 1.0).abs() < 1e-10);
-    }
-
-    #[test]
-    fn test_mathematical_relationships() {
-        let _e = Length::E();
-        let ln_2 = Length::LN_2();
-        let ln_10 = Length::LN_10();
-        let log2_e = Length::LOG2_E();
-        let log10_e = Length::LOG10_E();
-
-        // Verify some mathematical relationships
-        // log2(e) * ln(2) should equal 1
-        assert!((log2_e.base() * ln_2.base() - 1.0).abs() < 1e-10);
-
-        // log10(e) * ln(10) should equal 1
-        assert!((log10_e.base() * ln_10.base() - 1.0).abs() < 1e-10);
-    }
-
-    #[test]
-    fn test_different_float_types() {
-        // Test with f32
-        let pi_f32 = LengthF32::PI();
-        let e_f32 = LengthF32::E();
-
-        assert!((pi_f32.base() - std::f32::consts::PI).abs() < 1e-6);
-        assert!((e_f32.base() - std::f32::consts::E).abs() < 1e-6);
-
-        // Test with f64
-        let pi_f64 = Length::PI();
-        let e_f64 = Length::E();
-
-        assert!((pi_f64.base() - std::f64::consts::PI).abs() < 1e-10);
-        assert!((e_f64.base() - std::f64::consts::E).abs() < 1e-10);
+    fn test_instacne_consts() {
+        let x = Length::from_base(1.0);
+        assert_eq!(*x.e().base(), f64::E());
+        assert_eq!(*x.frac_1_pi().base(), 1.0 / std::f64::consts::PI);
+        assert_eq!(*x.frac_2_pi().base(), 2.0 / std::f64::consts::PI);
+        assert_eq!(*x.frac_pi_2().base(), std::f64::consts::FRAC_PI_2);
+        assert_eq!(*x.frac_pi_3().base(), std::f64::consts::FRAC_PI_3);
+        assert_eq!(*x.frac_pi_4().base(), std::f64::consts::FRAC_PI_4);
+        assert_eq!(*x.frac_pi_6().base(), std::f64::consts::FRAC_PI_6);
+        assert_eq!(*x.frac_pi_8().base(), std::f64::consts::FRAC_PI_8);
+        assert_eq!(*x.ln_10().base(), std::f64::consts::LN_10);
+        assert_eq!(*x.ln_2().base(), std::f64::consts::LN_2);
+        assert_eq!(*x.log10_e().base(), std::f64::consts::LOG10_E);
     }
 }

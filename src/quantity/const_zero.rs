@@ -25,39 +25,36 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::length::f32::Length as LengthF32;
-    use crate::length::f64::Length as LengthF64;
-    use crate::length::i32::Length;
-    use crate::length::u32::Length as LengthU32;
-    use crate::time::i32::Time;
+    use crate::length::Length;
+    use crate::time::Time;
     use num_traits::{ConstZero, Zero};
 
     #[test]
     fn test_const_zero_trait() {
         // Test that the ConstZero trait is implemented
-        const ZERO_LENGTH: Length = Length::ZERO;
+        const ZERO_LENGTH: Length<i32> = Length::ZERO;
         assert_eq!(*ZERO_LENGTH.base(), 0);
 
-        const ZERO_TIME: crate::time::f64::Time = crate::time::f64::Time::ZERO;
+        const ZERO_TIME: crate::time::Time<f32> = crate::time::Time::ZERO;
         assert_eq!(*ZERO_TIME.base(), 0.0);
     }
 
     #[test]
     fn test_const_zero_method() {
-        const ZERO_LENGTH: Length = Length::const_zero();
+        const ZERO_LENGTH: Length<i32> = Length::const_zero();
         assert_eq!(*ZERO_LENGTH.base(), 0);
 
-        const ZERO_F64: LengthF64 = LengthF64::const_zero();
+        const ZERO_F64: Length<f64> = Length::const_zero();
         assert_eq!(*ZERO_F64.base(), 0.0);
     }
 
     #[test]
     fn test_const_zero_runtime_use() {
-        let zero_length = Length::ZERO;
+        let zero_length: Length<i32> = Length::ZERO;
         assert_eq!(*zero_length.base(), 0);
         assert!(zero_length.is_zero());
 
-        let zero_time = crate::time::f64::Time::ZERO;
+        let zero_time: Time<f32> = Time::ZERO;
         assert_eq!(*zero_time.base(), 0.0);
         assert!(zero_time.is_zero());
     }
@@ -65,10 +62,10 @@ mod tests {
     #[test]
     fn test_const_zero_with_different_types() {
         // Test with different numeric types
-        const ZERO_I32: Length = Length::ZERO;
-        const ZERO_U32: LengthU32 = LengthU32::ZERO;
-        const ZERO_F32: LengthF32 = LengthF32::ZERO;
-        const ZERO_F64: LengthF64 = LengthF64::ZERO;
+        const ZERO_I32: Length<i32> = Length::ZERO;
+        const ZERO_U32: Length<u32> = Length::ZERO;
+        const ZERO_F32: Length<f32> = Length::ZERO;
+        const ZERO_F64: Length<f64> = Length::ZERO;
 
         assert_eq!(*ZERO_I32.base(), 0i32);
         assert_eq!(*ZERO_U32.base(), 0u32);
@@ -78,8 +75,8 @@ mod tests {
 
     #[test]
     fn test_const_zero_preserves_dimension() {
-        const ZERO_LENGTH: Length = Length::ZERO;
-        const ZERO_TIME: Time = Time::ZERO;
+        const ZERO_LENGTH: Length<i32> = Length::ZERO;
+        const ZERO_TIME: Time<i32> = Time::ZERO;
 
         // These should have different types (different dimensions)
         // This is verified by the type system - if this compiles,
@@ -90,7 +87,7 @@ mod tests {
 
     #[test]
     fn test_const_zero_equals_runtime_zero() {
-        const CONST_ZERO: Length = Length::ZERO;
+        const CONST_ZERO: Length<i32> = Length::ZERO;
         let runtime_zero = Length::zero();
 
         assert_eq!(CONST_ZERO, runtime_zero);
@@ -99,18 +96,18 @@ mod tests {
     #[test]
     fn test_const_zero_in_const_context() {
         // Test that const zero can be used in const contexts
-        const fn const_function() -> Length {
+        const fn const_function() -> Length<i32> {
             Length::ZERO
         }
 
-        const RESULT: Length = const_function();
+        const RESULT: Length<i32> = const_function();
         assert_eq!(*RESULT.base(), 0);
     }
 
     #[test]
     fn test_const_zero_array() {
         // Test that const zero can be used to initialize arrays
-        const ZERO_ARRAY: [Length; 3] = [Length::ZERO, Length::ZERO, Length::ZERO];
+        const ZERO_ARRAY: [Length<i32>; 3] = [Length::ZERO, Length::ZERO, Length::ZERO];
 
         for zero in &ZERO_ARRAY {
             assert_eq!(*zero.base(), 0);
@@ -120,7 +117,7 @@ mod tests {
     #[test]
     fn test_const_zero_struct_field() {
         struct TestStruct {
-            zero_field: Length,
+            zero_field: Length<i32>,
         }
 
         const TEST_STRUCT: TestStruct = TestStruct {
@@ -132,7 +129,7 @@ mod tests {
 
     #[test]
     fn test_const_zero_static() {
-        static STATIC_ZERO: Length = Length::ZERO;
+        static STATIC_ZERO: Length<i32> = Length::ZERO;
         assert_eq!(*STATIC_ZERO.base(), 0);
     }
 }

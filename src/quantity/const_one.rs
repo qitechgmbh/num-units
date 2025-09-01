@@ -23,10 +23,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::length::f32::Length as LengthF32;
-    use crate::length::f64::Length as LengthF64;
-    use crate::length::i32::Length;
-    use crate::length::u32::Length as LengthU32;
+    use crate::length::Length;
 
     #[test]
     fn test_one_basic() {
@@ -39,9 +36,9 @@ mod tests {
     fn test_one_with_different_types() {
         // Test with different numeric types
         let one_i32 = Length::from_base(1);
-        let one_u32 = LengthU32::from_base(1);
-        let one_f32 = LengthF32::from_base(1.0);
-        let one_f64 = LengthF64::from_base(1.0);
+        let one_u32 = Length::<u32>::from_base(1);
+        let one_f32 = Length::<f32>::from_base(1.0);
+        let one_f64 = Length::<f64>::from_base(1.0);
 
         assert_eq!(*one_i32.base(), 1i32);
         assert_eq!(*one_u32.base(), 1u32);

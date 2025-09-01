@@ -280,10 +280,10 @@ mod tests {
 
     #[test]
     fn test_float_constants() {
-        let nan_length = Length::from_base(f64::NAN);
-        let inf_length = Length::from_base(f64::INFINITY);
-        let neg_inf_length = Length::from_base(f64::NEG_INFINITY);
-        let neg_zero_length = Length::from_base(-0.0f64);
+        let nan_length = Length::<f64>::nan();
+        let inf_length = Length::<f64>::infinity();
+        let neg_inf_length = Length::<f64>::neg_infinity();
+        let neg_zero_length = Length::<f64>::neg_zero();
 
         assert!(nan_length.is_nan());
         assert!(inf_length.is_infinite());
@@ -515,7 +515,7 @@ mod tests {
         let x = Length::from_base(1.0);
 
         let angle = y.atan2(x);
-        assert!((angle.base() - std::f64::consts::PI / 4.0).abs() < 1e-10);
+        assert!((angle.base() - std::f64::consts::FRAC_PI_4).abs() < 1e-10);
     }
 
     #[test]
@@ -533,7 +533,7 @@ mod tests {
     fn test_different_dimensions() {
         // Test that Float operations work regardless of dimension
         let length = Length::from_base(3.14);
-        let time = crate::time::f64::Time::from_base(2.71);
+        let time = crate::time::Time::from_base(2.71);
 
         assert!(length.is_finite());
         assert!(time.is_finite());

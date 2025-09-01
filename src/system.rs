@@ -40,8 +40,8 @@
 /// }
 ///
 /// // Use for dimensional analysis
-/// // let distance = length::f64::Length::from_base(100.0);
-/// // let time_val = time::f64::Time::from_base(10.0);
+/// // let distance = length::Length::from_base(100.0);
+/// // let time_val = time::Time::from_base(10.0);
 /// // let velocity = distance / time_val; // Automatic dimensional analysis
 /// ```
 

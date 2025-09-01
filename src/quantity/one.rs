@@ -31,30 +31,28 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::length::f32::Length as LengthF32;
-    use crate::length::f64::Length as LengthF64;
-    use crate::length::i32::Length;
-    use crate::length::u32::Length as LengthU32;
-    use crate::time::i32::Time;
+    use core::f64::EPSILON;
+
+    use crate::{length::Length, time::Time};
     use num_traits::Zero;
 
     #[test]
     fn test_one_trait() {
         // Test that the One trait is implemented
-        let one_length = Length::one();
+        let one_length = Length::<i32>::one();
         assert_eq!(*one_length.base(), 1);
         assert!(one_length.is_one());
 
-        let one_time = crate::time::f64::Time::one();
+        let one_time = Time::<f32>::one();
         assert_eq!(*one_time.base(), 1.0);
         assert!(one_time.is_one());
     }
 
     #[test]
     fn test_is_one() {
-        let one = Length::from_base(1);
-        let not_one = Length::from_base(42);
-        let zero = Length::zero();
+        let one = Length::<i32>::from_base(1);
+        let not_one = Length::<i32>::from_base(42);
+        let zero = Length::<i32>::zero();
 
         assert!(one.is_one());
         assert!(!not_one.is_one());
@@ -64,10 +62,10 @@ mod tests {
     #[test]
     fn test_one_with_different_types() {
         // Test with different numeric types
-        let one_i32 = Length::one();
-        let one_u32 = LengthU32::one();
-        let one_f32 = LengthF32::one();
-        let one_f64 = LengthF64::one();
+        let one_i32 = Length::<i32>::one();
+        let one_u32 = Length::<u32>::one();
+        let one_f32 = Length::<f32>::one();
+        let one_f64 = Length::<f64>::one();
 
         assert!(one_i32.is_one());
         assert!(one_u32.is_one());
@@ -82,8 +80,8 @@ mod tests {
 
     #[test]
     fn test_one_preserves_dimension() {
-        let one_length = Length::one();
-        let one_time = Time::one();
+        let one_length = Length::<f32>::one();
+        let one_time = Time::<f32>::one();
 
         // These should have different types (different dimensions)
         // This is verified by the type system - if this compiles,
@@ -133,30 +131,30 @@ mod tests {
         assert_eq!(result1, one1);
 
         // Test with f64 precision
-        let value_f64 = LengthF64::from_base(1.0000000001);
+        let value_f64 = Length::<f64>::from_base(1.0000000001);
         assert!(!value_f64.is_one()); // Should not be considered exactly one
 
-        let one_f64 = LengthF64::from_base(1.0);
+        let one_f64 = Length::<f64>::from_base(1.0);
         assert!(one_f64.is_one());
     }
 
-    #[test] 
+    #[test]
     fn test_one_with_negative_values() {
-        let positive_one = Length::one();
+        let positive_one = Length::<f32>::one();
         let negative_one = Length::from_base(-1);
-        
+
         assert!(!negative_one.is_one()); // -1 is not the multiplicative identity
         assert!(positive_one.is_one());
     }
 
     #[test]
     fn test_one_with_floating_point() {
-        let one_f64 = LengthF64::one();
+        let one_f64 = Length::<f64>::one();
         assert_eq!(*one_f64.base(), 1.0);
         assert!(one_f64.is_one());
 
         // Test with floating point precision
-        let almost_one = LengthF64::from_base(1.0 + f64::EPSILON);
+        let almost_one = Length::from_base(1.0 + EPSILON);
         assert!(!almost_one.is_one()); // Should not be considered exactly one
     }
 }

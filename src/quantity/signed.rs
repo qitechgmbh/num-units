@@ -29,8 +29,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::length::f64::Length;
-    use crate::length::i32::Length as LengthI32;
+    use crate::length::Length;
 
     #[test]
     fn test_absolute_value() {
@@ -77,8 +76,8 @@ mod tests {
         assert_eq!(abs_diff2.into_base(), 0.0); // max(3 - 10, 0) = 0
 
         // Test with integer types
-        let int_positive = LengthI32::from_base(42);
-        let int_negative = LengthI32::from_base(-17);
+        let int_positive = Length::<i32>::from_base(42);
+        let int_negative = Length::<i32>::from_base(-17);
 
         assert_eq!(int_positive.abs().into_base(), 42);
         assert_eq!(int_negative.abs().into_base(), 17);

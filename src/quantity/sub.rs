@@ -19,8 +19,8 @@ mod tests {
 
     #[test]
     fn test_same_dimension_subtraction() {
-        let length1 = crate::length::f64::Length::from_base(5.0);
-        let length2 = crate::length::f64::Length::from_base(3.0);
+        let length1 = crate::length::Length::from_base(5.0);
+        let length2 = crate::length::Length::from_base(3.0);
 
         let diff = length1 - length2;
         assert_eq!(*diff.base(), 2.0);

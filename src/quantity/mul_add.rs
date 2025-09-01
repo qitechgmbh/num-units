@@ -1,6 +1,6 @@
 use super::Quantity;
 use core::ops::{Add, Mul};
-use num_traits::{Num, MulAdd};
+use num_traits::{MulAdd, Num};
 
 // MulAdd implementation for quantities
 // Performs fused multiply-add: self * a + b
@@ -67,14 +67,12 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::length::f64::Length;
-    use crate::length::i32::Length as LengthI32;
-    use crate::scalar::f64::Scalar;
-    use crate::scalar::i32::Scalar as ScalarI32;
+    use crate::length::Length;
+    use crate::scalar::Scalar;
 
     #[test]
     fn test_mul_add_same_type() {
-        let a = Scalar::from_base(2.0);
+        let a = Scalar::from_base(2.0_f32);
         let b = Scalar::from_base(3.0);
         let c = Scalar::from_base(4.0);
 
@@ -85,7 +83,7 @@ mod tests {
 
     #[test]
     fn test_mul_add_scalar() {
-        let quantity = Length::from_base(5.0);
+        let quantity = Length::from_base(5.0_f32);
 
         // quantity * 2.0 + 3.0 = 5 * 2 + 3 = 13
         let result = quantity.mul_add_scalar(2.0, 3.0);
@@ -94,7 +92,7 @@ mod tests {
 
     #[test]
     fn test_mul_add_mixed() {
-        let base = Length::from_base(4.0);
+        let base = Length::from_base(4.0_f32);
         let addend = Length::from_base(7.0);
 
         // base * 3.0 + addend = 4 * 3 + 7 = 19
@@ -104,9 +102,9 @@ mod tests {
 
     #[test]
     fn test_mul_add_with_integers() {
-        let a = ScalarI32::from_base(6);
-        let b = ScalarI32::from_base(7);
-        let c = ScalarI32::from_base(8);
+        let a = Scalar::from_base(6);
+        let b = Scalar::from_base(7);
+        let c = Scalar::from_base(8);
 
         // a * b + c = 6 * 7 + 8 = 50
         let result = a.mul_add(b, c);
@@ -115,7 +113,7 @@ mod tests {
 
     #[test]
     fn test_mul_add_scalar_integers() {
-        let quantity = LengthI32::from_base(9);
+        let quantity = Length::from_base(9);
 
         // quantity * 4 + 5 = 9 * 4 + 5 = 41
         let result = quantity.mul_add_scalar(4, 5);
@@ -124,7 +122,7 @@ mod tests {
 
     #[test]
     fn test_mul_add_zero() {
-        let a = Scalar::from_base(5.0);
+        let a = Scalar::from_base(5.0_f32);
         let b = Scalar::from_base(0.0);
         let c = Scalar::from_base(3.0);
 
@@ -135,7 +133,7 @@ mod tests {
 
     #[test]
     fn test_mul_add_negative() {
-        let a = Scalar::from_base(-2.0);
+        let a = Scalar::from_base(-2.0_f32);
         let b = Scalar::from_base(3.0);
         let c = Scalar::from_base(1.0);
 
@@ -148,7 +146,7 @@ mod tests {
     fn test_mul_add_precision() {
         // Test that MulAdd can potentially provide better precision
         // than separate multiply and add operations
-        let a = Scalar::from_base(1e10);
+        let a = Scalar::from_base(1e10_f32);
         let b = Scalar::from_base(1e-10);
         let c = Scalar::from_base(1.0);
 
@@ -162,8 +160,8 @@ mod tests {
     #[test]
     fn test_mul_add_floating_point_special() {
         // Test with floating point edge cases
-        let a = Scalar::from_base(f64::sqrt(2.0));
-        let b = Scalar::from_base(f64::sqrt(2.0));
+        let a = Scalar::from_base(2.0_f32.sqrt());
+        let b = Scalar::from_base(2.0_f32.sqrt());
         let c = Scalar::from_base(1.0);
 
         // sqrt(2) * sqrt(2) + 1 = 2 + 1 = 3

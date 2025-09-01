@@ -1,5 +1,5 @@
 use super::Quantity;
-use num_traits::{Num, MulAddAssign};
+use num_traits::{MulAddAssign, Num};
 
 // MulAddAssign implementation for quantities
 // Performs fused multiply-add assignment: *self = *self * a + b
@@ -40,14 +40,12 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::length::f64::Length;
-    use crate::length::i32::Length as LengthI32;
-    use crate::scalar::f64::Scalar;
-    use crate::scalar::i32::Scalar as ScalarI32;
+    use crate::length::Length;
+    use crate::scalar::Scalar;
 
     #[test]
     fn test_mul_add_assign_same_type() {
-        let mut a = Scalar::from_base(2.0);
+        let mut a = Scalar::from_base(2.0_f32);
         let b = Scalar::from_base(3.0);
         let c = Scalar::from_base(4.0);
 
@@ -58,7 +56,7 @@ mod tests {
 
     #[test]
     fn test_mul_add_assign_scalar() {
-        let mut quantity = Length::from_base(5.0);
+        let mut quantity = Length::from_base(5.0_f32);
 
         // quantity = quantity * 2.0 + 3.0 = 5 * 2 + 3 = 13
         quantity.mul_add_assign_scalar(2.0, 3.0);
@@ -67,7 +65,7 @@ mod tests {
 
     #[test]
     fn test_mul_add_assign_mixed() {
-        let mut base = Length::from_base(4.0);
+        let mut base = Length::from_base(4.0_f32);
         let addend = Length::from_base(7.0);
 
         // base = base * 3.0 + addend = 4 * 3 + 7 = 19
@@ -77,9 +75,9 @@ mod tests {
 
     #[test]
     fn test_mul_add_assign_with_integers() {
-        let mut a = ScalarI32::from_base(6);
-        let b = ScalarI32::from_base(7);
-        let c = ScalarI32::from_base(8);
+        let mut a = Scalar::from_base(6);
+        let b = Scalar::from_base(7);
+        let c = Scalar::from_base(8);
 
         // a = a * b + c = 6 * 7 + 8 = 50
         a.mul_add_assign(b, c);
@@ -88,7 +86,7 @@ mod tests {
 
     #[test]
     fn test_mul_add_assign_scalar_integers() {
-        let mut quantity = LengthI32::from_base(9);
+        let mut quantity = Length::from_base(9);
 
         // quantity = quantity * 4 + 5 = 9 * 4 + 5 = 41
         quantity.mul_add_assign_scalar(4, 5);
@@ -97,7 +95,7 @@ mod tests {
 
     #[test]
     fn test_mul_add_assign_zero() {
-        let mut a = Scalar::from_base(5.0);
+        let mut a = Scalar::from_base(5.0_f32);
         let b = Scalar::from_base(0.0);
         let c = Scalar::from_base(3.0);
 
@@ -108,7 +106,7 @@ mod tests {
 
     #[test]
     fn test_mul_add_assign_negative() {
-        let mut a = Scalar::from_base(-2.0);
+        let mut a = Scalar::from_base(-2.0_f32);
         let b = Scalar::from_base(3.0);
         let c = Scalar::from_base(1.0);
 
@@ -119,7 +117,7 @@ mod tests {
 
     #[test]
     fn test_mul_add_assign_chain() {
-        let mut result = Scalar::from_base(1.0);
+        let mut result = Scalar::from_base(1.0_f32);
         let factor = Scalar::from_base(2.0);
         let addend = Scalar::from_base(3.0);
 
@@ -135,7 +133,7 @@ mod tests {
     #[test]
     fn test_mul_add_assign_precision() {
         // Test that MulAddAssign can potentially provide better precision
-        let mut a = Scalar::from_base(1e10);
+        let mut a = Scalar::from_base(1e10_f32);
         let b = Scalar::from_base(1e-10);
         let c = Scalar::from_base(1.0);
 
@@ -146,7 +144,7 @@ mod tests {
 
     #[test]
     fn test_mul_add_assign_identity() {
-        let mut quantity = Length::from_base(42.0);
+        let mut quantity = Length::from_base(42.0_f32);
         let one = Length::from_base(1.0);
         let zero = Length::from_base(0.0);
 
@@ -159,8 +157,8 @@ mod tests {
     #[cfg(any(feature = "std", feature = "libm"))]
     #[test]
     fn test_mul_add_assign_floating_point_special() {
-        let mut a = Scalar::from_base(f64::sqrt(2.0));
-        let b = Scalar::from_base(f64::sqrt(2.0));
+        let mut a = Scalar::from_base(2.0_f64.sqrt());
+        let b = Scalar::from_base(2.0_f64.sqrt());
         let c = Scalar::from_base(1.0);
 
         // a = sqrt(2) * sqrt(2) + 1 = 2 + 1 = 3

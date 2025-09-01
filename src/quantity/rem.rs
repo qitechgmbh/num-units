@@ -31,10 +31,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::length::f64::Length as LengthF64;
-    use crate::length::i32::Length;
-    use crate::length::i64::Length as LengthI64;
-    use crate::length::u32::Length as LengthU32;
+    use crate::length::Length;
 
     #[test]
     fn test_remainder_same_dimension() {
@@ -65,8 +62,8 @@ mod tests {
 
     #[test]
     fn test_remainder_with_floating_point() {
-        let a = LengthF64::from_base(10.5);
-        let b = LengthF64::from_base(3.0);
+        let a = Length::from_base(10.5_f32);
+        let b = Length::from_base(3.0);
 
         let result = a % b;
         assert!((result.base() - 1.5).abs() < 1e-10); // 10.5 % 3.0 = 1.5
@@ -116,15 +113,15 @@ mod tests {
     #[test]
     fn test_remainder_with_different_types() {
         // Test with unsigned integers
-        let a = LengthU32::from_base(25);
-        let b = LengthU32::from_base(7);
+        let a = Length::from_base(25_u32);
+        let b = Length::from_base(7_u32);
 
         let result = a % b;
         assert_eq!(*result.base(), 4); // 25 % 7 = 4
 
-        // Test with i64
-        let c = LengthI64::from_base(100);
-        let d = LengthI64::from_base(13);
+        // Test with i32
+        let c = Length::from_base(100_i32);
+        let d = Length::from_base(13_i32);
 
         let result2 = c % d;
         assert_eq!(*result2.base(), 9); // 100 % 13 = 9
@@ -145,16 +142,16 @@ mod tests {
 
     #[test]
     fn test_remainder_floating_point_edge_cases() {
-        use core::f64;
+        use core::f64::INFINITY;
 
-        let a = LengthF64::from_base(7.0);
-        let b = LengthF64::from_base(f64::INFINITY);
+        let a = Length::from_base(7.0);
+        let b = Length::from_base(INFINITY);
 
         let result = a % b;
         assert_eq!(*result.base(), 7.0); // 7.0 % ∞ = 7.0
 
-        let c = LengthF64::from_base(f64::INFINITY);
-        let d = LengthF64::from_base(3.0);
+        let c = Length::from_base(INFINITY);
+        let d = Length::from_base(3.0);
 
         let result2 = c % d;
         assert!(result2.base().is_nan()); // ∞ % 3.0 = NaN

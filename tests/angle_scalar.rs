@@ -27,5 +27,5 @@ fn test_angle_conversions() {
 
     // Test radians (2π for full revolution)
     let radians = unitless.to::<Radian>();
-    assert!((radians - 2.0 * std::f64::consts::PI).abs() < 1e-10);
+    assert!((radians - 2.0 * std::f32::consts::PI).abs() < 1e-10);
 }

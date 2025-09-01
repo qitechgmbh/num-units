@@ -18,11 +18,11 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::length::f64::Length;
+    use crate::length::Length;
 
     #[test]
     fn test_zero() {
-        let zero_length = Length::zero();
+        let zero_length = Length::<f64>::zero();
         assert!(zero_length.is_zero());
         assert_eq!(*zero_length.base(), 0.0);
     }

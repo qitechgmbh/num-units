@@ -31,8 +31,8 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::area::f64::Area;
-    use crate::length::f64::Length;
+    use crate::area::Area;
+    use crate::length::Length;
 
     #[test]
     fn test_scalar_multiplication() {
@@ -63,15 +63,15 @@ mod tests {
         let height = Length::from_base(4.0); // 4 meters
 
         // Multiply them to get area
-        let area: Area = width * height;
+        let area: Area<f64> = width * height;
 
         // The result should be 12 square meters
-        assert!((area.into_base() - 12.0).abs() < 1e-10);
+        assert!((area.into_base() - 12.0_f64).abs() < 1e-10_f64);
 
         // Test with different values
         let width_ft = Length::from_base(3.048); // 10 ft = 3.048 m
         let height_m = Length::from_base(2.0); // 2 m
-        let mixed_area: Area = width_ft * height_m;
+        let mixed_area: Area<f64> = width_ft * height_m;
 
         // Expected: 3.048 * 2.0 = 6.096 square meters
         assert!((mixed_area.into_base() - 6.096).abs() < 0.001);

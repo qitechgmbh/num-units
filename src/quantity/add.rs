@@ -16,7 +16,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::length::f64::Length;
+    use crate::length::Length;
 
     #[test]
     fn test_same_dimension_addition() {

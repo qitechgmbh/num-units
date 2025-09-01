@@ -45,67 +45,7 @@ macro_rules! quantity {
                 pub type Dimension = $dimension;
                 pub type Scale = $scale_name;
 
-                pub mod r#i8 {
-                    use super::*;
-                    pub type $name = $crate::quantity::Quantity<i8, $dimension, Scale>;
-                }
-
-                pub mod r#u8 {
-                    use super::*;
-                    pub type $name = $crate::quantity::Quantity<u8, $dimension, Scale>;
-                }
-
-                pub mod r#i16 {
-                    use super::*;
-                    pub type $name = $crate::quantity::Quantity<i16, $dimension, Scale>;
-                }
-
-                pub mod r#u16 {
-                    use super::*;
-                    pub type $name = $crate::quantity::Quantity<u16, $dimension, Scale>;
-                }
-
-                pub mod r#i32 {
-                    use super::*;
-                    pub type $name = $crate::quantity::Quantity<i32, $dimension, Scale>;
-                }
-
-                pub mod r#u32 {
-                    use super::*;
-                    pub type $name = $crate::quantity::Quantity<u32, $dimension, Scale>;
-                }
-
-                pub mod r#i64 {
-                    use super::*;
-                    pub type $name = $crate::quantity::Quantity<i64, $dimension, Scale>;
-                }
-
-                pub mod r#u64 {
-                    use super::*;
-                    pub type $name = $crate::quantity::Quantity<u64, $dimension, Scale>;
-                }
-
-                pub mod r#i128 {
-                    use super::*;
-                    pub type $name = $crate::quantity::Quantity<i128, $dimension, Scale>;
-                }
-
-                pub mod r#u128 {
-                    use super::*;
-                    pub type $name = $crate::quantity::Quantity<u128, $dimension, Scale>;
-                }
-
-                pub mod r#f32 {
-                    use super::*;
-                    pub type $name = $crate::quantity::Quantity<f32, $dimension, Scale>;
-                }
-
-                pub mod r#f64 {
-                    use super::*;
-                    pub type $name = $crate::quantity::Quantity<f64, $dimension, Scale>;
-                }
-
-                pub type $name<V> = $crate::quantity::Quantity<V, $dimension, Scale>;
+                pub type $name<V> = $crate::quantity::Quantity<V, $dimension, $scale_name>;
             }
 
             // Generate BaseUnitOf implementation if base unit is specified
@@ -206,7 +146,7 @@ where
         self.value
     }
 
-    /// Create a quantity from a raw value
+    /// Create a quantity from a base value
     pub const fn from_base(value: V) -> Self {
         Self {
             value,
@@ -231,7 +171,7 @@ where
     /// use num_units::length;
     ///
     /// // Create a length from kilometers - automatically converts to meters (base unit)
-    /// let distance = length::f64::Length::from::<num_units::length::Kilometer>(2.5);
+    /// let distance = length::Length::from::<num_units::length::Kilometer>(2.5);
     /// assert_eq!(*distance.base(), 2500.0); // Stored as 2500 meters
     /// ```
     pub fn from<U>(value: V) -> Self
@@ -264,7 +204,7 @@ where
     /// ```rust
     /// use num_units::length;
     ///
-    /// let distance = length::f64::Length::from_base(2500.0); // 2500 meters
+    /// let distance = length::Length::from_base(2500.0); // 2500 meters
     /// let km_value = distance.to::<num_units::length::Kilometer>();
     /// assert_eq!(km_value, 2.5);
     /// ```
@@ -316,15 +256,15 @@ mod tests {
     #[test]
     fn test_quantity_creation() {
         // Use motion system dimensions
-        let length = crate::length::f64::Length::from_base(5.0);
+        let length = crate::length::Length::from_base(5.0);
         assert_eq!(*length.base(), 5.0);
     }
 
     #[test]
     fn test_quantity_macro() {
         // Test using motion system types directly
-        let length = crate::length::f64::Length::from_base(2.5);
-        let area = crate::area::f64::Area::from_base(9.8);
+        let length = crate::length::Length::from_base(2.5);
+        let area = crate::area::Area::from_base(9.8);
 
         assert_eq!(*length.base(), 2.5);
         assert_eq!(*area.base(), 9.8);
@@ -332,7 +272,7 @@ mod tests {
 
     #[test]
     fn test_display() {
-        let length = crate::length::f64::Length::from_base(3.14159);
+        let length = crate::length::Length::from_base(3.14159);
         // Test that the display trait is implemented
         // In no_std, we can't easily test format! but we can verify the trait exists
         let _: &dyn core::fmt::Display = &length;
@@ -341,8 +281,8 @@ mod tests {
     #[test]
     fn test_motion_system_integration() {
         // Test basic motion quantities
-        let length = crate::length::f64::Length::from_base(10.0);
-        let time = crate::time::f64::Time::from_base(2.0);
+        let length = crate::length::Length::from_base(10.0);
+        let time = crate::time::Time::from_base(2.0);
 
         // Test dimensional analysis - velocity = length / time
         let velocity = length / time;
@@ -360,7 +300,7 @@ mod tests {
     #[test]
     fn test_generic_unit_conversion() {
         // Test creating a length quantity from kilometers
-        let distance = crate::length::f64::Length::from::<crate::isq::length::Kilometer>(2.5);
+        let distance = crate::length::Length::from::<crate::isq::length::Kilometer>(2.5);
         assert_eq!(*distance.base(), 2500.0); // Should be 2500 meters
 
         // Test getting the value in different units
@@ -375,8 +315,7 @@ mod tests {
         assert_eq!(cm_value, 250000.0);
 
         // Test creating from centimeters
-        let small_distance =
-            crate::length::f64::Length::from::<crate::isq::length::Centimeter>(150.0);
+        let small_distance = crate::length::Length::from::<crate::isq::length::Centimeter>(150.0);
         assert_eq!(*small_distance.base(), 1.5); // Should be 1.5 meters
 
         // For base unit, use to_base_unit
@@ -384,7 +323,7 @@ mod tests {
         assert_eq!(m_from_cm, 1.5);
 
         // Test creating from base unit
-        let base_distance = crate::length::f64::Length::from_base_unit(100.0);
+        let base_distance = crate::length::Length::from_base_unit(100.0);
         assert_eq!(*base_distance.base(), 100.0);
     }
 
@@ -393,7 +332,7 @@ mod tests {
         // Demonstrate the much cleaner API
 
         // Length conversions - no need to specify base unit!
-        let distance = crate::length::f64::Length::from::<crate::isq::length::Kilometer>(5.0);
+        let distance = crate::length::Length::from::<crate::isq::length::Kilometer>(5.0);
         assert_eq!(*distance.base(), 5000.0); // 5000 meters
 
         let in_cm = distance.to::<crate::isq::length::Centimeter>();

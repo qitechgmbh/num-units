@@ -32,22 +32,22 @@ where
 #[test]
 fn test_generic_length_operations() {
     // Test with f64
-    let length1_f64 = length::f64::Length::from::<Meter>(3.0);
-    let length2_f64 = length::f64::Length::from::<Meter>(4.0);
+    let length1_f64 = length::Length::from::<Meter>(3.0);
+    let length2_f64 = length::Length::from::<Meter>(4.0);
     let total_length_f64 = add_lengths(length1_f64, length2_f64);
     assert_eq!(total_length_f64.to::<Meter>(), 7.0);
 
     // Test with i32
-    let length1_i32 = length::i32::Length::from::<Meter>(3);
-    let length2_i32 = length::i32::Length::from::<Meter>(4);
+    let length1_i32 = length::Length::from::<Meter>(3);
+    let length2_i32 = length::Length::from::<Meter>(4);
     let total_length_i32 = add_lengths(length1_i32, length2_i32);
     assert_eq!(total_length_i32.to::<Meter>(), 7);
 }
 
 #[test]
 fn test_unit_conversions_in_functions() {
-    let km_length = length::f64::Length::from::<Kilometer>(2.5);
-    let m_length = length::f64::Length::from::<Meter>(500.0);
+    let km_length = length::Length::from::<Kilometer>(2.5);
+    let m_length = length::Length::from::<Meter>(500.0);
     let total_km = add_lengths(km_length, m_length);
 
     assert_eq!(total_km.to::<Kilometer>(), 3.0);
@@ -56,8 +56,8 @@ fn test_unit_conversions_in_functions() {
 
 #[test]
 fn test_mass_operations() {
-    let mass1 = mass::f64::Mass::from::<Kilogram>(2.5);
-    let mass2 = mass::f64::Mass::from::<Gram>(1500.0);
+    let mass1 = mass::Mass::from::<Kilogram>(2.5);
+    let mass2 = mass::Mass::from::<Gram>(1500.0);
     let total_mass = add_masses(mass1, mass2);
 
     assert_eq!(total_mass.to::<Kilogram>(), 4.0);
