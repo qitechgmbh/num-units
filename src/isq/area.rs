@@ -87,8 +87,8 @@ crate::convert_matrix! {
 }
 
 // Area quantity definition
-use super::{SI, SIScale};
-quantity!(Area, SI<P2, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale, SquareMeter);
+use super::{ISQ, SiScale};
+quantity!(Area, ISQ<P2, Z0, Z0, Z0, Z0, Z0, Z0>, SiScale, SquareMeter);
 
 // Re-export types for convenience
 pub use area::Area;

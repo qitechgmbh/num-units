@@ -22,8 +22,8 @@ convert_unit! {
 }
 
 // Velocity quantity definition (Length/Time)
-use super::{SI, SIScale};
-quantity!(Velocity, SI<P1, Z0, N1, Z0, Z0, Z0, Z0>, SIScale, MeterPerSecond);
+use super::{ISQ, SiScale};
+quantity!(Velocity, ISQ<P1, Z0, N1, Z0, Z0, Z0, Z0>, SiScale, MeterPerSecond);
 
 // Re-export types for convenience
 pub use velocity::Velocity;

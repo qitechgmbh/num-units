@@ -12,10 +12,10 @@ pub mod scale;
 #[macro_use]
 pub mod system;
 pub mod conversions;
-mod si;
+mod isq;
 
 // Re-export num_traits for convenience
 pub use num_traits;
 
 // Re-export all quantity types at the root level for compatibility
-pub use si::*;
+pub use isq::*;

@@ -49,8 +49,8 @@ convert_matrix! {
 use crate::prefix::KILO;
 
 // Energy quantity definition (Mass×Length²/Time²)
-use super::{SI, SIScale};
-quantity!(Energy, SI<P2, P1, N2, Z0, Z0, Z0, Z0>, SIScale, Joule);
+use super::{ISQ, SiScale};
+quantity!(Energy, ISQ<P2, P1, N2, Z0, Z0, Z0, Z0>, SiScale, Joule);
 
 // Re-export types for convenience
 pub use energy::Energy;

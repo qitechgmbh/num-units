@@ -54,7 +54,7 @@
 /// # Syntax
 /// ```rust,no_run
 /// use num_units::system;
-/// 
+///
 /// system! {
 ///     SystemName,
 ///     DIMENSION1 => UnitType1,
@@ -77,11 +77,12 @@
 /// # Examples
 /// ```rust,no_run
 /// use num_units::system;
-/// 
+///
 /// // Create SI system with standard unit mappings
 /// // Note: This is just an example of the syntax
 /// // system! {
-/// //     SI,
+/// //     ISQ,
+/// //     SiScale,
 /// //     L => length::Meter,
 /// //     M => mass::Kilogram,
 /// //     T => time::Second,
@@ -93,6 +94,7 @@ macro_rules! system {
     // Handle the new syntax with dimension => unit mappings
     (
         $system_name:ident,
+        $scale_name:ident,
         $($dim:ident => $unit:ty),+ $(,)?
     ) => {
         // First create the dimension system using the existing system! macro pattern
@@ -101,13 +103,7 @@ macro_rules! system {
 
         // Then create the scale type using the new dimension_scale! macro
         ::paste::paste! {
-            $crate::dimension_scale!([<$system_name Scale>], $($unit),+);
+            $crate::dimension_scale!([<$scale_name>], $($unit),+);
         }
-    };
-
-    // Keep the old syntax for backward compatibility
-    ($system_name:ident, $($dim:ident),+ $(,)?) => {
-        #[::num_units_macros::system($($dim),+)]
-        pub struct $system_name;
     };
 }

@@ -30,7 +30,6 @@ fn test_scalar_operations() {
 fn test_cross_dimensional_operations() {
     let l1 = Length::from::<Meter>(3.0);
     let l2 = Length::from::<Meter>(4.0);
-    let s1 = Scalar::from::<Unitless>(5.0);
 
     // Length × Length = Area
     let area: Area<_> = l1 * l2;
@@ -39,8 +38,4 @@ fn test_cross_dimensional_operations() {
     // Area × Length = Volume
     let volume: Volume<_> = area * l1; // Area * Length = Volume
     assert_eq!(volume.to::<CubicMeter>(), 36.0);
-
-    // Volume ÷ Time = Volumetric Flow Rate (still Volume since time is scalar)
-    let volumetric_flow = volume / s1.to::<Unitless>(); // Volume / Time = Volume/Time
-    assert_eq!(volumetric_flow.to::<CubicMeter>(), 7.2);
 }

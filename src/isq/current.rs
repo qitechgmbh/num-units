@@ -26,8 +26,8 @@ convert_unit! {
 }
 
 // Current quantity definition
-use super::{SI, SIScale};
-quantity!(Current, SI<Z0, Z0, Z0, P1, Z0, Z0, Z0>, SIScale, Ampere);
+use super::{ISQ, SiScale};
+quantity!(Current, ISQ<Z0, Z0, Z0, P1, Z0, Z0, Z0>, SiScale, Ampere);
 
 // Re-export types for convenience
 pub use current::Current;

@@ -201,8 +201,8 @@ convert_unit! {
 }
 
 // Scalar quantity definition (dimensionless)
-use super::{SI, SIScale};
-quantity!(Scalar, SI<Z0, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale, Unitless);
+use super::{ISQ, SiScale};
+quantity!(Scalar, ISQ<Z0, Z0, Z0, Z0, Z0, Z0, Z0>, SiScale, Unitless);
 
 // Re-export types for convenience
 pub use scalar::Scalar;

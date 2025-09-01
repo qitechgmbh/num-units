@@ -45,8 +45,8 @@ crate::convert_matrix! {
 }
 
 // Time quantity definition
-use super::{SI, SIScale};
-quantity!(Time, SI<Z0, Z0, P1, Z0, Z0, Z0, Z0>, SIScale, Second);
+use super::{ISQ, SiScale};
+quantity!(Time, ISQ<Z0, Z0, P1, Z0, Z0, Z0, Z0>, SiScale, Second);
 
 // Re-export types for convenience
 pub use time::Time;

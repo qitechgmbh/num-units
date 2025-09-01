@@ -23,8 +23,8 @@ convert_matrix! {
 }
 
 // Mass quantity definition
-use super::{SI, SIScale};
-quantity!(Mass, SI<Z0, P1, Z0, Z0, Z0, Z0, Z0>, SIScale, Kilogram);
+use super::{ISQ, SiScale};
+quantity!(Mass, ISQ<Z0, P1, Z0, Z0, Z0, Z0, Z0>, SiScale, Kilogram);
 
 // Re-export types for convenience
 pub use mass::Mass;

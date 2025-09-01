@@ -28,8 +28,8 @@ convert_unit! {
 }
 
 // Volume quantity definition
-use super::{SI, SIScale};
-quantity!(Volume, SI<P3, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale, CubicMeter);
+use super::{ISQ, SiScale};
+quantity!(Volume, ISQ<P3, Z0, Z0, Z0, Z0, Z0, Z0>, SiScale, CubicMeter);
 
 // Re-export types for convenience
 pub use volume::Volume;

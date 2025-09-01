@@ -91,7 +91,8 @@ pub mod volume;
 
 // Create the SI system with unit scaling using the new syntax
 system! {
-    SI,
+    ISQ,
+    SiScale,
     L => length::Meter,
     M => mass::Kilogram,
     T => time::Second,

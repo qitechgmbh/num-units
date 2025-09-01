@@ -24,8 +24,8 @@ convert_unit! {
 use crate::prefix::KILO;
 
 // Force quantity definition (Mass×Length/Time²)
-use super::{SI, SIScale};
-quantity!(Force, SI<P1, P1, N2, Z0, Z0, Z0, Z0>, SIScale, Newton);
+use super::{ISQ, SiScale};
+quantity!(Force, ISQ<P1, P1, N2, Z0, Z0, Z0, Z0>, SiScale, Newton);
 
 // Re-export types for convenience
 pub use force::Force;

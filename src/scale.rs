@@ -95,7 +95,7 @@ macro_rules! dimension_scale {
 ///
 /// # Parameters
 /// - `$system_name`: The name of the unit system (e.g., SI)
-/// - `$scale_name`: The name of the scale type (e.g., SIScale)
+/// - `$scale_name`: The name of the scale type (e.g., SiScale)
 /// - `$unit_types`: The base unit types for each dimension
 ///
 /// # Generated Code

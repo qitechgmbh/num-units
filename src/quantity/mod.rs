@@ -37,81 +37,79 @@ use num_traits::Num;
 /// ```
 #[macro_export]
 macro_rules! quantity {
-    ($name:ident, $dimension:ty, $scale:ty, $base_unit:ty) => {
+    ($name:ident, $dimension:ty, $scale_name:ty, $base_unit:ty) => {
         ::paste::paste! {
             mod [<$name:snake>] {
                 use super::*;
 
                 pub type Dimension = $dimension;
-                pub type [<$name Dimension>] = $dimension;
-                pub type Scale = $scale;
-                pub type [<$name Scale>] = $scale;
+                pub type Scale = $scale_name;
 
                 pub mod r#i8 {
                     use super::*;
-                    pub type $name = $crate::quantity::Quantity<i8, $dimension, $scale>;
+                    pub type $name = $crate::quantity::Quantity<i8, $dimension, Scale>;
                 }
 
                 pub mod r#u8 {
                     use super::*;
-                    pub type $name = $crate::quantity::Quantity<u8, $dimension, $scale>;
+                    pub type $name = $crate::quantity::Quantity<u8, $dimension, Scale>;
                 }
 
                 pub mod r#i16 {
                     use super::*;
-                    pub type $name = $crate::quantity::Quantity<i16, $dimension, $scale>;
+                    pub type $name = $crate::quantity::Quantity<i16, $dimension, Scale>;
                 }
 
                 pub mod r#u16 {
                     use super::*;
-                    pub type $name = $crate::quantity::Quantity<u16, $dimension, $scale>;
+                    pub type $name = $crate::quantity::Quantity<u16, $dimension, Scale>;
                 }
 
                 pub mod r#i32 {
                     use super::*;
-                    pub type $name = $crate::quantity::Quantity<i32, $dimension, $scale>;
+                    pub type $name = $crate::quantity::Quantity<i32, $dimension, Scale>;
                 }
 
                 pub mod r#u32 {
                     use super::*;
-                    pub type $name = $crate::quantity::Quantity<u32, $dimension, $scale>;
+                    pub type $name = $crate::quantity::Quantity<u32, $dimension, Scale>;
                 }
 
                 pub mod r#i64 {
                     use super::*;
-                    pub type $name = $crate::quantity::Quantity<i64, $dimension, $scale>;
+                    pub type $name = $crate::quantity::Quantity<i64, $dimension, Scale>;
                 }
 
                 pub mod r#u64 {
                     use super::*;
-                    pub type $name = $crate::quantity::Quantity<u64, $dimension, $scale>;
+                    pub type $name = $crate::quantity::Quantity<u64, $dimension, Scale>;
                 }
 
                 pub mod r#i128 {
                     use super::*;
-                    pub type $name = $crate::quantity::Quantity<i128, $dimension, $scale>;
+                    pub type $name = $crate::quantity::Quantity<i128, $dimension, Scale>;
                 }
 
                 pub mod r#u128 {
                     use super::*;
-                    pub type $name = $crate::quantity::Quantity<u128, $dimension, $scale>;
+                    pub type $name = $crate::quantity::Quantity<u128, $dimension, Scale>;
                 }
 
                 pub mod r#f32 {
                     use super::*;
-                    pub type $name = $crate::quantity::Quantity<f32, $dimension, $scale>;
+                    pub type $name = $crate::quantity::Quantity<f32, $dimension, Scale>;
                 }
 
                 pub mod r#f64 {
                     use super::*;
-                    pub type $name = $crate::quantity::Quantity<f64, $dimension, $scale>;
+                    pub type $name = $crate::quantity::Quantity<f64, $dimension, Scale>;
                 }
 
-                pub type $name<V> = $crate::quantity::Quantity<V, $dimension, $scale>;
+                pub type $name<V> = $crate::quantity::Quantity<V, $dimension, Scale>;
             }
 
             // Generate BaseUnitOf implementation if base unit is specified
-            impl $crate::quantity::BaseUnitOf<$dimension> for $scale {
+            impl $crate::quantity::BaseUnitOf<$dimension> for Scale {
                 type BaseUnit = $base_unit;
             }
         }
@@ -165,11 +163,11 @@ pub mod zero;
 /// # Examples
 /// ```rust
 /// # use num_units::quantity::Quantity;
-/// # use num_units::{SI, SIScale};
+/// # use num_units::{SI, SiScale};
 /// # use typenum::*;
 ///
-/// let length = Quantity::<f64, SI<P1, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale>::from_base(5.0);
-/// let width = Quantity::<f64, SI<P1, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale>::from_base(3.0);
+/// let length = Quantity::<f64, SI<P1, Z0, Z0, Z0, Z0, Z0, Z0>, SiScale>::from_base(5.0);
+/// let width = Quantity::<f64, SI<P1, Z0, Z0, Z0, Z0, Z0, Z0>, SiScale>::from_base(3.0);
 /// let total_length = length + width; // Same dimensions - addition works
 /// ```
 #[derive(Debug, PartialEq, Eq)]
@@ -362,23 +360,23 @@ mod tests {
     #[test]
     fn test_generic_unit_conversion() {
         // Test creating a length quantity from kilometers
-        let distance = crate::length::f64::Length::from::<crate::si::length::Kilometer>(2.5);
+        let distance = crate::length::f64::Length::from::<crate::isq::length::Kilometer>(2.5);
         assert_eq!(*distance.base(), 2500.0); // Should be 2500 meters
 
         // Test getting the value in different units
-        let km_value = distance.to::<crate::si::length::Kilometer>();
+        let km_value = distance.to::<crate::isq::length::Kilometer>();
         assert_eq!(km_value, 2.5);
 
         // For base unit, use to_base_unit
         let m_value = distance.to_base_unit();
         assert_eq!(m_value, 2500.0);
 
-        let cm_value = distance.to::<crate::si::length::Centimeter>();
+        let cm_value = distance.to::<crate::isq::length::Centimeter>();
         assert_eq!(cm_value, 250000.0);
 
         // Test creating from centimeters
         let small_distance =
-            crate::length::f64::Length::from::<crate::si::length::Centimeter>(150.0);
+            crate::length::f64::Length::from::<crate::isq::length::Centimeter>(150.0);
         assert_eq!(*small_distance.base(), 1.5); // Should be 1.5 meters
 
         // For base unit, use to_base_unit
@@ -395,13 +393,13 @@ mod tests {
         // Demonstrate the much cleaner API
 
         // Length conversions - no need to specify base unit!
-        let distance = crate::length::f64::Length::from::<crate::si::length::Kilometer>(5.0);
+        let distance = crate::length::f64::Length::from::<crate::isq::length::Kilometer>(5.0);
         assert_eq!(*distance.base(), 5000.0); // 5000 meters
 
-        let in_cm = distance.to::<crate::si::length::Centimeter>();
+        let in_cm = distance.to::<crate::isq::length::Centimeter>();
         assert_eq!(in_cm, 500000.0); // 500,000 cm
 
-        let in_mm = distance.to::<crate::si::length::Millimeter>();
+        let in_mm = distance.to::<crate::isq::length::Millimeter>();
         assert_eq!(in_mm, 5000000.0); // 5,000,000 mm
 
         // TODO: Mass and time conversions need fixing in the conversion definitions
@@ -419,7 +417,7 @@ mod tests {
 
     #[test]
     fn test_unit_conversion_debug() {
-        use crate::si::length::{Centimeter, Kilometer, Meter};
+        use crate::isq::length::{Centimeter, Kilometer, Meter};
         use crate::unit::FromUnit;
 
         // Let's test different directions to understand the trait

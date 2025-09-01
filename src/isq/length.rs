@@ -85,8 +85,8 @@ convert_matrix! {
 }
 
 // Length quantity definition
-use super::{SI, SIScale};
-quantity!(Length, SI<P1, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale, Meter);
+use super::{ISQ, SiScale};
+quantity!(Length, ISQ<P1, Z0, Z0, Z0, Z0, Z0, Z0>, SiScale, Meter);
 
 // Re-export types for convenience
 pub use length::Length;
