@@ -32,4 +32,4 @@ use crate::prefix::{KILO, MEGA};
 
 // Power quantity definition (Mass×Length²/Time³)
 use super::{SI, SIScale};
-quantity!(Power, SI<P2, P1, N3, Z0, Z0, Z0, Z0>, SIScale);
+quantity!(Power, SI<P2, P1, N3, Z0, Z0, Z0, Z0>, SIScale, Watt);

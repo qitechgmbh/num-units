@@ -27,4 +27,4 @@ convert_unit! {
 
 // Current quantity definition
 use super::{SI, SIScale};
-quantity!(Current, SI<Z0, Z0, Z0, P1, Z0, Z0, Z0>, SIScale);
+quantity!(Current, SI<Z0, Z0, Z0, P1, Z0, Z0, Z0>, SIScale, Ampere);

@@ -42,8 +42,12 @@ convert_unit! {
     Joule: |kilowatt_hour| kilowatt_hour * 3_600_000.0;
 }
 
+convert_matrix! {
+    Joule => Kilojoule, Calorie, Kilocalorie, WattHour, KilowattHour
+}
+
 use crate::prefix::KILO;
 
 // Energy quantity definition (Mass×Length²/Time²)
 use super::{SI, SIScale};
-quantity!(Energy, SI<P2, P1, N2, Z0, Z0, Z0, Z0>, SIScale);
+quantity!(Energy, SI<P2, P1, N2, Z0, Z0, Z0, Z0>, SIScale, Joule);

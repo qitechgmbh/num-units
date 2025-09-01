@@ -18,4 +18,4 @@ convert_unit! {
 
 // Luminosity quantity definition
 use super::{SI, SIScale};
-quantity!(Luminosity, SI<Z0, Z0, Z0, Z0, Z0, Z0, P1>, SIScale);
+quantity!(Luminosity, SI<Z0, Z0, Z0, Z0, Z0, Z0, P1>, SIScale, Candela);

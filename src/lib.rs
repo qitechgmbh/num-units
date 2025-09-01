@@ -20,7 +20,6 @@ pub use num_traits;
 // Re-export all quantity types at the root level for compatibility
 pub use si::acceleration::acceleration;
 pub use si::amount::amount;
-pub use si::angle::angle;
 pub use si::area::area;
 pub use si::current::current;
 pub use si::energy::energy;

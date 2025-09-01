@@ -16,30 +16,34 @@ units! {
 }
 
 convert_unit! {
-    Millisecond: |second| second * MILLI;
-    Second: |millisecond| millisecond / MILLI;
+    Millisecond: |second| second / MILLI;
+    Second: |millisecond| millisecond * MILLI;
 }
 
 convert_unit! {
-    Microsecond: |second| second * MICRO;
-    Second: |microsecond| microsecond / MICRO;
+    Microsecond: |second| second / MICRO;
+    Second: |microsecond| microsecond * MICRO;
 }
 
 convert_unit! {
-    Nanosecond: |second| second * NANO;
-    Second: |nanosecond| nanosecond / NANO;
+    Nanosecond: |second| second / NANO;
+    Second: |nanosecond| nanosecond * NANO;
 }
 
 convert_unit! {
-    Picosecond: |second| second * PICO;
-    Second: |picosecond| picosecond / PICO;
+    Picosecond: |second| second / PICO;
+    Second: |picosecond| picosecond * PICO;
 }
 
 convert_unit! {
-    Kilosecond: |second| second * KILO;
-    Second: |kilosecond| kilosecond / KILO;
+    Kilosecond: |second| second / KILO;
+    Second: |kilosecond| kilosecond * KILO;
+}
+
+crate::convert_matrix! {
+    Second => Millisecond, Microsecond, Nanosecond, Picosecond, Kilosecond
 }
 
 // Time quantity definition
 use super::{SI, SIScale};
-quantity!(Time, SI<Z0, Z0, P1, Z0, Z0, Z0, Z0>, SIScale);
+quantity!(Time, SI<Z0, Z0, P1, Z0, Z0, Z0, Z0>, SIScale, Second);

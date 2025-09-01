@@ -25,4 +25,4 @@ use crate::prefix::KILO;
 
 // Force quantity definition (Mass×Length/Time²)
 use super::{SI, SIScale};
-quantity!(Force, SI<P1, P1, N2, Z0, Z0, Z0, Z0>, SIScale);
+quantity!(Force, SI<P1, P1, N2, Z0, Z0, Z0, Z0>, SIScale, Newton);

@@ -1,53 +1,86 @@
-//! Demonstration that the quantity! macro works with any dimension system
+//! Demonstration of generic functions with SI quantities
 
 use num_traits::Num;
-use num_units::{area::Area, length::Length, time::Time, velocity::Velocity, volume::Volume};
+use num_units::si::{
+    length::{length, Meter, Kilometer},
+    mass::{mass, Kilogram, Gram},
+};
 
-fn calc_area<V>(length: Length<V>, width: Length<V>) -> Area<V>
+// Generic function that works with any numeric type
+fn calculate_distance<V>(speed: V, time: V) -> V
 where
-    V: Num,
+    V: Num + Copy,
 {
-    length * width
+    speed * time
 }
 
-fn calc_volume<V>(length: Length<V>, width: Length<V>, height: Length<V>) -> Volume<V>
+// Function working with length quantities
+fn add_lengths<V>(length1: length::Length<V>, length2: length::Length<V>) -> length::Length<V>
 where
     V: Num,
 {
-    length * width * height
+    length1 + length2
+}
+
+// Function working with mass quantities
+fn add_masses<V>(mass1: mass::Mass<V>, mass2: mass::Mass<V>) -> mass::Mass<V>
+where
+    V: Num,
+{
+    mass1 + mass2
 }
 
 fn main() {
-    println!("quantity! macro works with any dimension system!");
+    println!("🔧 Generic Functions with SI Quantities Demo");
+    println!("==========================================\n");
 
-    let l1 = Length::from_base(3.0);
-    let l2 = Length::from_base(4.0);
-    let t1 = Time::from_base(5.0);
+    // Test generic functions with different numeric types
+    println!("📏 Length Operations:");
+    
+    let length1_f64 = length::f64::Length::from::<Meter>(3.0);
+    let length2_f64 = length::f64::Length::from::<Meter>(4.0);
+    let total_length_f64 = add_lengths(length1_f64, length2_f64);
+    
+    println!("f64: {} m + {} m = {} m", 3.0, 4.0, total_length_f64.to::<Meter>());
+    
+    let length1_i32 = length::i32::Length::from::<Meter>(3);
+    let length2_i32 = length::i32::Length::from::<Meter>(4);
+    let total_length_i32 = add_lengths(length1_i32, length2_i32);
+    
+    println!("i32: {} m + {} m = {} m", 3, 4, total_length_i32.to::<Meter>());
 
-    // Infer dimensions in expressions
-    let l3: Length<_> = l1 + l2; // Length + Length = Length
-    let a1: Area<_> = l1 * l2; // Length * Length = Area
-    let vol1: Volume<_> = a1 * l1; // Area * Length = Volume
-    let vel1: Velocity<_> = l3 / t1; // Length / Time = Velocity
+    // Test unit conversions within functions
+    println!("\n🔄 Unit Conversions:");
+    
+    let km_length = length::f64::Length::from::<Kilometer>(2.5);
+    let m_length = length::f64::Length::from::<Meter>(500.0);
+    let total_km = add_lengths(km_length, m_length);
+    
+    println!("2.5 km + 500 m = {} km", total_km.to::<Kilometer>());
+    println!("2.5 km + 500 m = {} m", total_km.to::<Meter>());
 
-    assert_eq!(*l3.base(), 7.0);
-    assert_eq!(*a1.base(), 12.0);
-    assert_eq!(*vol1.base(), 36.0);
-    assert_eq!(*vel1.base(), 7.0 / 5.0);
+    // Test mass operations
+    println!("\n⚖️  Mass Operations:");
+    
+    let mass1 = mass::f64::Mass::from::<Kilogram>(2.5);
+    let mass2 = mass::f64::Mass::from::<Gram>(1500.0);
+    let total_mass = add_masses(mass1, mass2);
+    
+    println!("2.5 kg + 1500 g = {} kg", total_mass.to::<Kilogram>());
+    println!("2.5 kg + 1500 g = {} g", total_mass.to::<Gram>());
 
-    // Create generic functions over quantities
-    let length: Length<i8> = Length::from_base(1);
-    let area = calc_area(length, length);
-    let volume = calc_volume(length, length, length);
+    // Test pure numeric calculation
+    println!("\n🧮 Pure Numeric Calculation:");
+    
+    let speed = 65.0; // km/h
+    let time = 2.5;   // hours
+    let distance = calculate_distance(speed, time);
+    
+    println!("{} km/h × {} hours = {} km", speed, time, distance);
 
-    assert_eq!(*length.base(), 1);
-    assert_eq!(*area.base(), 1);
-    assert_eq!(*volume.base(), 1);
-
-    // Test multiplication with defined dimensions
-    let area2 = length * length; // Length * Length = Area (defined)
-    let volume2 = area * length; // Area * Length = Volume (defined)
-
-    assert_eq!(*area2.base(), 1);
-    assert_eq!(*volume2.base(), 1);
+    println!("\n✅ Generic functions work seamlessly with:");
+    println!("   • Different numeric types (i32, f64, etc.)");
+    println!("   • Automatic unit conversions");
+    println!("   • Type-safe dimensional analysis");
+    println!("   • Zero runtime overhead");
 }

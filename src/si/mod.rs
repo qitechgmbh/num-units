@@ -71,11 +71,9 @@
 /// - ✅ Support for all numeric types
 /// - ✅ No runtime overhead
 /// - ✅ Extensive documentation
-
 // Unit modules - define unit types like Meter, Kilogram, etc.
 pub mod acceleration;
 pub mod amount;
-pub mod angle;
 pub mod area;
 pub mod current;
 pub mod energy;

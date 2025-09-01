@@ -40,7 +40,6 @@
 /// - All length operations are dimensionally consistent
 /// - Unit conversions are automatic and type-safe
 /// - Compile-time dimensional analysis prevents errors
-use crate::prefix::{CENTI, KILO, MICRO, MILLI, NANO};
 use typenum::*;
 
 // SI base unit
@@ -56,31 +55,35 @@ units! {
     Nanometer: "nm", "nanometer";
 }
 
-convert_unit! {
-    Kilometer: |meter| meter / KILO;
-    Meter: |kilometer| kilometer * KILO;
+convert_unit_int! {
+    Kilometer: 1;        // 1 meter = 1/1000 km, so 1 km = 1000 base units
+    Meter: 1000;         // 1000 meters = 1000 base units (1000:1 ratio)
 }
 
-convert_unit! {
-    Centimeter: |meter| meter / CENTI;
-    Meter: |centimeter| centimeter * CENTI;
+convert_unit_int! {
+    Centimeter: 100;     // 1 meter = 100 cm
+    Meter: 1;            // 1 meter = 1 meter (base unit)
 }
 
-convert_unit! {
-    Millimeter: |meter| meter / MILLI;
-    Meter: |millimeter| millimeter * MILLI;
+convert_unit_int! {
+    Millimeter: 1000;    // 1 meter = 1000 mm  
+    Meter: 1;            // 1 meter = 1 meter (base unit)
 }
 
-convert_unit! {
-    Micrometer: |meter| meter / MICRO;
-    Meter: |micrometer| micrometer * MICRO;
+convert_unit_int! {
+    Micrometer: 1000000; // 1 meter = 1,000,000 μm
+    Meter: 1;            // 1 meter = 1 meter (base unit)
 }
 
-convert_unit! {
-    Nanometer: |meter| meter / NANO;
-    Meter: |nanometer| nanometer * NANO;
+convert_unit_int! {
+    Nanometer: 1000000000; // 1 meter = 1,000,000,000 nm
+    Meter: 1;              // 1 meter = 1 meter (base unit)
+}
+
+convert_matrix! {
+    Meter => Kilometer, Centimeter, Millimeter, Micrometer, Nanometer
 }
 
 // Length quantity definition
 use super::{SI, SIScale};
-quantity!(Length, SI<P1, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale);
+quantity!(Length, SI<P1, Z0, Z0, Z0, Z0, Z0, Z0>, SIScale, Meter);
