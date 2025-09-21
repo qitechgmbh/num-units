@@ -17,5 +17,9 @@ num-traits = { version = "0.2", default-features = false }
 paste = "1.0"
 typenum = "1.17"
 
+[dev-dependencies]
+uom = { path = "uom", default-features = false, features = ["f32", "f64", "si"] }
+
 [workspace]
 members = ["num-units-macros"]
+exclude = ["uom"]
