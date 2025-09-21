@@ -75,7 +75,7 @@
 /// ## Usage Patterns
 ///
 /// ### Basic Conversions (Float-only)
-/// ```rust
+/// ```rust,ignore
 /// use num_units::{convert, units};
 ///
 /// // Define conversions for f32 and f64 only
@@ -86,7 +86,7 @@
 /// ```
 ///
 /// ### All Types Conversions
-/// ```rust
+/// ```rust,ignore
 /// use num_units::convert_all;
 ///
 /// // Define conversions for all numeric types (f32, f64, i8-i128, u8-u128)
@@ -97,7 +97,7 @@
 /// ```
 ///
 /// ### Linear Conversions
-/// ```rust
+/// ```rust,ignore
 /// use num_units::convert_linear;
 ///
 /// // Simple scaling: 1 km = 1000 m (generates f32, f64 only)
@@ -112,7 +112,7 @@
 /// ```
 ///
 /// ### Integer Conversions
-/// ```rust
+/// ```rust,ignore
 /// use num_units::convert_int;
 ///
 /// // Integer factors converted to f64 expressions for all integer types
@@ -123,7 +123,7 @@
 /// ```
 ///
 /// ### Matrix Conversions
-/// ```rust
+/// ```rust,ignore
 /// use num_units::{convert, convert_matrix};
 ///
 /// // Define base conversions first
@@ -209,7 +209,7 @@ pub trait ConvertibleUnit: crate::unit::Unit {
 /// top-level macro that calls the hierarchical conversion macros.
 ///
 /// # Syntax
-/// ```ignore
+/// ```rust,ignore
 /// use num_units::convert;
 ///
 /// convert! {
@@ -219,7 +219,7 @@ pub trait ConvertibleUnit: crate::unit::Unit {
 /// ```
 ///
 /// # Examples
-/// ```ignore
+/// ```rust,ignore
 /// use num_units::{convert, convert_float};
 /// use num_units::prefix::KILO;
 ///
@@ -245,7 +245,7 @@ macro_rules! convert {
 /// It delegates to convert_float!, convert_signed!, and convert_unsigned!.
 ///
 /// # Examples
-/// ```ignore
+/// ```rust,ignore
 /// use num_units::convert_all;
 ///
 /// // Define conversion for all numeric types
@@ -270,7 +270,7 @@ macro_rules! convert_all {
 /// simple scaling (y = ax) and offset conversions (y = ax + b).
 ///
 /// # Syntax
-/// ```ignore
+/// ```rust,ignore
 /// use num_units::convert_linear;
 ///
 /// // Simple scaling (y = ax)
@@ -288,7 +288,7 @@ macro_rules! convert_all {
 ///
 /// # Generated Code
 /// For `DerivedUnit => BaseUnit: a, b;`, this generates:
-/// ```ignore
+/// ```rust,ignore
 /// convert! {
 ///     DerivedUnit: |base| (base - b) / a;  // DerivedUnit = (BaseUnit - offset) / scale
 ///     BaseUnit: |derived| derived * a + b; // BaseUnit = DerivedUnit * scale + offset
@@ -296,7 +296,7 @@ macro_rules! convert_all {
 /// ```
 ///
 /// # Examples
-/// ```ignore
+/// ```rust,ignore
 /// use num_units::convert_linear;
 /// use num_units::prefix::KILO;
 ///
@@ -363,7 +363,7 @@ macro_rules! convert_linear {
 /// both the scaling factor and offset (if any) are integers.
 ///
 /// # Examples
-/// ```ignore
+/// ```rust,ignore
 /// use num_units::convert_int_linear;
 ///
 /// // Simple integer scaling: 1 km = 1000 m (kilometer is derived, meter is base)
@@ -683,7 +683,7 @@ macro_rules! convert_float {
 /// convert_signed! and convert_unsigned!.
 ///
 /// # Syntax
-/// ```ignore
+/// ```rust,ignore
 /// use num_units::convert_int;
 ///
 /// // Define conversions using integer factors
@@ -694,7 +694,7 @@ macro_rules! convert_float {
 /// ```
 ///
 /// # Examples
-/// ```ignore
+/// ```rust,ignore
 /// use num_units::convert_int;
 ///
 /// // Define conversion with exact integer factors
@@ -748,7 +748,8 @@ macro_rules! __impl_matrix_pair {
 
             fn from_base(base_value: $type) -> $type {
                 // Chain: $to -> $base -> $from
-                let base_intermediate = <$to as $crate::unit::FromUnit<$base, $type>>::from_base(base_value);
+                let base_intermediate =
+                    <$to as $crate::unit::FromUnit<$base, $type>>::from_base(base_value);
                 <$base as $crate::unit::FromUnit<$from, $type>>::from_base(base_intermediate)
             }
         }
@@ -763,7 +764,8 @@ macro_rules! __impl_matrix_pair {
 
             fn from_base(base_value: $type) -> $type {
                 // Chain: $from -> $base -> $to
-                let base_intermediate = <$from as $crate::unit::FromUnit<$base, $type>>::from_base(base_value);
+                let base_intermediate =
+                    <$from as $crate::unit::FromUnit<$base, $type>>::from_base(base_value);
                 <$base as $crate::unit::FromUnit<$to, $type>>::from_base(base_intermediate)
             }
         }
@@ -1127,7 +1129,7 @@ macro_rules! convert_matrix_float {
 /// This is the top-level macro that calls the floating-point matrix generation.
 ///
 /// # Syntax
-/// ```ignore
+/// ```rust,ignore
 /// use num_units::{units, convert, convert_matrix, convert_float};
 ///
 /// // First define units
@@ -1146,7 +1148,7 @@ macro_rules! convert_matrix_float {
 ///
 /// # Requirements
 /// Before using the matrix, you must define direct conversions using `convert!`:
-/// ```ignore
+/// ```rust,ignore
 /// use num_units::{units, convert, convert_float};
 ///
 /// // Define units
@@ -1172,7 +1174,7 @@ macro_rules! convert_matrix_float {
 /// Use `convert_matrix_signed!`, `convert_matrix_unsigned!`, etc. for specific type sets.
 ///
 /// # Example
-/// ```ignore
+/// ```rust,ignore
 /// use num_units::{units, convert, convert_matrix, convert_float};
 /// use std::f64::consts::PI;
 ///

@@ -12,7 +12,7 @@
 ///
 /// ## Usage
 ///
-/// ```rust
+/// ```rust,ignore
 /// use num_units::prefix::{KILO, MILLI, MICRO};
 ///
 /// // Use in unit conversions

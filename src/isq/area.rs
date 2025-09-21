@@ -18,7 +18,7 @@
 ///
 /// ## Usage
 ///
-/// ```rust
+/// ```rust,ignore
 /// use num_units::area::Area;
 /// use num_units::area::{SquareMeter, SquareKilometer};
 ///

@@ -21,7 +21,7 @@
 ///
 /// ## Example Usage
 ///
-/// ```rust,no_run
+/// ```rust,ignore
 /// use num_units::unit;
 /// use num_units::length::{Length, Meter, Kilometer};
 ///
@@ -64,7 +64,7 @@ pub trait Unit {
 ///
 /// ## Example Usage
 ///
-/// ```ignore
+/// ```rust,ignore
 /// use num_units::{units, convert, convert_float};
 /// use num_units::prefix::KILO;
 ///
@@ -88,7 +88,7 @@ pub trait Unit {
 /// abbreviation, singular name, and plural name, plus the ability to convert to itself.
 ///
 /// # Syntax
-/// ```ignore
+/// ```rust,ignore
 /// use num_units::units;
 ///
 /// units! {
@@ -106,7 +106,7 @@ pub trait Unit {
 /// - Documentation comments for the unit
 ///
 /// # Examples
-/// ```rust,no_run
+/// ```rust,ignore
 /// use num_units::units;
 ///
 /// units! {

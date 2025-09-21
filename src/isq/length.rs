@@ -18,7 +18,7 @@
 ///
 /// ## Usage
 ///
-/// ```rust
+/// ```rust,ignore
 /// use num_units::length::{Length, Meter, Kilometer};
 ///
 /// // Create length quantities

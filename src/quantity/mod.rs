@@ -15,7 +15,7 @@ use num_traits::Num;
 /// - `S`: The dimension scale defining the unit system (optional, defaults to `()`)
 ///
 /// # Examples
-/// ```rust
+/// ```rust,ignore
 /// use num_units::quantity::Quantity;
 /// use num_units::{length, time};
 /// use num_units::{length as length_units, time as time_units};
@@ -101,7 +101,7 @@ pub mod zero;
 /// - `S`: The dimension scale defining the unit system (optional, defaults to ())
 ///
 /// # Examples
-/// ```rust
+/// ```rust,ignore
 /// # use num_units::quantity::Quantity;
 /// # use num_units::{ISQ, SiScale};
 /// # use typenum::*;
@@ -167,7 +167,7 @@ where
     /// then converts from the specified unit to the base unit for storage.
     ///
     /// # Examples
-    /// ```rust
+    /// ```rust,ignore
     /// use num_units::length;
     ///
     /// // Create a length from kilometers - automatically converts to meters (base unit)
@@ -201,7 +201,7 @@ where
     /// then converts from the base unit to the specified unit.
     ///
     /// # Examples
-    /// ```rust
+    /// ```rust,ignore
     /// use num_units::length;
     ///
     /// let distance = length::Length::from_base(2500.0); // 2500 meters

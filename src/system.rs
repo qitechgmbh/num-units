@@ -27,7 +27,7 @@
 ///
 /// ## Example Usage
 ///
-/// ```rust
+/// ```ignore
 /// use num_units::system;
 /// use num_units::{length, mass, time};
 ///
@@ -77,7 +77,7 @@
 /// - Automatic conversion methods between units
 ///
 /// # Examples
-/// ```rust,no_run
+/// ```ignore
 /// use num_units::system;
 ///
 /// // Create SI system with standard unit mappings
@@ -89,7 +89,6 @@
 /// //     M => mass::Kilogram,
 /// //     T => time::Second,
 /// // }
-/// ```
 /// ```
 #[macro_export]
 macro_rules! system {

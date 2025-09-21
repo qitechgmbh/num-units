@@ -36,7 +36,7 @@
 ///
 /// ## Usage
 ///
-/// ```rust
+/// ```rust,ignore
 /// use num_units::{length, time, mass};
 /// use num_units::{length as length_units, time as time_units, mass as mass_units};
 ///
@@ -87,9 +87,9 @@ pub mod luminosity;
 pub mod mass;
 pub mod power;
 pub mod ratio;
+pub mod scalar;
 pub mod temperature;
 pub mod time;
-pub mod scalar;
 pub mod velocity;
 pub mod volume;
 

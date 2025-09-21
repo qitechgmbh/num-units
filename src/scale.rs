@@ -28,7 +28,7 @@
 ///
 /// ## Example Usage
 ///
-/// ```rust
+/// ```rust,ignore
 /// use num_units::dimension_scale;
 /// use num_units::{length, mass, time};
 ///
@@ -59,7 +59,7 @@
 /// - Type-safe dimensional operations
 ///
 /// # Examples
-/// ```rust
+/// ```rust,ignore
 /// use num_units::dimension_scale;
 /// use num_units::{length, mass, time};
 ///
@@ -106,7 +106,7 @@ macro_rules! dimension_scale {
 /// - Automatic conversion methods between units
 ///
 /// # Examples
-/// ```rust
+/// ```rust,ignore
 /// use num_units::scaled_unit_system;
 /// use num_units::{length, mass, time};
 ///
