@@ -47,7 +47,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::length::Length;
+    use crate::si::length::Length;
     use num_traits::Pow; // Import the Pow trait to use the .pow() method
 
     #[test]

@@ -189,7 +189,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::length::Length;
+    use crate::si::length::Length;
     use num_traits::FloatConst;
 
     #[test]

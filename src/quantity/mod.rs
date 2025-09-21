@@ -256,15 +256,15 @@ mod tests {
     #[test]
     fn test_quantity_creation() {
         // Use motion system dimensions
-        let length = crate::length::Length::from_base(5.0);
+        let length = crate::si::length::Length::from_base(5.0);
         assert_eq!(*length.base(), 5.0);
     }
 
     #[test]
     fn test_quantity_macro() {
         // Test using motion system types directly
-        let length = crate::length::Length::from_base(2.5);
-        let area = crate::area::Area::from_base(9.8);
+        let length = crate::si::length::Length::from_base(2.5);
+        let area = crate::si::area::Area::from_base(9.8);
 
         assert_eq!(*length.base(), 2.5);
         assert_eq!(*area.base(), 9.8);
@@ -272,7 +272,7 @@ mod tests {
 
     #[test]
     fn test_display() {
-        let length = crate::length::Length::from_base(3.14159);
+        let length = crate::si::length::Length::from_base(3.14159);
         // Test that the display trait is implemented
         // In no_std, we can't easily test format! but we can verify the trait exists
         let _: &dyn core::fmt::Display = &length;
@@ -281,8 +281,8 @@ mod tests {
     #[test]
     fn test_motion_system_integration() {
         // Test basic motion quantities
-        let length = crate::length::Length::from_base(10.0);
-        let time = crate::time::Time::from_base(2.0);
+        let length = crate::si::length::Length::from_base(10.0);
+        let time = crate::si::time::Time::from_base(2.0);
 
         // Test dimensional analysis - velocity = length / time
         let velocity = length / time;
@@ -300,22 +300,23 @@ mod tests {
     #[test]
     fn test_generic_unit_conversion() {
         // Test creating a length quantity from kilometers
-        let distance = crate::length::Length::from::<crate::isq::length::Kilometer>(2.5);
+        let distance = crate::si::length::Length::from::<crate::si::length::Kilometer>(2.5);
         assert_eq!(*distance.base(), 2500.0); // Should be 2500 meters
 
         // Test getting the value in different units
-        let km_value = distance.to::<crate::isq::length::Kilometer>();
+        let km_value = distance.to::<crate::si::length::Kilometer>();
         assert_eq!(km_value, 2.5);
 
         // For base unit, use to_base_unit
         let m_value = distance.to_base_unit();
         assert_eq!(m_value, 2500.0);
 
-        let cm_value = distance.to::<crate::isq::length::Centimeter>();
+        let cm_value = distance.to::<crate::si::length::Centimeter>();
         assert_eq!(cm_value, 250000.0);
 
         // Test creating from centimeters
-        let small_distance = crate::length::Length::from::<crate::isq::length::Centimeter>(150.0);
+        let small_distance =
+            crate::si::length::Length::from::<crate::si::length::Centimeter>(150.0);
         assert_eq!(*small_distance.base(), 1.5); // Should be 1.5 meters
 
         // For base unit, use to_base_unit
@@ -323,7 +324,7 @@ mod tests {
         assert_eq!(m_from_cm, 1.5);
 
         // Test creating from base unit
-        let base_distance = crate::length::Length::from_base_unit(100.0);
+        let base_distance = crate::si::length::Length::from_base_unit(100.0);
         assert_eq!(*base_distance.base(), 100.0);
     }
 
@@ -332,13 +333,13 @@ mod tests {
         // Demonstrate the much cleaner API
 
         // Length conversions - no need to specify base unit!
-        let distance = crate::length::Length::from::<crate::isq::length::Kilometer>(5.0);
+        let distance = crate::si::length::Length::from::<crate::si::length::Kilometer>(5.0);
         assert_eq!(*distance.base(), 5000.0); // 5000 meters
 
-        let in_cm = distance.to::<crate::isq::length::Centimeter>();
+        let in_cm = distance.to::<crate::si::length::Centimeter>();
         assert_eq!(in_cm, 500000.0); // 500,000 cm
 
-        let in_mm = distance.to::<crate::isq::length::Millimeter>();
+        let in_mm = distance.to::<crate::si::length::Millimeter>();
         assert_eq!(in_mm, 5000000.0); // 5,000,000 mm
 
         // TODO: Mass and time conversions need fixing in the conversion definitions
@@ -356,7 +357,7 @@ mod tests {
 
     #[test]
     fn test_unit_conversion_debug() {
-        use crate::isq::length::{Centimeter, Kilometer, Meter};
+        use crate::si::length::{Centimeter, Kilometer, Meter};
         use crate::unit::FromUnit;
 
         // Let's test different directions to understand the trait

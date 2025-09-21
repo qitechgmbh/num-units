@@ -1,5 +1,5 @@
 /// Tests for dimensional analysis and cross-dimensional operations
-use num_units::{
+use num_units::si::{
     area::{Area, SquareMeter},
     length::{Length, Meter},
     scalar::{Scalar, Unitless},

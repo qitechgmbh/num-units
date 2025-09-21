@@ -1,4 +1,4 @@
-use num_units::{
+use num_units::si::{
     angle::{Radian, Revolution},
     ratio::Percent,
     scalar::{Scalar, Unitless},

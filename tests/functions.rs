@@ -1,6 +1,6 @@
 /// Tests for generic functions with SI quantities
 use num_traits::Num;
-use num_units::{
+use num_units::si::{
     length::{self, Kilometer, Length, Meter},
     mass::{self, Gram, Kilogram, Mass},
 };

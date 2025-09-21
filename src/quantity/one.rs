@@ -33,7 +33,7 @@ where
 mod tests {
     use core::f64::EPSILON;
 
-    use crate::{length::Length, time::Time};
+    use crate::si::{length::Length, time::Time};
     use num_traits::Zero;
 
     #[test]

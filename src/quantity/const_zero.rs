@@ -25,8 +25,8 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::length::Length;
-    use crate::time::Time;
+    use crate::si::length::Length;
+    use crate::si::time::Time;
     use num_traits::{ConstZero, Zero};
 
     #[test]
@@ -35,7 +35,7 @@ mod tests {
         const ZERO_LENGTH: Length<i32> = Length::ZERO;
         assert_eq!(*ZERO_LENGTH.base(), 0);
 
-        const ZERO_TIME: crate::time::Time<f32> = crate::time::Time::ZERO;
+        const ZERO_TIME: crate::si::time::Time<f32> = crate::si::time::Time::ZERO;
         assert_eq!(*ZERO_TIME.base(), 0.0);
     }
 

@@ -18,7 +18,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::length::Length;
+    use crate::si::length::Length;
 
     #[test]
     fn test_zero() {

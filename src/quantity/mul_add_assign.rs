@@ -40,8 +40,8 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::length::Length;
-    use crate::scalar::Scalar;
+    use crate::si::length::Length;
+    use crate::si::scalar::Scalar;
 
     #[test]
     fn test_mul_add_assign_same_type() {

@@ -5,11 +5,13 @@ edition = "2024"
 readme = "README.md"
 
 [features]
-default = ["std", "libm"]
+default = ["std", "libm", "si"]
 # Enable std library support (enables floating-point power operations)
 std = ["num-traits/std"]
 # Enable libm support for no_std environments (enables floating-point power operations without std)
 libm = ["num-traits/libm"]
+# Enable si unit system
+si = []
 
 [dependencies]
 num-units-macros = { path = "num-units-macros" }
@@ -18,7 +20,11 @@ paste = "1.0"
 typenum = "1.17"
 
 [dev-dependencies]
-uom = { path = "uom", default-features = false, features = ["f32", "f64", "si"] }
+uom = { path = "uom", default-features = false, features = [
+    "f32",
+    "f64",
+    "si",
+] }
 
 [workspace]
 members = ["num-units-macros"]

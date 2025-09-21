@@ -31,8 +31,8 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::area::Area;
-    use crate::length::Length;
+    use crate::si::area::Area;
+    use crate::si::length::Length;
 
     #[test]
     fn test_scalar_multiplication() {
