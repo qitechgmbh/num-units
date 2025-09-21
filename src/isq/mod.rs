@@ -75,17 +75,21 @@
 // Unit modules - define unit types like Meter, Kilogram, etc.
 pub mod acceleration;
 pub mod amount;
+pub mod angle;
+pub mod apple;
 pub mod area;
 pub mod current;
 pub mod energy;
 pub mod force;
+pub mod information;
 pub mod length;
 pub mod luminosity;
 pub mod mass;
 pub mod power;
-pub mod scalar;
+pub mod ratio;
 pub mod temperature;
 pub mod time;
+pub mod scalar;
 pub mod velocity;
 pub mod volume;
 

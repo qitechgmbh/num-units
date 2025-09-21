@@ -1,5 +1,10 @@
+use num_units::{
+    angle::{Radian, Revolution},
+    ratio::Percent,
+    scalar::{Scalar, Unitless},
+};
+
 /// Tests for angle and scalar unit conversions
-use num_units::scalar::{Percent, Radian, Revolution, Scalar, Unitless};
 
 #[test]
 fn test_scalar_unit_conversions() {

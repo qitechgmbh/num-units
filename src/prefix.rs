@@ -68,7 +68,7 @@ pub const CENTI: f64 = 1e-2;
 pub const DECI: f64 = 1e-1;
 
 // Unit (no prefix)
-pub const UNIT: f64 = 1e0;
+pub const ONE: f64 = 1e0;
 
 // Decimal multipliers (large)
 pub const DECA: f64 = 1e1;
