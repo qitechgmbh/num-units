@@ -23,37 +23,6 @@
 /// let milligrams = grams / MILLI;  // Convert grams to milligrams
 /// let microseconds = seconds / MICRO;  // Convert seconds to microseconds
 /// ```
-///
-/// ## Available Prefixes
-///
-/// ### Decimal Prefixes (10^n)
-/// - **Yocto (y)**: 10^-24
-/// - **Zepto (z)**: 10^-21
-/// - **Atto (a)**: 10^-18
-/// - **Femto (f)**: 10^-15
-/// - **Pico (p)**: 10^-12
-/// - **Nano (n)**: 10^-9
-/// - **Micro (μ)**: 10^-6
-/// - **Milli (m)**: 10^-3
-/// - **Centi (c)**: 10^-2
-/// - **Deci (d)**: 10^-1
-///
-/// ### Unit Prefixes (10^0)
-/// - **Unit**: 10^0 (no prefix)
-///
-/// ### Decimal Multipliers (10^n)
-/// - **Deca (da)**: 10^1
-/// - **Hecto (h)**: 10^2
-/// - **Kilo (k)**: 10^3
-/// - **Mega (M)**: 10^6
-/// - **Giga (G)**: 10^9
-/// - **Tera (T)**: 10^12
-/// - **Peta (P)**: 10^15
-/// - **Exa (E)**: 10^18
-/// - **Zetta (Z)**: 10^21
-/// - **Yotta (Y)**: 10^24
-/// - **Ronna (R)**: 10^27
-/// - **Quetta (Q)**: 10^30
 
 // Sub-yocto prefixes (very small)
 pub const YOCTO: f64 = 1e-24;
@@ -63,6 +32,7 @@ pub const FEMTO: f64 = 1e-15;
 pub const PICO: f64 = 1e-12;
 pub const NANO: f64 = 1e-9;
 pub const MICRO: f64 = 1e-6;
+pub const DECIMILLI: f64 = 1e-4;
 pub const MILLI: f64 = 1e-3;
 pub const CENTI: f64 = 1e-2;
 pub const DECI: f64 = 1e-1;
@@ -121,3 +91,8 @@ pub const DECILLION: f64 = 1e33;
 pub const MINUTE: f64 = 60.0; // 60 seconds
 pub const HOUR: f64 = 3600.0; // 60 minutes
 pub const DAY: f64 = 86400.0; // 24 hours
+
+// Information
+pub const BIT: f64 = 1.0; // 1 bit
+pub const BYTE: f64 = 8.0; // 8 bits
+pub const WORD: f64 = 16.0; // 16 bits (2 bytes)

@@ -225,7 +225,6 @@ macro_rules! convert {
     };
 }
 
-
 /// Macro for generating linear conversion relationships (y = ax + b)
 ///
 /// This macro simplifies the creation of linear unit conversions by automatically
@@ -1168,6 +1167,6 @@ macro_rules! convert_matrix_float {
 #[macro_export]
 macro_rules! convert_matrix {
     ($base:ty => $($target:ty),* $(,)?) => {
-        $crate::convert_matrix_float! { $base => $($target),* }
+        // $crate::convert_matrix_float! { $base => $($target),* }
     };
 }

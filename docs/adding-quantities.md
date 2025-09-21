@@ -30,6 +30,18 @@ The num-units library is designed to be compatible with the UOM (Units of Measur
 3. **Conversions**: Mathematical relationships between units
 4. **System**: The SI system definition that ties everything together
 
+### Dimension and Kind System
+
+**Important Limitation**: Unlike the UOM library, num-units does not implement a "kind" system to distinguish between quantities with identical dimensions. This means that quantities with the same dimensional exponents (like angle and scalar, both dimensionless) cannot both be implemented as separate quantity types.
+
+**Workaround**: For dimensionless quantities that would conflict:
+- Use the existing `Unitless` base unit from the `scalar` module
+- Implement units with conversions to `Unitless` as the base
+- Skip creating a separate quantity type (no `quantity!` macro call)
+- Omit UOM compatibility tests that require separate quantity types
+
+**Example**: Angle units are implemented using `Unitless` as the base rather than creating a separate `Angle` quantity type, because both would have dimension `ISQ<Z0, Z0, Z0, Z0, Z0, Z0, Z0>`.
+
 ### File Structure
 
 Each quantity is implemented in its own file under `src/si/`:
@@ -94,12 +106,19 @@ convert_matrix! {
 }
 
 // Quantity definition - you need to determine the dimensional exponents
+// NOTE: If this quantity is dimensionless (all Z0 dimensions), you may need to skip
+// the quantity! macro and UOM compatibility tests due to the lack of a kind system.
+// See "Dimension and Kind System" section above.
 use super::{ISQ, SiScale};
 quantity!([Quantity], ISQ<[L], [M], [T], [I], [TH], [N], [J]>, SiScale, [BaseUnit]);
 
 // Re-export types for convenience
 pub use [quantity]::[Quantity];
 pub use [quantity]::*;
+
+// For dimensionless quantities that conflict with existing ones, use this alternative:
+// // Skip quantity! macro - use Unitless from scalar module instead
+// // Skip UOM compatibility tests that require separate quantity types
 
 #[cfg(test)]
 mod tests {
@@ -269,11 +288,11 @@ mod tests {
 
 UOM uses snake_case identifiers, while we use PascalCase types:
 
-| num-units Type | UOM Identifier |
-|----------------|----------------|
-| `Kilometer`    | `kilometer`    |
-| `FootSurvey`   | `foot_survey`  |
-| `DegreeCelsius`| `degree_celsius`|
+| num-units Type  | UOM Identifier   |
+| --------------- | ---------------- |
+| `Kilometer`     | `kilometer`      |
+| `FootSurvey`    | `foot_survey`    |
+| `DegreeCelsius` | `degree_celsius` |
 
 ### Step 3: Run Tests
 
@@ -326,6 +345,59 @@ If tests fail:
 2. **Include examples**: Show common usage patterns
 3. **Reference standards**: Link to official definitions when available
 4. **Explain conversions**: Document any complex or unusual conversion factors
+
+## Using Prefix Constants
+
+### Why Use Prefix Constants?
+
+**Always use prefix constants instead of hardcoded values** for SI prefix units. This ensures:
+
+1. **Consistency**: All prefix units use the exact same values across the entire codebase
+2. **Maintainability**: Changes to prefix definitions only need to be made in one place
+3. **Type Safety**: The constants are properly typed and prevent accidental errors
+4. **Precision**: Constants use the exact scientific notation that matches UOM
+
+### Available Prefix Constants
+
+Import the prefix constants from `crate::prefix`:
+
+```rust
+use crate::prefix::*;
+```
+
+### How to Use Prefix Constants
+
+For SI prefix units, use the constants directly in conversions:
+
+```rust
+crate::convert_linear! {
+    // ✅ Correct: Use prefix constants
+    Kilometer => Meter: KILO;        // 1 km = 1000 m
+    Millimeter => Meter: MILLI;      // 1 mm = 0.001 m
+    Microgram => Gram: MICRO;        // 1 µg = 0.000001 g
+    
+    // ❌ Wrong: Don't use hardcoded values
+    // Kilometer => Meter: 1000.0;     // Avoid this!
+    // Millimeter => Meter: 0.001;     // Avoid this!
+}
+```
+
+### When NOT to Use Prefix Constants
+
+Only use prefix constants for **standard SI prefix units**. For:
+
+- **Custom units**: Use explicit values from UOM
+- **Non-SI units**: Use explicit values from UOM  
+- **Complex conversions**: Use explicit values from UOM
+
+```rust
+crate::convert_linear! {
+    // Use explicit values for non-prefix units
+    Foot => Meter: 3.048E-1;           // 1 ft = 0.3048 m
+    Pound => Kilogram: 4.5359237E-1;   // 1 lb = 0.45359237 kg
+    Atmosphere => Pascal: 1.01325E5;   // 1 atm = 101325 Pa
+}
+```
 
 ## Examples
 
