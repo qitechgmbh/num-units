@@ -15,29 +15,13 @@ units! {
     Kilosecond: "ks", "kilosecond";
 }
 
-convert! {
-    Millisecond: |second| second / MILLI;
-    Second: |millisecond| millisecond * MILLI;
-}
-
-convert! {
-    Microsecond: |second| second / MICRO;
-    Second: |microsecond| microsecond * MICRO;
-}
-
-convert! {
-    Nanosecond: |second| second / NANO;
-    Second: |nanosecond| nanosecond * NANO;
-}
-
-convert! {
-    Picosecond: |second| second / PICO;
-    Second: |picosecond| picosecond * PICO;
-}
-
-convert! {
-    Kilosecond: |second| second / KILO;
-    Second: |kilosecond| kilosecond * KILO;
+// Unit conversions using convert_linear! with multiple conversions
+crate::convert_linear! {
+    Millisecond => Second: MILLI;      // 1 ms = 0.001 s
+    Microsecond => Second: MICRO;      // 1 μs = 0.000001 s
+    Nanosecond => Second: NANO;        // 1 ns = 0.000000001 s
+    Picosecond => Second: PICO;        // 1 ps = 0.000000000001 s
+    Kilosecond => Second: KILO;        // 1 ks = 1000 s
 }
 
 crate::convert_matrix! {

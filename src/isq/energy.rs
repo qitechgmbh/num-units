@@ -12,41 +12,23 @@ units! {
 
 // ===== CONVERSION RELATIONSHIPS =====
 
-// Kilojoule to Joule
-convert! {
-    Kilojoule: |joule| joule / KILO;
-    Joule: |kilojoule| kilojoule * KILO;
-}
+// Joule is the SI derived unit for energy
+// Using convert_linear! with derived units on the left, base unit on the right
 
-// Calorie to Joule (thermochemical calorie: 1 cal = 4.184 J)
-convert! {
-    Calorie: |joule| joule / 4.184;
-    Joule: |calorie| calorie * 4.184;
-}
-
-// Kilocalorie to Joule
-convert! {
-    Kilocalorie: |joule| joule / 4184.0;
-    Joule: |kilocalorie| kilocalorie * 4184.0;
-}
-
-// Watt-hour to Joule (1 Wh = 3600 J)
-convert! {
-    WattHour: |joule| joule / 3600.0;
-    Joule: |watt_hour| watt_hour * 3600.0;
-}
-
-// Kilowatt-hour to Joule
-convert! {
-    KilowattHour: |joule| joule / 3_600_000.0;
-    Joule: |kilowatt_hour| kilowatt_hour * 3_600_000.0;
+// Unit conversions using convert_linear! with multiple conversions
+crate::convert_linear! {
+    Kilojoule => Joule: KILO;              // 1 kJ = 1000 J
+    Calorie => Joule: 4.184;                // 1 cal = 4.184 J
+    Kilocalorie => Joule: KILO * 4.184;     // 1 kcal = 4184 J
+    WattHour => Joule: HOUR;                // 1 Wh = 3600 J (60 min * 60 sec)
+    KilowattHour => Joule: KILO * HOUR;     // 1 kWh = 3,600,000 J
 }
 
 convert_matrix! {
     Joule => Kilojoule, Calorie, Kilocalorie, WattHour, KilowattHour
 }
 
-use crate::prefix::KILO;
+use crate::prefix::{HOUR, KILO};
 
 // Energy quantity definition (Mass×Length²/Time²)
 use super::{ISQ, SiScale};

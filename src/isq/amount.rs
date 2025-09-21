@@ -22,36 +22,18 @@ units! {
 
 // ===== CONVERSION RELATIONSHIPS =====
 
-// Metric prefix conversions
-convert! {
-    Mole: |mole| mole * MILLI;
-    Millimole: |millimole| millimole / MILLI;
+// Unit conversions using convert_linear! with multiple conversions
+crate::convert_linear! {
+    Millimole => Mole: MILLI;      // 1 mmol = 0.001 mol
+    Micromole => Mole: MICRO;      // 1 μmol = 0.000001 mol
+    Nanomole => Mole: NANO;        // 1 nmol = 0.000000001 mol
+    Picomole => Mole: PICO;        // 1 pmol = 0.000000000001 mol
+    Kilomole => Mole: KILO;        // 1 kmol = 1000 mol
 }
 
-convert! {
-    Mole: |mole| mole * MICRO;
-    Micromole: |micromole| micromole / MICRO;
-}
-
-convert! {
-    Nanomole: |mole| mole * NANO;
-    Mole: |nanomole| nanomole / NANO;
-}
-
-convert! {
-    Mole: |mole| mole * PICO;
-    Picomole: |picomole| picomole / PICO;
-}
-
-convert! {
-    Mole: |mole| mole * KILO;
-    Kilomole: |kilomole| kilomole / KILO;
-}
-
-// Particle counting conversions
-convert! {
-    Particle: |mole| mole / 1.66053906660e-24;
-    Mole: |particle| particle * 1.66053906660e-24;
+// Particle counting conversions using Avogadro's number
+crate::convert_linear! {
+    Particle => Mole: 1.66053906660e-24;
 }
 
 // Amount quantity definition

@@ -9,13 +9,10 @@ units! {
     Tonne: "t", "tonne";
 }
 
-convert! {
-    Gram: |kilogram| kilogram * KILO;
-    Kilogram: |gram| gram / KILO;
-}
-convert! {
-    Tonne: |kilogram| kilogram / KILO;
-    Kilogram: |tonne| tonne * KILO;
+// Unit conversions using convert_linear! with multiple conversions
+crate::convert_linear! {
+    Gram => Kilogram: 1.0 / KILO;      // 1 g = 0.001 kg
+    Tonne => Kilogram: KILO;            // 1 t = 1000 kg
 }
 
 convert_matrix! {

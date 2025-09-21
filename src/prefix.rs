@@ -116,3 +116,8 @@ pub const SEPTILLION: f64 = 1e24;
 pub const OCTILLION: f64 = 1e27;
 pub const NONILLION: f64 = 1e30;
 pub const DECILLION: f64 = 1e33;
+
+// Time
+pub const MINUTE: f64 = 60.0; // 60 seconds
+pub const HOUR: f64 = 3600.0; // 60 minutes
+pub const DAY: f64 = 86400.0; // 24 hours

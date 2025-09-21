@@ -12,19 +12,14 @@ units! {
     CubicMillimeter: "mm³", "cubic millimeter";
 }
 
-convert! {
-    CubicKilometer: |cubicmeter| cubicmeter / (KILO * KILO * KILO);
-    CubicMeter: |cubickilometer| cubickilometer * (KILO * KILO * KILO);
-}
+// CubicMeter is the SI derived unit for volume
+// Using convert_linear! with derived units on the left, base unit on the right
 
-convert! {
-    CubicCentimeter: |cubicmeter| cubicmeter / (CENTI * CENTI * CENTI);
-    CubicMeter: |cubiccentimeter| cubiccentimeter * (CENTI * CENTI * CENTI);
-}
-
-convert! {
-    CubicMillimeter: |cubicmeter| cubicmeter / (MILLI * MILLI * MILLI);
-    CubicMeter: |cubicmillimeter| cubicmillimeter * (MILLI * MILLI * MILLI);
+// Unit conversions using convert_linear! with multiple conversions
+crate::convert_linear! {
+    CubicKilometer => CubicMeter: KILO * KILO * KILO;          // 1 km³ = 1,000,000,000 m³
+    CubicCentimeter => CubicMeter: CENTI * CENTI * CENTI;      // 1 cm³ = 0.000001 m³
+    CubicMillimeter => CubicMeter: MILLI * MILLI * MILLI;      // 1 mm³ = 0.000000001 m³
 }
 
 // Volume quantity definition

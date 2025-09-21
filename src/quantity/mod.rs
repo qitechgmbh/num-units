@@ -181,8 +181,8 @@ where
         S::BaseUnit: crate::unit::Unit + crate::unit::FromUnit<U, V>,
     {
         use crate::unit::FromUnit;
-        // Due to the conversion trait semantics, from_base actually converts FROM U TO BaseUnit
-        let base_value = <S::BaseUnit as FromUnit<U, V>>::from_base(value);
+        // Convert FROM unit U TO BaseUnit
+        let base_value = <S::BaseUnit as FromUnit<U, V>>::to_base(value);
         Self::from_base(base_value)
     }
 
@@ -214,8 +214,8 @@ where
         S: BaseUnitOf<D>,
         S::BaseUnit: crate::unit::Unit + crate::unit::FromUnit<U, V>,
     {
-        // Due to the conversion trait semantics, to_base actually converts FROM BaseUnit TO U
-        <S::BaseUnit as crate::unit::FromUnit<U, V>>::to_base(self.value)
+        // Convert FROM BaseUnit TO U using from_base
+        <S::BaseUnit as crate::unit::FromUnit<U, V>>::from_base(self.value)
     }
 
     /// Get the value of this quantity in the base unit (no conversion)

@@ -96,6 +96,140 @@ macro_rules! convert {
     };
 }
 
+/// Macro for generating linear conversion relationships (y = ax + b)
+///
+/// This macro simplifies the creation of linear unit conversions by automatically
+/// generating the forward and reverse conversion expressions. It supports both
+/// simple scaling (y = ax) and offset conversions (y = ax + b).
+///
+/// # Syntax
+/// ```ignore
+/// use num_units::convert_linear;
+///
+/// // Simple scaling (y = ax)
+/// // DerivedUnit => BaseUnit: scale means 1 DerivedUnit = scale BaseUnits
+/// convert_linear! {
+///     DerivedUnit => BaseUnit: scale;
+/// }
+///
+/// // With offset (y = ax + b)
+/// // DerivedUnit => BaseUnit: scale, offset means DerivedUnit * scale + offset = BaseUnit
+/// convert_linear! {
+///     DerivedUnit => BaseUnit: scale, offset;
+/// }
+/// ```
+///
+/// # Generated Code
+/// For `DerivedUnit => BaseUnit: a, b;`, this generates:
+/// ```ignore
+/// convert! {
+///     DerivedUnit: |base| (base - b) / a;  // DerivedUnit = (BaseUnit - offset) / scale
+///     BaseUnit: |derived| derived * a + b; // BaseUnit = DerivedUnit * scale + offset
+/// }
+/// ```
+///
+/// # Examples
+/// ```ignore
+/// use num_units::convert_linear;
+/// use num_units::prefix::KILO;
+///
+/// // Simple scaling: 1 km = 1000 m (kilometer is derived, meter is base)
+/// convert_linear! {
+///     Kilometer => Meter: KILO;
+/// }
+/// // Generates:
+/// // convert! {
+/// //     Kilometer: |meter| meter / KILO;
+/// //     Meter: |kilometer| kilometer * KILO;
+/// // }
+///
+/// // With offset: °C + 273.15 = K (Celsius is derived, Kelvin is base)
+/// convert_linear! {
+///     Celsius => Kelvin: 1.0, 273.15;
+/// }
+/// // Generates:
+/// // convert! {
+/// //     Celsius: |kelvin| (kelvin - 273.15) / 1.0;
+/// //     Kelvin: |celsius| celsius * 1.0 + 273.15;
+/// // }
+/// ```
+#[macro_export]
+macro_rules! convert_linear {
+    // Pattern with both a and b (y = ax + b)
+    // DerivedUnit => BaseUnit: scale, offset means:
+    // DerivedUnit * scale + offset = BaseUnit
+    // So: DerivedUnit = (BaseUnit - offset) / scale
+    //     BaseUnit = DerivedUnit * scale + offset
+    ($derived:ident => $base:ident: $a:expr, $b:expr;) => {
+        $crate::convert! {
+            $derived: |val| (val - ($b)) / ($a);
+            $base: |val| val * ($a) + ($b);
+        }
+    };
+
+    // Pattern with only a (y = ax)
+    // DerivedUnit => BaseUnit: scale means 1 DerivedUnit = scale BaseUnits
+    // E.g., Kilometer => Meter: 1000 means 1 km = 1000 m
+    // So: DerivedUnit = BaseUnit / scale
+    //     BaseUnit = DerivedUnit * scale
+    ($derived:ident => $base:ident: $a:expr;) => {
+        $crate::convert! {
+            $derived: |val| val / ($a);
+            $base: |val| val * ($a);
+        }
+    };
+
+    // Multiple conversions
+    ($($derived:ident => $base:ident: $($params:expr),+;)+) => {
+        $(
+            $crate::convert_linear! {
+                $derived => $base: $($params),+;
+            }
+        )+
+    };
+}
+
+/// Macro for generating integer linear conversion relationships
+///
+/// This is the integer version of `convert_linear!` which generates
+/// `convert_int!` code for exact integer conversions. Use this when
+/// both the scaling factor and offset (if any) are integers.
+///
+/// # Examples
+/// ```ignore
+/// use num_units::convert_int_linear;
+///
+/// // Simple integer scaling: 1 km = 1000 m (kilometer is derived, meter is base)
+/// convert_int_linear! {
+///     Kilometer => Meter: 1000;
+/// }
+/// // Generates:
+/// // convert_int! {
+/// //     Kilometer: 1;
+/// //     Meter: 1000;
+/// // }
+/// ```
+#[macro_export]
+macro_rules! convert_int_linear {
+    // Pattern with only scaling factor (integers use numerator/denominator pattern)
+    // DerivedUnit => BaseUnit: scale means DerivedUnit * 1 = BaseUnit * scale
+    ($derived:ident => $base:ident: $scale:expr;) => {
+        $crate::convert_int! {
+            $derived: 1;
+            $base: $scale;
+        }
+    };
+
+    // Multiple conversions
+    ($($derived:ident => $base:ident: $scale:expr;)+) => {
+        $(
+            $crate::convert_int_linear! {
+                $derived => $base: $scale;
+            }
+        )+
+    };
+}
+
 // ===== HIERARCHICAL CONVERSION MACROS =====
 
 /// Macro for specific integer type conversions (i8)
@@ -106,12 +240,12 @@ macro_rules! convert_i8 {
         impl $crate::unit::FromUnit<$unit2, i8> for $unit1 {
             fn to_base(value: i8) -> i8 {
                 let $param2 = value as f64;
-                ($expr2).round() as i8
+                ($expr1).round() as i8  // Use expr1 to convert FROM $unit2 TO base ($unit1)
             }
 
             fn from_base(base_value: i8) -> i8 {
                 let $param1 = base_value as f64;
-                ($expr1).round() as i8
+                ($expr2).round() as i8  // Use expr2 to convert FROM base ($unit1) TO $unit2
             }
         }
 
@@ -119,12 +253,12 @@ macro_rules! convert_i8 {
         impl $crate::unit::FromUnit<$unit1, i8> for $unit2 {
             fn to_base(value: i8) -> i8 {
                 let $param1 = value as f64;
-                ($expr1).round() as i8
+                ($expr2).round() as i8  // Use expr2 to convert FROM $unit1 TO base ($unit2)
             }
 
             fn from_base(base_value: i8) -> i8 {
                 let $param2 = base_value as f64;
-                ($expr2).round() as i8
+                ($expr1).round() as i8  // Use expr1 to convert FROM base ($unit2) TO $unit1
             }
         }
 
@@ -141,12 +275,12 @@ macro_rules! convert_i16 {
         impl $crate::unit::FromUnit<$unit2, i16> for $unit1 {
             fn to_base(value: i16) -> i16 {
                 let $param2 = value as f64;
-                ($expr2).round() as i16
+                ($expr1).round() as i16
             }
 
             fn from_base(base_value: i16) -> i16 {
                 let $param1 = base_value as f64;
-                ($expr1).round() as i16
+                ($expr2).round() as i16
             }
         }
 
@@ -154,12 +288,12 @@ macro_rules! convert_i16 {
         impl $crate::unit::FromUnit<$unit1, i16> for $unit2 {
             fn to_base(value: i16) -> i16 {
                 let $param1 = value as f64;
-                ($expr1).round() as i16
+                ($expr2).round() as i16
             }
 
             fn from_base(base_value: i16) -> i16 {
                 let $param2 = base_value as f64;
-                ($expr2).round() as i16
+                ($expr1).round() as i16
             }
         }
 
@@ -176,12 +310,12 @@ macro_rules! convert_i32 {
         impl $crate::unit::FromUnit<$unit2, i32> for $unit1 {
             fn to_base(value: i32) -> i32 {
                 let $param2 = value as f64;
-                ($expr2).round() as i32
+                ($expr1).round() as i32
             }
 
             fn from_base(base_value: i32) -> i32 {
                 let $param1 = base_value as f64;
-                ($expr1).round() as i32
+                ($expr2).round() as i32
             }
         }
 
@@ -189,12 +323,12 @@ macro_rules! convert_i32 {
         impl $crate::unit::FromUnit<$unit1, i32> for $unit2 {
             fn to_base(value: i32) -> i32 {
                 let $param1 = value as f64;
-                ($expr1).round() as i32
+                ($expr2).round() as i32
             }
 
             fn from_base(base_value: i32) -> i32 {
                 let $param2 = base_value as f64;
-                ($expr2).round() as i32
+                ($expr1).round() as i32
             }
         }
 
@@ -211,12 +345,12 @@ macro_rules! convert_i64 {
         impl $crate::unit::FromUnit<$unit2, i64> for $unit1 {
             fn to_base(value: i64) -> i64 {
                 let $param2 = value;
-                $expr2
+                $expr1
             }
 
             fn from_base(base_value: i64) -> i64 {
                 let $param1 = base_value;
-                $expr1
+                $expr2
             }
         }
 
@@ -224,12 +358,12 @@ macro_rules! convert_i64 {
         impl $crate::unit::FromUnit<$unit1, i64> for $unit2 {
             fn to_base(value: i64) -> i64 {
                 let $param1 = value;
-                $expr1
+                $expr2
             }
 
             fn from_base(base_value: i64) -> i64 {
                 let $param2 = base_value;
-                $expr2
+                $expr1
             }
         }
 
@@ -246,12 +380,12 @@ macro_rules! convert_i128 {
         impl $crate::unit::FromUnit<$unit2, i128> for $unit1 {
             fn to_base(value: i128) -> i128 {
                 let $param2 = value;
-                $expr2
+                $expr1
             }
 
             fn from_base(base_value: i128) -> i128 {
                 let $param1 = base_value;
-                $expr1
+                $expr2
             }
         }
 
@@ -259,12 +393,12 @@ macro_rules! convert_i128 {
         impl $crate::unit::FromUnit<$unit1, i128> for $unit2 {
             fn to_base(value: i128) -> i128 {
                 let $param1 = value;
-                $expr1
+                $expr2
             }
 
             fn from_base(base_value: i128) -> i128 {
                 let $param2 = base_value;
-                $expr2
+                $expr1
             }
         }
 
@@ -281,12 +415,12 @@ macro_rules! convert_u8 {
         impl $crate::unit::FromUnit<$unit2, u8> for $unit1 {
             fn to_base(value: u8) -> u8 {
                 let $param2 = value as f64;
-                ($expr2).round() as u8
+                ($expr1).round() as u8
             }
 
             fn from_base(base_value: u8) -> u8 {
                 let $param1 = base_value as f64;
-                ($expr1).round() as u8
+                ($expr2).round() as u8
             }
         }
 
@@ -294,12 +428,12 @@ macro_rules! convert_u8 {
         impl $crate::unit::FromUnit<$unit1, u8> for $unit2 {
             fn to_base(value: u8) -> u8 {
                 let $param1 = value as f64;
-                ($expr1).round() as u8
+                ($expr2).round() as u8
             }
 
             fn from_base(base_value: u8) -> u8 {
                 let $param2 = base_value as f64;
-                ($expr2).round() as u8
+                ($expr1).round() as u8
             }
         }
 
@@ -316,12 +450,12 @@ macro_rules! convert_u16 {
         impl $crate::unit::FromUnit<$unit2, u16> for $unit1 {
             fn to_base(value: u16) -> u16 {
                 let $param2 = value as f64;
-                ($expr2).round() as u16
+                ($expr1).round() as u16
             }
 
             fn from_base(base_value: u16) -> u16 {
                 let $param1 = base_value as f64;
-                ($expr1).round() as u16
+                ($expr2).round() as u16
             }
         }
 
@@ -329,12 +463,12 @@ macro_rules! convert_u16 {
         impl $crate::unit::FromUnit<$unit1, u16> for $unit2 {
             fn to_base(value: u16) -> u16 {
                 let $param1 = value as f64;
-                ($expr1).round() as u16
+                ($expr2).round() as u16
             }
 
             fn from_base(base_value: u16) -> u16 {
                 let $param2 = base_value as f64;
-                ($expr2).round() as u16
+                ($expr1).round() as u16
             }
         }
 
@@ -351,12 +485,12 @@ macro_rules! convert_u32 {
         impl $crate::unit::FromUnit<$unit2, u32> for $unit1 {
             fn to_base(value: u32) -> u32 {
                 let $param2 = value as f64;
-                ($expr2).round() as u32
+                ($expr1).round() as u32
             }
 
             fn from_base(base_value: u32) -> u32 {
                 let $param1 = base_value as f64;
-                ($expr1).round() as u32
+                ($expr2).round() as u32
             }
         }
 
@@ -364,12 +498,12 @@ macro_rules! convert_u32 {
         impl $crate::unit::FromUnit<$unit1, u32> for $unit2 {
             fn to_base(value: u32) -> u32 {
                 let $param1 = value as f64;
-                ($expr1).round() as u32
+                ($expr2).round() as u32
             }
 
             fn from_base(base_value: u32) -> u32 {
                 let $param2 = base_value as f64;
-                ($expr2).round() as u32
+                ($expr1).round() as u32
             }
         }
 
@@ -386,12 +520,12 @@ macro_rules! convert_u64 {
         impl $crate::unit::FromUnit<$unit2, u64> for $unit1 {
             fn to_base(value: u64) -> u64 {
                 let $param2 = value;
-                $expr2
+                $expr1
             }
 
             fn from_base(base_value: u64) -> u64 {
                 let $param1 = base_value;
-                $expr1
+                $expr2
             }
         }
 
@@ -399,12 +533,12 @@ macro_rules! convert_u64 {
         impl $crate::unit::FromUnit<$unit1, u64> for $unit2 {
             fn to_base(value: u64) -> u64 {
                 let $param1 = value;
-                $expr1
+                $expr2
             }
 
             fn from_base(base_value: u64) -> u64 {
                 let $param2 = base_value;
-                $expr2
+                $expr1
             }
         }
 
@@ -421,12 +555,12 @@ macro_rules! convert_u128 {
         impl $crate::unit::FromUnit<$unit2, u128> for $unit1 {
             fn to_base(value: u128) -> u128 {
                 let $param2 = value;
-                $expr2
+                $expr1
             }
 
             fn from_base(base_value: u128) -> u128 {
                 let $param1 = base_value;
-                $expr1
+                $expr2
             }
         }
 
@@ -434,12 +568,12 @@ macro_rules! convert_u128 {
         impl $crate::unit::FromUnit<$unit1, u128> for $unit2 {
             fn to_base(value: u128) -> u128 {
                 let $param1 = value;
-                $expr1
+                $expr2
             }
 
             fn from_base(base_value: u128) -> u128 {
                 let $param2 = base_value;
-                $expr2
+                $expr1
             }
         }
 
@@ -456,12 +590,12 @@ macro_rules! convert_f32 {
         impl $crate::unit::FromUnit<$unit2, f32> for $unit1 {
             fn to_base(value: f32) -> f32 {
                 let $param2 = value as f64;
-                ($expr2) as f32
+                ($expr1) as f32
             }
 
             fn from_base(base_value: f32) -> f32 {
                 let $param1 = base_value as f64;
-                ($expr1) as f32
+                ($expr2) as f32
             }
         }
 
@@ -469,12 +603,12 @@ macro_rules! convert_f32 {
         impl $crate::unit::FromUnit<$unit1, f32> for $unit2 {
             fn to_base(value: f32) -> f32 {
                 let $param1 = value as f64;
-                ($expr1) as f32
+                ($expr2) as f32
             }
 
             fn from_base(base_value: f32) -> f32 {
                 let $param2 = base_value as f64;
-                ($expr2) as f32
+                ($expr1) as f32
             }
         }
 
@@ -491,12 +625,12 @@ macro_rules! convert_f64 {
         impl $crate::unit::FromUnit<$unit2, f64> for $unit1 {
             fn to_base(value: f64) -> f64 {
                 let $param2 = value;
-                $expr2
+                $expr1
             }
 
             fn from_base(base_value: f64) -> f64 {
                 let $param1 = base_value;
-                $expr1
+                $expr2
             }
         }
 
@@ -504,12 +638,12 @@ macro_rules! convert_f64 {
         impl $crate::unit::FromUnit<$unit1, f64> for $unit2 {
             fn to_base(value: f64) -> f64 {
                 let $param1 = value;
-                $expr1
+                $expr2
             }
 
             fn from_base(base_value: f64) -> f64 {
                 let $param2 = base_value;
-                $expr2
+                $expr1
             }
         }
 

@@ -55,29 +55,18 @@ units! {
     Nanometer: "nm", "nanometer";
 }
 
-convert_int! {
-    Kilometer: 1;        // 1 meter = 1/1000 km, so 1 km = 1000 base units
-    Meter: 1000;         // 1000 meters = 1000 base units (1000:1 ratio)
-}
+// Meter is the SI base unit for length
+// Using convert_linear! with derived units on the left, base unit on the right
 
-convert_int! {
-    Centimeter: 100;     // 1 meter = 100 cm
-    Meter: 1;            // 1 meter = 1 meter (base unit)
-}
+use crate::prefix::{KILO, CENTI, MILLI, MICRO, NANO};
 
-convert_int! {
-    Millimeter: 1000;    // 1 meter = 1000 mm
-    Meter: 1;            // 1 meter = 1 meter (base unit)
-}
-
-convert_int! {
-    Micrometer: 1000000; // 1 meter = 1,000,000 μm
-    Meter: 1;            // 1 meter = 1 meter (base unit)
-}
-
-convert_int! {
-    Nanometer: 1000000000; // 1 meter = 1,000,000,000 nm
-    Meter: 1;              // 1 meter = 1 meter (base unit)
+// Unit conversions using convert_linear! with multiple conversions
+crate::convert_linear! {
+    Kilometer => Meter: KILO;      // 1 km = 1000 m
+    Centimeter => Meter: CENTI;     // 1 cm = 0.01 m
+    Millimeter => Meter: MILLI;     // 1 mm = 0.001 m
+    Micrometer => Meter: MICRO;     // 1 μm = 0.000001 m
+    Nanometer => Meter: NANO;       // 1 nm = 0.000000001 m
 }
 
 convert_matrix! {

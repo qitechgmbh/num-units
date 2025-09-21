@@ -12,22 +12,11 @@ units! {
     PartsPerBillion: "ppb", "parts per billion";
 }
 
-// Percentage conversions
-convert! {
-    Percent: |unitless| unitless * HECTO;
-    Unitless: |percent| percent / HECTO;
-}
-
-// Parts per million conversions
-convert! {
-    PartsPerMillion: |unitless| unitless * MEGA;
-    Unitless: |parts_per_million| parts_per_million / MEGA;
-}
-
-// Parts per billion conversions
-convert! {
-    PartsPerBillion: |unitless| unitless * GIGA;
-    Unitless: |parts_per_billion| parts_per_billion / GIGA;
+// Unit conversions using convert_linear! with multiple conversions
+crate::convert_linear! {
+    Percent => Unitless: 1.0 / HECTO;              // 1% = 0.01 unitless
+    PartsPerMillion => Unitless: 1.0 / MEGA;       // 1 ppm = 0.000001 unitless
+    PartsPerBillion => Unitless: 1.0 / GIGA;       // 1 ppb = 0.000000001 unitless
 }
 
 // Angular units (dimensionless)
@@ -41,20 +30,11 @@ convert_matrix! {
     Unitless => Percent, PartsPerMillion, PartsPerBillion
 }
 
-// Angular conversions
-convert! {
-    Revolution: |unitless| unitless;
-    Unitless: |revolution| revolution;
-}
-
-convert! {
-    Radian: |unitless| unitless * 2.0 * std::f64::consts::PI;
-    Unitless: |radian| radian / (2.0 * std::f64::consts::PI);
-}
-
-convert! {
-    Degree: |unitless| unitless * 360.0;
-    Unitless: |degree| degree / 360.0;
+// Angular conversions using convert_linear!
+crate::convert_linear! {
+    Revolution => Unitless: 1.0;                       // 1 revolution = 1 unitless
+    Radian => Unitless: 1.0 / (2.0 * std::f64::consts::PI);  // 1 radian = 1/(2π) revolutions
+    Degree => Unitless: 1.0 / 360.0;                   // 1 degree = 1/360 revolutions
 }
 
 convert_matrix! {
@@ -85,99 +65,27 @@ units! {
     Yobibyte: "YiB", "yobibyte";
 }
 
-convert! {
-    Bit: |unitless| unitless;
-    Unitless: |bit| bit;
-}
-
-convert! {
-    Nibble: |unitless| unitless * 4.0;
-    Unitless: |nibble| nibble / 4.0;
-}
-
-convert! {
-    Byte: |unitless| unitless * OCTA;
-    Unitless: |byte| byte / OCTA;
-}
-
-convert! {
-    Kilobyte: |unitless| unitless * KILO * OCTA;
-    Unitless: |kilobyte| kilobyte / (KILO * OCTA);
-}
-
-convert! {
-    Megabyte: |unitless| unitless * MEGA * OCTA;
-    Unitless: |megabyte| megabyte / (MEGA * OCTA);
-}
-
-convert! {
-    Gigabyte: |unitless| unitless * GIGA * OCTA;
-    Unitless: |gigabyte| gigabyte / (GIGA * OCTA);
-}
-
-convert! {
-    Terabyte: |unitless| unitless * TERA * OCTA;
-    Unitless: |terabyte| terabyte / (TERA * OCTA);
-}
-
-convert! {
-    Petabyte: |unitless| unitless * PETA * OCTA;
-    Unitless: |petabyte| petabyte / (PETA * OCTA);
-}
-
-convert! {
-    Exabyte: |unitless| unitless * EXA * OCTA;
-    Unitless: |exabyte| exabyte / (EXA * OCTA);
-}
-
-convert! {
-    Zettabyte: |unitless| unitless * ZETTA * OCTA;
-    Unitless: |zettabyte| zettabyte / (ZETTA * OCTA);
-}
-
-convert! {
-    Yottabyte: |unitless| unitless * YOTTA * OCTA;
-    Unitless: |yottabyte| yottabyte / (YOTTA * OCTA);
-}
-
-convert! {
-    Kibibyte: |unitless| unitless * KIBI * OCTA;
-    Unitless: |kibibyte| kibibyte / (KIBI * OCTA);
-}
-
-convert! {
-    Mebibyte: |unitless| unitless * MEBI * OCTA;
-    Unitless: |mebibyte| mebibyte / (MEBI * OCTA);
-}
-
-convert! {
-    Gibibyte: |unitless| unitless * GIBI * OCTA;
-    Unitless: |gibibyte| gibibyte / (GIBI * OCTA);
-}
-
-convert! {
-    Tebibyte: |unitless| unitless * TEBI * OCTA;
-    Unitless: |tebibyte| tebibyte / (TEBI * OCTA);
-}
-
-convert! {
-    Pebibyte: |unitless| unitless * PEBI * OCTA;
-    Unitless: |pebibyte| pebibyte / (PEBI * OCTA);
-}
-
-convert! {
-    Exbibyte: |unitless| unitless * EXBI * OCTA;
-    Unitless: |exbibyte| exbibyte / (EXBI * OCTA);
-}
-
-convert! {
-    Zebibyte: |unitless| unitless * ZEBI * OCTA;
-    Unitless: |zebibyte| zebibyte / (ZEBI * OCTA);
-}
-
-convert! {
-    Yobibyte: |unitless| unitless * YOBI * OCTA;
-    Unitless: |yobibyte| yobibyte / (YOBI * OCTA);
+// Information unit conversions using convert_linear!
+crate::convert_linear! {
+    Bit => Unitless: 1.0;                      // 1 bit = 1 unitless
+    Nibble => Unitless: 1.0 / 4.0;             // 1 nibble = 4 bits
+    Byte => Unitless: 1.0 / OCTA;              // 1 byte = 8 bits
+    Kilobyte => Unitless: 1.0 / (KILO * OCTA); // 1 kB = 8000 bits
+    Megabyte => Unitless: 1.0 / (MEGA * OCTA); // 1 MB = 8,000,000 bits
+    Gigabyte => Unitless: 1.0 / (GIGA * OCTA); // 1 GB = 8,000,000,000 bits
+    Terabyte => Unitless: 1.0 / (TERA * OCTA); // 1 TB = 8,000,000,000,000 bits
+    Petabyte => Unitless: 1.0 / (PETA * OCTA); // 1 PB
+    Exabyte => Unitless: 1.0 / (EXA * OCTA);   // 1 EB
+    Zettabyte => Unitless: 1.0 / (ZETTA * OCTA); // 1 ZB
+    Yottabyte => Unitless: 1.0 / (YOTTA * OCTA); // 1 YB
+    Kibibyte => Unitless: 1.0 / (KIBI * OCTA); // 1 KiB = 8192 bits
+    Mebibyte => Unitless: 1.0 / (MEBI * OCTA); // 1 MiB
+    Gibibyte => Unitless: 1.0 / (GIBI * OCTA); // 1 GiB
+    Tebibyte => Unitless: 1.0 / (TEBI * OCTA); // 1 TiB
+    Pebibyte => Unitless: 1.0 / (PEBI * OCTA); // 1 PiB
+    Exbibyte => Unitless: 1.0 / (EXBI * OCTA); // 1 EiB
+    Zebibyte => Unitless: 1.0 / (ZEBI * OCTA); // 1 ZiB
+    Yobibyte => Unitless: 1.0 / (YOBI * OCTA); // 1 YiB
 }
 
 convert_matrix! {
@@ -195,9 +103,9 @@ units! {
     Apple: "", "apple";
 }
 
-convert! {
-    Apple: |unitless| unitless;
-    Unitless: |apple| apple;
+// Apple unit conversion
+crate::convert_linear! {
+    Apple => Unitless: 1.0;                    // 1 apple = 1 unitless
 }
 
 // Scalar quantity definition (dimensionless)

@@ -57,29 +57,16 @@ units! {
     SquareNanometer: "nm²", "square nanometer";
 }
 
-convert! {
-    SquareKilometer: |square_meter| square_meter / (KILO * KILO);
-    SquareMeter: |square_kilometer| square_kilometer * (KILO * KILO);
-}
+// SquareMeter is the SI derived unit for area
+// Using convert_linear! with derived units on the left, base unit on the right
 
-convert! {
-    SquareCentimeter: |square_meter| square_meter / (CENTI * CENTI);
-    SquareMeter: |square_centimeter| square_centimeter * (CENTI * CENTI);
-}
-
-convert! {
-    SquareMillimeter: |square_meter| square_meter / (MILLI * MILLI);
-    SquareMeter: |square_millimeter| square_millimeter * (MILLI * MILLI);
-}
-
-convert! {
-    SquareMicrometer: |square_meter| square_meter / (MICRO * MICRO);
-    SquareMeter: |square_micrometer| square_micrometer * (MICRO * MICRO);
-}
-
-convert! {
-    SquareNanometer: |square_meter| square_meter / (NANO * NANO);
-    SquareMeter: |square_nanometer| square_nanometer * (NANO * NANO);
+// Unit conversions using convert_linear! with multiple conversions
+crate::convert_linear! {
+    SquareKilometer => SquareMeter: KILO * KILO;      // 1 km² = 1,000,000 m²
+    SquareCentimeter => SquareMeter: CENTI * CENTI;    // 1 cm² = 0.0001 m²
+    SquareMillimeter => SquareMeter: MILLI * MILLI;    // 1 mm² = 0.000001 m²
+    SquareMicrometer => SquareMeter: MICRO * MICRO;    // 1 μm² = 10^-12 m²
+    SquareNanometer => SquareMeter: NANO * NANO;       // 1 nm² = 10^-18 m²
 }
 
 crate::convert_matrix! {
