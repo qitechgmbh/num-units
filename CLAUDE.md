@@ -61,19 +61,18 @@ The conversion system uses a hierarchical structure with shared internal impleme
 
 ```
 User-facing macros:
-├── convert!           → Float-only (f32, f64)
-├── convert_all!       → All numeric types
-├── convert_linear!    → Linear conversions (float-only)
+├── convert!           → All numeric types (f32, f64, i8-i128, u8-u128)
+├── convert_linear!    → Linear conversions (f32, f64 only)
 ├── convert_int!       → Integer conversions with factor syntax
 ├── convert_int_linear!→ Integer linear conversions
-└── convert_matrix!    → Transitive conversions
+└── convert_matrix!    → Transitive conversions (f32, f64 only)
 
 Internal hierarchy:
-convert! → convert_float! → {convert_f32!, convert_f64!} → __impl_conversion!
-convert_all! → {convert_float!, convert_signed!, convert_unsigned!}
-convert_int! → {convert_signed!, convert_unsigned!}
+convert! → {convert_float!, convert_signed!, convert_unsigned!}
+convert_float! → {convert_f32!, convert_f64!} → __impl_conversion!
 convert_signed! → {convert_i8! ... convert_i128!} → __impl_conversion!
 convert_unsigned! → {convert_u8! ... convert_u128!} → __impl_conversion!
+convert_int! → {convert_signed!, convert_unsigned!}
 convert_matrix! → convert_matrix_float! → {matrix pair generators} → __impl_matrix_pair!
 ```
 
@@ -150,11 +149,10 @@ cargo check            # Check compilation
 
 ### Adding Conversions
 Choose the appropriate macro based on your needs:
-- **Float-only conversions** (most common): `convert!`
-- **All numeric types**: `convert_all!`
+- **Standard conversions** (all numeric types): `convert!`
 - **Simple scaling**: `convert_linear!` (float-only)
 - **Integer conversions**: `convert_int!` (generates all integer types)
-- **Complex conversions**: Use closures in `convert!` or `convert_all!`
+- **Complex conversions**: Use closures in `convert!`
 - **Generate transitive conversions**: `convert_matrix!` (after defining base conversions)
 
 ### Debugging Macro Expansions

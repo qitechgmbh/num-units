@@ -25,8 +25,7 @@
 /// The conversion macros are organized in a hierarchical structure:
 ///
 /// ### Top-Level Macros (User-facing)
-/// - `convert!` - Main macro for floating-point conversions (f32, f64 only)
-/// - `convert_all!` - Generate conversions for all numeric types
+/// - `convert!` - Main macro generating conversions for all numeric types
 /// - `convert_linear!` - Simplified macro for linear conversions (y = ax + b)
 /// - `convert_int!` - Integer conversions using factor syntax
 /// - `convert_int_linear!` - Simplified macro for integer linear conversions
@@ -49,13 +48,8 @@
 /// ## Conversion Type Hierarchy
 ///
 /// ```text
-/// convert! (main entry point - float only)
-///     └── convert_float!
-///             ├── convert_f32! → __impl_conversion!
-///             └── convert_f64! → __impl_conversion!
-///
-/// convert_all! (all numeric types)
-///     ├── convert_float! → {convert_f32!, convert_f64!}
+/// convert! (main entry point - all numeric types)
+///     ├── convert_float! → {convert_f32!, convert_f64!} → __impl_conversion!
 ///     ├── convert_signed! → {convert_i8! ... convert_i128!} → __impl_conversion!
 ///     └── convert_unsigned! → {convert_u8! ... convert_u128!} → __impl_conversion!
 ///
@@ -63,8 +57,8 @@
 ///     ├── convert_signed! → {convert_i8! ... convert_i128!}
 ///     └── convert_unsigned! → {convert_u8! ... convert_u128!}
 ///
-/// convert_linear! (linear conversions)
-///     └── convert! → convert_float!
+/// convert_linear! (linear conversions - f32, f64 only)
+///     └── convert_float!
 ///
 /// convert_matrix! (transitive conversions)
 ///     └── convert_matrix_float!
@@ -74,23 +68,12 @@
 ///
 /// ## Usage Patterns
 ///
-/// ### Basic Conversions (Float-only)
+/// ### Basic Conversions
 /// ```rust,ignore
 /// use num_units::{convert, units};
 ///
-/// // Define conversions for f32 and f64 only
-/// convert! {
-///     Kilometer: |meter| meter / 1000.0;
-///     Meter: |kilometer| kilometer * 1000.0;
-/// }
-/// ```
-///
-/// ### All Types Conversions
-/// ```rust,ignore
-/// use num_units::convert_all;
-///
 /// // Define conversions for all numeric types (f32, f64, i8-i128, u8-u128)
-/// convert_all! {
+/// convert! {
 ///     Kilometer: |meter| meter / 1000.0;
 ///     Meter: |kilometer| kilometer * 1000.0;
 /// }
@@ -132,7 +115,7 @@
 ///     Unitless: |radian| radian / (2.0 * PI);
 /// }
 ///
-/// // Generate all transitive conversions (f32, f64 by default)
+/// // Generate all transitive conversions (f32, f64 only)
 /// convert_matrix! {
 ///     Unitless => Revolution, Radian, Degree
 /// }
@@ -142,7 +125,7 @@
 /// ## Implementation Details
 ///
 /// ### Conversion Flow
-/// 1. User calls high-level macro (`convert!`, `convert_all!`, `convert_int!`, etc.)
+/// 1. User calls high-level macro (`convert!`, `convert_int!`, etc.)
 /// 2. Macro delegates to type-group macros (`convert_float!`, `convert_signed!`, `convert_unsigned!`)
 /// 3. Type-group macros delegate to individual type macros (`convert_f32!`, `convert_i8!`, etc.)
 /// 4. Individual type macros use shared `__impl_conversion!` macro
@@ -164,10 +147,9 @@
 /// ## Best Practices
 ///
 /// 1. **Choose the right macro for your needs**:
-///    - `convert!` - Float-only conversions (most common)
-///    - `convert_all!` - When you need all numeric types
-///    - `convert_linear!` - Simple scaling/offset conversions (float-only)
-///    - `convert_int!` - Integer conversions with factor syntax (all integer types)
+///    - `convert!` - Standard conversions for all numeric types
+///    - `convert_linear!` - Simple scaling/offset conversions
+///    - `convert_int!` - Integer conversions with factor syntax
 ///    - `convert_int_linear!` - Simple integer scaling
 ///
 /// 2. **Define a base unit for each dimension**:
@@ -175,9 +157,9 @@
 ///    - Use `convert_matrix!` to generate transitive conversions
 ///
 /// 3. **Consider type coverage**:
-///    - Default to `convert!` for most use cases (f32, f64 only)
-///    - Use `convert_all!` only when integer support is needed
+///    - `convert!` generates conversions for all numeric types by default
 ///    - Integer conversions always go through f64 for consistency
+///    - Use `convert_matrix!` for transitive conversions (f32, f64 only)
 ///
 /// 4. **Organize conversions hierarchically**:
 ///    - Define base ↔ derived conversions first
@@ -202,11 +184,11 @@ pub trait ConvertibleUnit: crate::unit::Unit {
     where
         V: num_traits::Num + Copy + From<f64> + num_traits::NumCast;
 }
-/// Macro for establishing bidirectional conversion relationships between units (floating-point)
+/// Macro for establishing bidirectional conversion relationships between units
 ///
-/// This macro creates conversion relationships between two units using floating-point
-/// arithmetic. Use this for conversions that involve fractional factors. This is the
-/// top-level macro that calls the hierarchical conversion macros.
+/// This macro creates conversion relationships between two units for all numeric types.
+/// It uses floating-point expressions internally and automatically generates conversions
+/// for f32, f64, i8-i128, and u8-u128.
 ///
 /// # Syntax
 /// ```rust,ignore
@@ -220,48 +202,29 @@ pub trait ConvertibleUnit: crate::unit::Unit {
 ///
 /// # Examples
 /// ```rust,ignore
-/// use num_units::{convert, convert_float};
+/// use num_units::convert;
 /// use num_units::prefix::KILO;
 ///
-/// // Define conversion with floating-point factors
+/// // Define conversion for all numeric types
 /// convert! {
 ///     Kilometer: |meter| meter / KILO;      // km = m / 1000.0
 ///     Meter: |kilometer| kilometer * KILO;  // m = km * 1000.0
 /// }
 /// ```
 ///
-/// This automatically generates conversions for f32 and f64 types.
-/// For integer conversions, use convert_int! or convert_all!.
+/// This automatically generates conversions for all numeric types:
+/// - Floating-point: f32, f64
+/// - Signed integers: i8, i16, i32, i64, i128
+/// - Unsigned integers: u8, u16, u32, u64, u128
 #[macro_export]
 macro_rules! convert {
-    ($($input:tt)*) => {
-        $crate::convert_float! { $($input)* }
-    };
-}
-
-/// Macro for establishing bidirectional conversion relationships for all types
-///
-/// This macro creates conversion relationships between two units for all numeric types.
-/// It delegates to convert_float!, convert_signed!, and convert_unsigned!.
-///
-/// # Examples
-/// ```rust,ignore
-/// use num_units::convert_all;
-///
-/// // Define conversion for all numeric types
-/// convert_all! {
-///     Kilometer: |meter| meter / 1000.0;
-///     Meter: |kilometer| kilometer * 1000.0;
-/// }
-/// ```
-#[macro_export]
-macro_rules! convert_all {
     ($($input:tt)*) => {
         $crate::convert_float! { $($input)* }
         $crate::convert_signed! { $($input)* }
         $crate::convert_unsigned! { $($input)* }
     };
 }
+
 
 /// Macro for generating linear conversion relationships (y = ax + b)
 ///
@@ -328,7 +291,7 @@ macro_rules! convert_linear {
     // So: DerivedUnit = (BaseUnit - offset) / scale
     //     BaseUnit = DerivedUnit * scale + offset
     ($derived:ident => $base:ident: $a:expr, $b:expr;) => {
-        $crate::convert! {
+        $crate::convert_float! {
             $derived: |val| (val - ($b)) / ($a);
             $base: |val| val * ($a) + ($b);
         }
@@ -340,7 +303,7 @@ macro_rules! convert_linear {
     // So: DerivedUnit = BaseUnit / scale
     //     BaseUnit = DerivedUnit * scale
     ($derived:ident => $base:ident: $a:expr;) => {
-        $crate::convert! {
+        $crate::convert_float! {
             $derived: |val| val / ($a);
             $base: |val| val * ($a);
         }

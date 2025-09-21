@@ -20,8 +20,8 @@ crate::convert_linear! {
 // Or: F * 5/9 + 255.372... = K
 // But we need it in the form F * scale + offset = K
 // So: F * (5/9) + 255.372... = K
-// Let's use the direct conversion for clarity
-crate::convert! {
+// Let's use the direct conversion for clarity (float only due to fractional expressions)
+crate::convert_float! {
     Fahrenheit: |val| (val - 273.15) * 9.0 / 5.0 + 32.0;
     Kelvin: |val| (val - 32.0) * 5.0 / 9.0 + 273.15;
 }
