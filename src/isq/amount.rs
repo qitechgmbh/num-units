@@ -23,33 +23,33 @@ units! {
 // ===== CONVERSION RELATIONSHIPS =====
 
 // Metric prefix conversions
-convert_unit! {
+convert! {
     Mole: |mole| mole * MILLI;
     Millimole: |millimole| millimole / MILLI;
 }
 
-convert_unit! {
+convert! {
     Mole: |mole| mole * MICRO;
     Micromole: |micromole| micromole / MICRO;
 }
 
-convert_unit! {
+convert! {
     Nanomole: |mole| mole * NANO;
     Mole: |nanomole| nanomole / NANO;
 }
 
-convert_unit! {
+convert! {
     Mole: |mole| mole * PICO;
     Picomole: |picomole| picomole / PICO;
 }
 
-convert_unit! {
+convert! {
     Mole: |mole| mole * KILO;
     Kilomole: |kilomole| kilomole / KILO;
 }
 
 // Particle counting conversions
-convert_unit! {
+convert! {
     Particle: |mole| mole / 1.66053906660e-24;
     Mole: |particle| particle * 1.66053906660e-24;
 }

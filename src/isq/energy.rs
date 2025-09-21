@@ -13,31 +13,31 @@ units! {
 // ===== CONVERSION RELATIONSHIPS =====
 
 // Kilojoule to Joule
-convert_unit! {
+convert! {
     Kilojoule: |joule| joule / KILO;
     Joule: |kilojoule| kilojoule * KILO;
 }
 
 // Calorie to Joule (thermochemical calorie: 1 cal = 4.184 J)
-convert_unit! {
+convert! {
     Calorie: |joule| joule / 4.184;
     Joule: |calorie| calorie * 4.184;
 }
 
 // Kilocalorie to Joule
-convert_unit! {
+convert! {
     Kilocalorie: |joule| joule / 4184.0;
     Joule: |kilocalorie| kilocalorie * 4184.0;
 }
 
 // Watt-hour to Joule (1 Wh = 3600 J)
-convert_unit! {
+convert! {
     WattHour: |joule| joule / 3600.0;
     Joule: |watt_hour| watt_hour * 3600.0;
 }
 
 // Kilowatt-hour to Joule
-convert_unit! {
+convert! {
     KilowattHour: |joule| joule / 3_600_000.0;
     Joule: |kilowatt_hour| kilowatt_hour * 3_600_000.0;
 }

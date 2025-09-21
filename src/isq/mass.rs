@@ -9,11 +9,11 @@ units! {
     Tonne: "t", "tonne";
 }
 
-convert_unit! {
+convert! {
     Gram: |kilogram| kilogram * KILO;
     Kilogram: |gram| gram / KILO;
 }
-convert_unit! {
+convert! {
     Tonne: |kilogram| kilogram / KILO;
     Kilogram: |tonne| tonne * KILO;
 }

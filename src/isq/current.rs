@@ -15,12 +15,12 @@ units! {
 // ===== CONVERSION RELATIONSHIPS =====
 
 // Metric prefix conversions
-convert_unit! {
+convert! {
     Milliampere: |ampere| ampere / MILLI;
     Ampere: |milliampere| milliampere * MILLI;
 }
 
-convert_unit! {
+convert! {
     Microampere: |ampere| ampere / MICRO;
     Ampere: |microampere| microampere * MICRO;
 }

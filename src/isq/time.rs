@@ -15,27 +15,27 @@ units! {
     Kilosecond: "ks", "kilosecond";
 }
 
-convert_unit! {
+convert! {
     Millisecond: |second| second / MILLI;
     Second: |millisecond| millisecond * MILLI;
 }
 
-convert_unit! {
+convert! {
     Microsecond: |second| second / MICRO;
     Second: |microsecond| microsecond * MICRO;
 }
 
-convert_unit! {
+convert! {
     Nanosecond: |second| second / NANO;
     Second: |nanosecond| nanosecond * NANO;
 }
 
-convert_unit! {
+convert! {
     Picosecond: |second| second / PICO;
     Second: |picosecond| picosecond * PICO;
 }
 
-convert_unit! {
+convert! {
     Kilosecond: |second| second / KILO;
     Second: |kilosecond| kilosecond * KILO;
 }

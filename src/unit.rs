@@ -59,13 +59,13 @@ pub trait Unit {
 ///
 /// 1. **Unit Definition**: `units!` macro creates unit structs
 /// 2. **Trait Implementation**: Automatic implementation of `Unit` trait
-/// 3. **Conversion Relationships**: `convert_unit!` establishes conversions
+/// 3. **Conversion Relationships**: `convert!` establishes conversions
 /// 4. **Type Safety**: Compile-time dimensional analysis prevents errors
 ///
 /// ## Example Usage
 ///
 /// ```ignore
-/// use num_units::{units, convert_unit, convert_unit_float};
+/// use num_units::{units, convert, convert_float};
 /// use num_units::prefix::KILO;
 ///
 /// // Define base units
@@ -75,7 +75,7 @@ pub trait Unit {
 /// }
 ///
 /// // Establish conversion relationships
-/// convert_unit! {
+/// convert! {
 ///     Kilometer: |meter| meter / KILO;
 ///     Meter: |kilometer| kilometer * KILO;
 /// }

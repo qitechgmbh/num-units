@@ -11,7 +11,7 @@ units! {
     Millicandela: "mcd", "millicandela";
 }
 
-convert_unit! {
+convert! {
     Millicandela: |candela| candela * MILLI;
     Candela: |millicandela| millicandela / MILLI;
 }

@@ -12,17 +12,17 @@ units! {
     CubicMillimeter: "mm³", "cubic millimeter";
 }
 
-convert_unit! {
+convert! {
     CubicKilometer: |cubicmeter| cubicmeter / (KILO * KILO * KILO);
     CubicMeter: |cubickilometer| cubickilometer * (KILO * KILO * KILO);
 }
 
-convert_unit! {
+convert! {
     CubicCentimeter: |cubicmeter| cubicmeter / (CENTI * CENTI * CENTI);
     CubicMeter: |cubiccentimeter| cubiccentimeter * (CENTI * CENTI * CENTI);
 }
 
-convert_unit! {
+convert! {
     CubicMillimeter: |cubicmeter| cubicmeter / (MILLI * MILLI * MILLI);
     CubicMeter: |cubicmillimeter| cubicmillimeter * (MILLI * MILLI * MILLI);
 }

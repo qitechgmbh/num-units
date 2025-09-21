@@ -55,27 +55,27 @@ units! {
     Nanometer: "nm", "nanometer";
 }
 
-convert_unit_int! {
+convert_int! {
     Kilometer: 1;        // 1 meter = 1/1000 km, so 1 km = 1000 base units
     Meter: 1000;         // 1000 meters = 1000 base units (1000:1 ratio)
 }
 
-convert_unit_int! {
+convert_int! {
     Centimeter: 100;     // 1 meter = 100 cm
     Meter: 1;            // 1 meter = 1 meter (base unit)
 }
 
-convert_unit_int! {
+convert_int! {
     Millimeter: 1000;    // 1 meter = 1000 mm
     Meter: 1;            // 1 meter = 1 meter (base unit)
 }
 
-convert_unit_int! {
+convert_int! {
     Micrometer: 1000000; // 1 meter = 1,000,000 μm
     Meter: 1;            // 1 meter = 1 meter (base unit)
 }
 
-convert_unit_int! {
+convert_int! {
     Nanometer: 1000000000; // 1 meter = 1,000,000,000 nm
     Meter: 1;              // 1 meter = 1 meter (base unit)
 }

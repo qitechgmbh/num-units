@@ -13,19 +13,19 @@ units! {
 }
 
 // Percentage conversions
-convert_unit! {
+convert! {
     Percent: |unitless| unitless * HECTO;
     Unitless: |percent| percent / HECTO;
 }
 
 // Parts per million conversions
-convert_unit! {
+convert! {
     PartsPerMillion: |unitless| unitless * MEGA;
     Unitless: |parts_per_million| parts_per_million / MEGA;
 }
 
 // Parts per billion conversions
-convert_unit! {
+convert! {
     PartsPerBillion: |unitless| unitless * GIGA;
     Unitless: |parts_per_billion| parts_per_billion / GIGA;
 }
@@ -42,17 +42,17 @@ convert_matrix! {
 }
 
 // Angular conversions
-convert_unit! {
+convert! {
     Revolution: |unitless| unitless;
     Unitless: |revolution| revolution;
 }
 
-convert_unit! {
+convert! {
     Radian: |unitless| unitless * 2.0 * std::f64::consts::PI;
     Unitless: |radian| radian / (2.0 * std::f64::consts::PI);
 }
 
-convert_unit! {
+convert! {
     Degree: |unitless| unitless * 360.0;
     Unitless: |degree| degree / 360.0;
 }
@@ -85,97 +85,97 @@ units! {
     Yobibyte: "YiB", "yobibyte";
 }
 
-convert_unit! {
+convert! {
     Bit: |unitless| unitless;
     Unitless: |bit| bit;
 }
 
-convert_unit! {
+convert! {
     Nibble: |unitless| unitless * 4.0;
     Unitless: |nibble| nibble / 4.0;
 }
 
-convert_unit! {
+convert! {
     Byte: |unitless| unitless * OCTA;
     Unitless: |byte| byte / OCTA;
 }
 
-convert_unit! {
+convert! {
     Kilobyte: |unitless| unitless * KILO * OCTA;
     Unitless: |kilobyte| kilobyte / (KILO * OCTA);
 }
 
-convert_unit! {
+convert! {
     Megabyte: |unitless| unitless * MEGA * OCTA;
     Unitless: |megabyte| megabyte / (MEGA * OCTA);
 }
 
-convert_unit! {
+convert! {
     Gigabyte: |unitless| unitless * GIGA * OCTA;
     Unitless: |gigabyte| gigabyte / (GIGA * OCTA);
 }
 
-convert_unit! {
+convert! {
     Terabyte: |unitless| unitless * TERA * OCTA;
     Unitless: |terabyte| terabyte / (TERA * OCTA);
 }
 
-convert_unit! {
+convert! {
     Petabyte: |unitless| unitless * PETA * OCTA;
     Unitless: |petabyte| petabyte / (PETA * OCTA);
 }
 
-convert_unit! {
+convert! {
     Exabyte: |unitless| unitless * EXA * OCTA;
     Unitless: |exabyte| exabyte / (EXA * OCTA);
 }
 
-convert_unit! {
+convert! {
     Zettabyte: |unitless| unitless * ZETTA * OCTA;
     Unitless: |zettabyte| zettabyte / (ZETTA * OCTA);
 }
 
-convert_unit! {
+convert! {
     Yottabyte: |unitless| unitless * YOTTA * OCTA;
     Unitless: |yottabyte| yottabyte / (YOTTA * OCTA);
 }
 
-convert_unit! {
+convert! {
     Kibibyte: |unitless| unitless * KIBI * OCTA;
     Unitless: |kibibyte| kibibyte / (KIBI * OCTA);
 }
 
-convert_unit! {
+convert! {
     Mebibyte: |unitless| unitless * MEBI * OCTA;
     Unitless: |mebibyte| mebibyte / (MEBI * OCTA);
 }
 
-convert_unit! {
+convert! {
     Gibibyte: |unitless| unitless * GIBI * OCTA;
     Unitless: |gibibyte| gibibyte / (GIBI * OCTA);
 }
 
-convert_unit! {
+convert! {
     Tebibyte: |unitless| unitless * TEBI * OCTA;
     Unitless: |tebibyte| tebibyte / (TEBI * OCTA);
 }
 
-convert_unit! {
+convert! {
     Pebibyte: |unitless| unitless * PEBI * OCTA;
     Unitless: |pebibyte| pebibyte / (PEBI * OCTA);
 }
 
-convert_unit! {
+convert! {
     Exbibyte: |unitless| unitless * EXBI * OCTA;
     Unitless: |exbibyte| exbibyte / (EXBI * OCTA);
 }
 
-convert_unit! {
+convert! {
     Zebibyte: |unitless| unitless * ZEBI * OCTA;
     Unitless: |zebibyte| zebibyte / (ZEBI * OCTA);
 }
 
-convert_unit! {
+convert! {
     Yobibyte: |unitless| unitless * YOBI * OCTA;
     Unitless: |yobibyte| yobibyte / (YOBI * OCTA);
 }
@@ -195,7 +195,7 @@ units! {
     Apple: "", "apple";
 }
 
-convert_unit! {
+convert! {
     Apple: |unitless| unitless;
     Unitless: |apple| apple;
 }

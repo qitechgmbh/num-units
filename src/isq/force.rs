@@ -10,13 +10,13 @@ units! {
 // ===== CONVERSION RELATIONSHIPS =====
 
 // Kilonewton to Newton
-convert_unit! {
+convert! {
     Kilonewton: |newton| newton / KILO;
     Newton: |kilonewton| kilonewton * KILO;
 }
 
 // Pound-force to Newton (1 lbf = 4.448222 N)
-convert_unit! {
+convert! {
     Pound: |newton| newton / 4.448222;
     Newton: |pound| pound * 4.448222;
 }

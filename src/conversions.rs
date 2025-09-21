@@ -68,9 +68,9 @@ pub trait ConvertibleUnit: crate::unit::Unit {
 ///
 /// # Syntax
 /// ```ignore
-/// use num_units::convert_unit;
+/// use num_units::convert;
 ///
-/// convert_unit! {
+/// convert! {
 ///     TargetUnit: |source_param| conversion_expression;
 ///     SourceUnit: |target_param| reverse_conversion_expression;
 /// }
@@ -78,11 +78,11 @@ pub trait ConvertibleUnit: crate::unit::Unit {
 ///
 /// # Examples
 /// ```ignore
-/// use num_units::{convert_unit, convert_unit_float};
+/// use num_units::{convert, convert_float};
 /// use num_units::prefix::KILO;
 ///
 /// // Define conversion with floating-point factors
-/// convert_unit! {
+/// convert! {
 ///     Kilometer: |meter| meter / KILO;      // km = m / 1000.0
 ///     Meter: |kilometer| kilometer * KILO;  // m = km * 1000.0
 /// }
@@ -90,9 +90,9 @@ pub trait ConvertibleUnit: crate::unit::Unit {
 ///
 /// This automatically generates conversions for f32 and f64 types.
 #[macro_export]
-macro_rules! convert_unit {
+macro_rules! convert {
     ($($input:tt)*) => {
-        $crate::convert_unit_float! { $($input)* }
+        $crate::convert_float! { $($input)* }
     };
 }
 
@@ -100,7 +100,7 @@ macro_rules! convert_unit {
 
 /// Macro for specific integer type conversions (i8)
 #[macro_export]
-macro_rules! convert_unit_i8 {
+macro_rules! convert_i8 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (i8 version)
         impl $crate::unit::FromUnit<$unit2, i8> for $unit1 {
@@ -128,14 +128,14 @@ macro_rules! convert_unit_i8 {
             }
         }
 
-        convert_unit_i8! { $($rest)* }
+        convert_i8! { $($rest)* }
     };
     () => {};
 }
 
 /// Macro for specific integer type conversions (i16)
 #[macro_export]
-macro_rules! convert_unit_i16 {
+macro_rules! convert_i16 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (i16 version)
         impl $crate::unit::FromUnit<$unit2, i16> for $unit1 {
@@ -163,14 +163,14 @@ macro_rules! convert_unit_i16 {
             }
         }
 
-        convert_unit_i16! { $($rest)* }
+        convert_i16! { $($rest)* }
     };
     () => {};
 }
 
 /// Macro for specific integer type conversions (i32)
 #[macro_export]
-macro_rules! convert_unit_i32 {
+macro_rules! convert_i32 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (i32 version)
         impl $crate::unit::FromUnit<$unit2, i32> for $unit1 {
@@ -198,14 +198,14 @@ macro_rules! convert_unit_i32 {
             }
         }
 
-        convert_unit_i32! { $($rest)* }
+        convert_i32! { $($rest)* }
     };
     () => {};
 }
 
 /// Macro for specific integer type conversions (i64)
 #[macro_export]
-macro_rules! convert_unit_i64 {
+macro_rules! convert_i64 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (i64 version)
         impl $crate::unit::FromUnit<$unit2, i64> for $unit1 {
@@ -233,14 +233,14 @@ macro_rules! convert_unit_i64 {
             }
         }
 
-        convert_unit_i64! { $($rest)* }
+        convert_i64! { $($rest)* }
     };
     () => {};
 }
 
 /// Macro for specific integer type conversions (i128)
 #[macro_export]
-macro_rules! convert_unit_i128 {
+macro_rules! convert_i128 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (i128 version)
         impl $crate::unit::FromUnit<$unit2, i128> for $unit1 {
@@ -268,14 +268,14 @@ macro_rules! convert_unit_i128 {
             }
         }
 
-        convert_unit_i128! { $($rest)* }
+        convert_i128! { $($rest)* }
     };
     () => {};
 }
 
 /// Macro for unsigned integer type conversions (u8)
 #[macro_export]
-macro_rules! convert_unit_u8 {
+macro_rules! convert_u8 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (u8 version)
         impl $crate::unit::FromUnit<$unit2, u8> for $unit1 {
@@ -303,14 +303,14 @@ macro_rules! convert_unit_u8 {
             }
         }
 
-        convert_unit_u8! { $($rest)* }
+        convert_u8! { $($rest)* }
     };
     () => {};
 }
 
 /// Macro for unsigned integer type conversions (u16)
 #[macro_export]
-macro_rules! convert_unit_u16 {
+macro_rules! convert_u16 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (u16 version)
         impl $crate::unit::FromUnit<$unit2, u16> for $unit1 {
@@ -338,14 +338,14 @@ macro_rules! convert_unit_u16 {
             }
         }
 
-        convert_unit_u16! { $($rest)* }
+        convert_u16! { $($rest)* }
     };
     () => {};
 }
 
 /// Macro for unsigned integer type conversions (u32)
 #[macro_export]
-macro_rules! convert_unit_u32 {
+macro_rules! convert_u32 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (u32 version)
         impl $crate::unit::FromUnit<$unit2, u32> for $unit1 {
@@ -373,14 +373,14 @@ macro_rules! convert_unit_u32 {
             }
         }
 
-        convert_unit_u32! { $($rest)* }
+        convert_u32! { $($rest)* }
     };
     () => {};
 }
 
 /// Macro for unsigned integer type conversions (u64)
 #[macro_export]
-macro_rules! convert_unit_u64 {
+macro_rules! convert_u64 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (u64 version)
         impl $crate::unit::FromUnit<$unit2, u64> for $unit1 {
@@ -408,14 +408,14 @@ macro_rules! convert_unit_u64 {
             }
         }
 
-        convert_unit_u64! { $($rest)* }
+        convert_u64! { $($rest)* }
     };
     () => {};
 }
 
 /// Macro for unsigned integer type conversions (u128)
 #[macro_export]
-macro_rules! convert_unit_u128 {
+macro_rules! convert_u128 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (u128 version)
         impl $crate::unit::FromUnit<$unit2, u128> for $unit1 {
@@ -443,14 +443,14 @@ macro_rules! convert_unit_u128 {
             }
         }
 
-        convert_unit_u128! { $($rest)* }
+        convert_u128! { $($rest)* }
     };
     () => {};
 }
 
 /// Macro for floating-point type conversions (f32)
 #[macro_export]
-macro_rules! convert_unit_f32 {
+macro_rules! convert_f32 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (f32 version)
         impl $crate::unit::FromUnit<$unit2, f32> for $unit1 {
@@ -478,14 +478,14 @@ macro_rules! convert_unit_f32 {
             }
         }
 
-        convert_unit_f32! { $($rest)* }
+        convert_f32! { $($rest)* }
     };
     () => {};
 }
 
 /// Macro for floating-point type conversions (f64)
 #[macro_export]
-macro_rules! convert_unit_f64 {
+macro_rules! convert_f64 {
     ($unit1:ident: |$param1:ident| $expr1:expr; $unit2:ident: |$param2:ident| $expr2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (f64 generic version)
         impl $crate::unit::FromUnit<$unit2, f64> for $unit1 {
@@ -513,41 +513,41 @@ macro_rules! convert_unit_f64 {
             }
         }
 
-        convert_unit_f64! { $($rest)* }
+        convert_f64! { $($rest)* }
     };
     () => {};
 }
 
 /// Macro for all signed integer type conversions
 #[macro_export]
-macro_rules! convert_unit_signed {
+macro_rules! convert_signed {
     ($($input:tt)*) => {
-        $crate::convert_unit_i8! { $($input)* }
-        $crate::convert_unit_i16! { $($input)* }
-        $crate::convert_unit_i32! { $($input)* }
-        $crate::convert_unit_i64! { $($input)* }
-        $crate::convert_unit_i128! { $($input)* }
+        $crate::convert_i8! { $($input)* }
+        $crate::convert_i16! { $($input)* }
+        $crate::convert_i32! { $($input)* }
+        $crate::convert_i64! { $($input)* }
+        $crate::convert_i128! { $($input)* }
     };
 }
 
 /// Macro for all unsigned integer type conversions
 #[macro_export]
-macro_rules! convert_unit_unsigned {
+macro_rules! convert_unsigned {
     ($($input:tt)*) => {
-        $crate::convert_unit_u8! { $($input)* }
-        $crate::convert_unit_u16! { $($input)* }
-        $crate::convert_unit_u32! { $($input)* }
-        $crate::convert_unit_u64! { $($input)* }
-        $crate::convert_unit_u128! { $($input)* }
+        $crate::convert_u8! { $($input)* }
+        $crate::convert_u16! { $($input)* }
+        $crate::convert_u32! { $($input)* }
+        $crate::convert_u64! { $($input)* }
+        $crate::convert_u128! { $($input)* }
     };
 }
 
 /// Macro for all floating-point type conversions
 #[macro_export]
-macro_rules! convert_unit_float {
+macro_rules! convert_float {
     ($($input:tt)*) => {
-        $crate::convert_unit_f32! { $($input)* }
-        $crate::convert_unit_f64! { $($input)* }
+        $crate::convert_f32! { $($input)* }
+        $crate::convert_f64! { $($input)* }
     };
 }
 
@@ -558,7 +558,7 @@ macro_rules! convert_unit_float {
 ///
 /// # Syntax
 /// ```ignore
-/// use num_units::{units, convert_unit_int};
+/// use num_units::{units, convert_int};
 ///
 /// // First define the units
 /// units! {
@@ -567,7 +567,7 @@ macro_rules! convert_unit_float {
 /// }
 ///
 /// // Then define conversions (factors are relative to base)
-/// convert_unit_int! {
+/// convert_int! {
 ///     TargetUnit: 1;    // 1 base = 1 target
 ///     SourceUnit: 10;   // 1 base = 10 source
 /// }
@@ -575,7 +575,7 @@ macro_rules! convert_unit_float {
 ///
 /// # Examples
 /// ```ignore
-/// use num_units::{units, convert_unit_int};
+/// use num_units::{units, convert_int};
 ///
 /// // First define the units
 /// units! {
@@ -584,7 +584,7 @@ macro_rules! convert_unit_float {
 /// }
 ///
 /// // Define conversion with exact integer factors
-/// convert_unit_int! {
+/// convert_int! {
 ///     Millimeter: 1000;  // 1 meter = 1000 millimeters
 ///     Meter: 1;          // 1 meter = 1 meter (base unit)
 /// }
@@ -593,7 +593,7 @@ macro_rules! convert_unit_float {
 /// This generates both integer and floating-point implementations, with integer
 /// implementations using exact arithmetic when possible.
 #[macro_export]
-macro_rules! convert_unit_int {
+macro_rules! convert_int {
     // Process pairs of units with integer conversion factors
     ($unit1:ident: $factor1:expr; $unit2:ident: $factor2:expr; $($rest:tt)*) => {
         // Forward conversion: $unit2 -> $unit1 (f64 version)
@@ -702,7 +702,7 @@ macro_rules! convert_unit_int {
         }
 
         // Process remaining conversions recursively
-        convert_unit_int! { $($rest)* }
+        convert_int! { $($rest)* }
     };
 
     // Base case: no more conversions to process
@@ -1438,13 +1438,13 @@ macro_rules! convert_matrix_float {
 ///
 /// This macro takes a base unit and a list of target units, then automatically
 /// generates all possible transitive conversions between every pair via the base unit.
-/// You must define the direct base ↔ target conversions using `convert_unit!` first.
+/// You must define the direct base ↔ target conversions using `convert!` first.
 ///
 /// This is the top-level macro that calls the floating-point matrix generation.
 ///
 /// # Syntax
 /// ```ignore
-/// use num_units::{units, convert_unit, convert_matrix, convert_unit_float};
+/// use num_units::{units, convert, convert_matrix, convert_float};
 ///
 /// // First define units
 /// units! {
@@ -1461,9 +1461,9 @@ macro_rules! convert_matrix_float {
 /// ```
 ///
 /// # Requirements
-/// Before using the matrix, you must define direct conversions using `convert_unit!`:
+/// Before using the matrix, you must define direct conversions using `convert!`:
 /// ```ignore
-/// use num_units::{units, convert_unit, convert_unit_float};
+/// use num_units::{units, convert, convert_float};
 ///
 /// // Define units
 /// units! {
@@ -1472,7 +1472,7 @@ macro_rules! convert_matrix_float {
 /// }
 ///
 /// // Define conversions
-/// convert_unit! {
+/// convert! {
 ///     TargetUnit1: |base| base * 2.0;
 ///     BaseUnit: |target1| target1 / 2.0;
 /// }
@@ -1489,7 +1489,7 @@ macro_rules! convert_matrix_float {
 ///
 /// # Example
 /// ```ignore
-/// use num_units::{units, convert_unit, convert_matrix, convert_unit_float};
+/// use num_units::{units, convert, convert_matrix, convert_float};
 /// use std::f64::consts::PI;
 ///
 /// // First define units
@@ -1501,11 +1501,11 @@ macro_rules! convert_matrix_float {
 /// }
 ///
 /// // First define direct conversions
-/// convert_unit! {
+/// convert! {
 ///     Revolution: |unitless| unitless;
 ///     Unitless: |revolution| revolution;
 /// }
-/// convert_unit! {
+/// convert! {
 ///     Radian: |unitless| unitless * 2.0 * PI;
 ///     Unitless: |radian| radian / (2.0 * PI);
 /// }

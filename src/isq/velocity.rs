@@ -10,13 +10,13 @@ units! {
 // ===== CONVERSION RELATIONSHIPS =====
 
 // Kilometer per hour to meter per second
-convert_unit! {
+convert! {
     KilometerPerHour: |meter_per_second| meter_per_second * 3.6;
     MeterPerSecond: |kilometer_per_hour| kilometer_per_hour / 3.6;
 }
 
 // Mile per hour to meter per second (1 mile = 1609.344 meters)
-convert_unit! {
+convert! {
     MilePerHour: |meter_per_second| meter_per_second * 2.23694;
     MeterPerSecond: |mile_per_hour| mile_per_hour / 2.23694;
 }

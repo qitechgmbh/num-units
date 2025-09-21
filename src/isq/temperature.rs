@@ -10,13 +10,13 @@ units! {
 // ===== CONVERSION RELATIONSHIPS =====
 
 // Celsius to Kelvin (with offset)
-convert_unit! {
+convert! {
     Celsius: |kelvin| kelvin - 273.15;
     Kelvin: |celsius| celsius + 273.15;
 }
 
 // Fahrenheit to Kelvin (with offset)
-convert_unit! {
+convert! {
     Fahrenheit: |kelvin| (kelvin - 273.15) * 9.0 / 5.0 + 32.0;
     Kelvin: |fahrenheit| (fahrenheit - 32.0) * 5.0 / 9.0 + 273.15;
 }

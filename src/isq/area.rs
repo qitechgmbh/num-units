@@ -57,27 +57,27 @@ units! {
     SquareNanometer: "nm²", "square nanometer";
 }
 
-convert_unit! {
+convert! {
     SquareKilometer: |square_meter| square_meter / (KILO * KILO);
     SquareMeter: |square_kilometer| square_kilometer * (KILO * KILO);
 }
 
-convert_unit! {
+convert! {
     SquareCentimeter: |square_meter| square_meter / (CENTI * CENTI);
     SquareMeter: |square_centimeter| square_centimeter * (CENTI * CENTI);
 }
 
-convert_unit! {
+convert! {
     SquareMillimeter: |square_meter| square_meter / (MILLI * MILLI);
     SquareMeter: |square_millimeter| square_millimeter * (MILLI * MILLI);
 }
 
-convert_unit! {
+convert! {
     SquareMicrometer: |square_meter| square_meter / (MICRO * MICRO);
     SquareMeter: |square_micrometer| square_micrometer * (MICRO * MICRO);
 }
 
-convert_unit! {
+convert! {
     SquareNanometer: |square_meter| square_meter / (NANO * NANO);
     SquareMeter: |square_nanometer| square_nanometer * (NANO * NANO);
 }
