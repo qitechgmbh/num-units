@@ -16,5 +16,9 @@ pub mod conversions;
 
 pub mod si;
 
+#[cfg(test)]
+#[macro_use]
+pub mod uom_comparison;
+
 // Re-export num_traits for convenience
 pub use num_traits;
