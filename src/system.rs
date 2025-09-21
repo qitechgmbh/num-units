@@ -34,6 +34,7 @@
 /// // Create a dimensional system with unit mappings
 /// system! {
 ///     Physics,
+///     PhysicsScale,
 ///     L => length::Meter,      // Length dimension -> Meter unit
 ///     M => mass::Kilogram,     // Mass dimension -> Kilogram unit
 ///     T => time::Second        // Time dimension -> Second unit
@@ -52,11 +53,12 @@
 /// conversion relationships for a fully functional unit system.
 ///
 /// # Syntax
-/// ```rust,no_run
+/// ```ignore
 /// use num_units::system;
 ///
 /// system! {
 ///     SystemName,
+///     SystemScale,
 ///     DIMENSION1 => UnitType1,
 ///     DIMENSION2 => UnitType2,
 /// }

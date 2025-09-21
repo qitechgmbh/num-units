@@ -103,11 +103,11 @@ pub mod zero;
 /// # Examples
 /// ```rust
 /// # use num_units::quantity::Quantity;
-/// # use num_units::{SI, SiScale};
+/// # use num_units::{ISQ, SiScale};
 /// # use typenum::*;
 ///
-/// let length = Quantity::<f64, SI<P1, Z0, Z0, Z0, Z0, Z0, Z0>, SiScale>::from_base(5.0);
-/// let width = Quantity::<f64, SI<P1, Z0, Z0, Z0, Z0, Z0, Z0>, SiScale>::from_base(3.0);
+/// let length = Quantity::<f64, ISQ<P1, Z0, Z0, Z0, Z0, Z0, Z0>, SiScale>::from_base(5.0);
+/// let width = Quantity::<f64, ISQ<P1, Z0, Z0, Z0, Z0, Z0, Z0>, SiScale>::from_base(3.0);
 /// let total_length = length + width; // Same dimensions - addition works
 /// ```
 #[derive(Debug, PartialEq, Eq)]

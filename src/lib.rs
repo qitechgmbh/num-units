@@ -11,6 +11,7 @@ pub mod unit;
 pub mod scale;
 #[macro_use]
 pub mod system;
+#[macro_use]
 pub mod conversions;
 mod isq;
 
