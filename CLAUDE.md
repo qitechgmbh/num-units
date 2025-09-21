@@ -49,21 +49,39 @@ This document provides important context about the num-units repository to help 
 
 ### Macro System
 
-The library heavily uses macros for code generation:
+The library heavily uses macros for code generation with a macro-generating-macro pattern to reduce duplication:
 
 #### Unit Definition Macros
 - `units!` - Define new units for a dimension
 - `quantity!` - Define a new quantity type with dimension
 
 #### Conversion Macros (Hierarchical)
+
+The conversion system uses a hierarchical structure with shared internal implementations:
+
 ```
-Top-level (user-facing):
-├── convert!           → convert_float! → {convert_f32!, convert_f64!}
-├── convert_linear!    → convert!
-├── convert_int!       → Direct implementation for integers and floats
-├── convert_int_linear!→ convert_int!
-└── convert_matrix!    → convert_matrix_float! → transitive conversions
+User-facing macros:
+├── convert!           → Float-only (f32, f64)
+├── convert_all!       → All numeric types
+├── convert_linear!    → Linear conversions (float-only)
+├── convert_int!       → Integer conversions with factor syntax
+├── convert_int_linear!→ Integer linear conversions
+└── convert_matrix!    → Transitive conversions
+
+Internal hierarchy:
+convert! → convert_float! → {convert_f32!, convert_f64!} → __impl_conversion!
+convert_all! → {convert_float!, convert_signed!, convert_unsigned!}
+convert_int! → {convert_signed!, convert_unsigned!}
+convert_signed! → {convert_i8! ... convert_i128!} → __impl_conversion!
+convert_unsigned! → {convert_u8! ... convert_u128!} → __impl_conversion!
+convert_matrix! → convert_matrix_float! → {matrix pair generators} → __impl_matrix_pair!
 ```
+
+**Key Design Points:**
+- All conversions use f64-based expressions at the top level for consistency
+- Leaf macros (type-specific) delegate to shared `__impl_conversion!` macro
+- Matrix generators use shared `__impl_matrix_pair!` for transitive conversions
+- ~500 lines of code saved through macro-generating-macro pattern
 
 #### System Macros
 - `system!` - Define a complete system of units
@@ -118,6 +136,8 @@ convert_linear! {
 2. **Typenum Integration**: Uses `typenum` for compile-time integer arithmetic
 3. **No Runtime Overhead**: `Quantity` is a newtype wrapper around the value
 4. **Conversion Safety**: All unit conversions are type-checked at compile time
+5. **Macro-generating-macro pattern**: Shared internal macros (`__impl_conversion!`, `__impl_matrix_pair!`) reduce code duplication
+6. **F64-based conversions**: All conversions use f64 expressions at the top level for consistency and precision
 
 ## Common Tasks
 
@@ -129,11 +149,13 @@ cargo check            # Check compilation
 ```
 
 ### Adding Conversions
-Use the appropriate macro based on conversion type:
-- Simple scaling: `convert_linear!`
-- Complex conversions: `convert!`
-- Integer exact: `convert_int!`
-- Generate all combinations: `convert_matrix!`
+Choose the appropriate macro based on your needs:
+- **Float-only conversions** (most common): `convert!`
+- **All numeric types**: `convert_all!`
+- **Simple scaling**: `convert_linear!` (float-only)
+- **Integer conversions**: `convert_int!` (generates all integer types)
+- **Complex conversions**: Use closures in `convert!` or `convert_all!`
+- **Generate transitive conversions**: `convert_matrix!` (after defining base conversions)
 
 ### Debugging Macro Expansions
 ```bash
